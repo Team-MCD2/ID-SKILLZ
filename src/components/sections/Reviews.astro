@@ -1,0 +1,211 @@
+---
+/**
+ * Reviews — section "avis Google" mood "cream".
+ *
+ * Cream-paper editorial header (eyebrow + big serif title + lead with
+ * average score and link) on top of an Embla horizontal carousel of
+ * verified Google reviews. Each card is a paper testimonial with stars,
+ * a serif italic quote, and a cite line; hover lifts the card slightly.
+ *
+ * Anchor: #avis
+ */
+import ReviewsCarousel from "../islands/ReviewsCarousel";
+import { reviews, site } from "../../lib/site";
+
+const avg =
+	Math.round(
+		(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length) * 10,
+	) / 10;
+---
+
+<section
+	id="avis"
+	class="reviews section-cream section-pad"
+	data-section-mood="cream"
+	aria-labelledby="reviews-title"
+>
+	<header class="reviews__header">
+		<p class="eyebrow reveal">Avis clients · Vérifiés sur Google</p>
+		<h2 id="reviews-title" class="h-1 reveal balance" style="--delay:.1s">
+			Nos clients
+			<span class="mark-gradient">en parlent mieux</span>
+			que nous.
+		</h2>
+		<p class="reviews__lead reveal" style="--delay:.2s">
+			Une moyenne de <strong>{avg.toFixed(1)} / 5</strong> sur Google, soit
+			<a href={site.socials.google} target="_blank" rel="noreferrer" class="reviews__link">
+				{reviews.length} avis 5 étoiles
+			</a>. Les retours bruts, sans filtre&nbsp;:
+		</p>
+	</header>
+
+	<div class="reviews__container reveal" style="--delay:.3s">
+		<ReviewsCarousel reviews={reviews} client:visible />
+	</div>
+</section>
+
+<style>
+	.reviews {
+		position: relative;
+	}
+	.reviews__header {
+		width: var(--container-narrow);
+		margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		max-width: 56rem;
+	}
+	.reviews__lead {
+		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.15rem);
+		color: #4A453E;
+		max-width: 42rem;
+		line-height: 1.65;
+	}
+	.reviews__lead strong {
+		color: var(--color-sienne-deep);
+		font-weight: 600;
+	}
+	.reviews__link {
+		color: #0A0908;
+		border-bottom: 1px solid currentColor;
+		transition: color 0.2s;
+	}
+	.reviews__link:hover {
+		color: var(--color-sienne);
+	}
+	.reviews__container {
+		width: var(--container);
+		margin-inline: auto;
+	}
+
+	/* Embla carousel — cream paper style */
+	:global(.rev-carousel) {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+	:global(.rev-carousel__viewport) {
+		overflow: hidden;
+		padding: 0.75rem 0.5rem;
+	}
+	:global(.rev-carousel__container) {
+		display: flex;
+		gap: 1.25rem;
+	}
+	:global(.rev-carousel__slide) {
+		flex: 0 0 100%;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+		padding: 1.75rem;
+		border-radius: 1rem;
+		background: #FFFFFF;
+		border: 1px solid color-mix(in oklab, #0A0908 8%, transparent);
+		box-shadow: 0 16px 36px -28px rgba(60, 40, 20, 0.25);
+		max-width: 32rem;
+		transition:
+			transform 0.4s var(--ease-emphatic),
+			box-shadow 0.4s var(--ease-emphatic);
+	}
+	:global(.rev-carousel__slide:hover) {
+		transform: translateY(-3px);
+		box-shadow: 0 22px 44px -22px rgba(60, 40, 20, 0.32);
+	}
+	@media (min-width: 768px) {
+		:global(.rev-carousel__slide) {
+			flex-basis: calc(50% - 0.625rem);
+		}
+	}
+	@media (min-width: 1024px) {
+		:global(.rev-carousel__slide) {
+			flex-basis: calc(33.333% - 0.83rem);
+		}
+	}
+
+	:global(.rev-carousel__stars) {
+		display: inline-flex;
+		gap: 2px;
+		color: var(--color-ocre);
+	}
+	:global(.rev-carousel__stars svg[data-active="false"]) {
+		opacity: 0.2;
+	}
+	:global(.rev-carousel__quote) {
+		font-family: var(--font-display);
+		font-size: clamp(1.05rem, 0.6vw + 0.8rem, 1.18rem);
+		line-height: 1.55;
+		color: #0A0908;
+		font-style: italic;
+		font-variation-settings: "opsz" 144, "SOFT" 50;
+		flex: 1;
+		font-weight: 400;
+	}
+	:global(.rev-carousel__cite) {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		font-size: 0.85rem;
+	}
+	:global(.rev-carousel__cite strong) {
+		color: #0A0908;
+		font-weight: 500;
+	}
+	:global(.rev-carousel__cite span) {
+		color: #6B6258;
+		font-size: 0.75rem;
+	}
+
+	:global(.rev-carousel__controls) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-inline: 0.5rem;
+	}
+	:global(.rev-carousel__dots) {
+		display: flex;
+		gap: 0.4rem;
+	}
+	:global(.rev-carousel__dot) {
+		width: 8px;
+		height: 8px;
+		border-radius: 999px;
+		background: #B8AE9E;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
+		transition: all 0.3s var(--ease-emphatic);
+	}
+	:global(.rev-carousel__dot.is-active) {
+		background: #0A0908;
+		width: 24px;
+	}
+	:global(.rev-carousel__buttons) {
+		display: flex;
+		gap: 0.5rem;
+	}
+	:global(.rev-carousel__btn) {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 999px;
+		border: 1px solid color-mix(in oklab, #0A0908 18%, transparent);
+		background: transparent;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: #0A0908;
+		cursor: pointer;
+		transition: all 0.3s var(--ease-emphatic);
+	}
+	:global(.rev-carousel__btn:hover) {
+		background: #0A0908;
+		color: #F2EEE5;
+		border-color: #0A0908;
+	}
+
+	.reveal {
+		transition-delay: var(--delay, 0s);
+	}
+</style>

@@ -1,0 +1,279 @@
+---
+/**
+ * Expertises — section "6 cartes" mood "cream".
+ *
+ * Six cards in a 3x2 grid (collapses to 2x3 on tablet, 1x6 on mobile),
+ * each painted with a soft radial-gradient tone (sienne / ocre / sable /
+ * sienne-deep / ocre-soft / warm-mix), an abstract geometric SVG glyph,
+ * a serif title and an editorial body with bold keyword highlights,
+ * plus a row of stack-pills (technologies / livrables).
+ *
+ * Anchor: #expertises
+ */
+
+interface Expertise {
+	title: string;
+	tone: "sienne" | "ocre" | "sable" | "sienne-deep" | "ocre-soft" | "warm-mix";
+	icon: "monitor" | "triangle" | "layers" | "play" | "drone" | "cube";
+	body: string; // raw HTML with <strong> tags allowed
+	tags: string[];
+}
+
+const expertises: Expertise[] = [
+	{
+		title: "Sites web sur-mesure",
+		tone: "sienne",
+		icon: "monitor",
+		body:
+			"Sites <strong>vitrines</strong>, <strong>e-commerce</strong> et applications web pensés pour <strong>convertir</strong>. Code propre, performances mesurées, SEO en filigrane.",
+		tags: ["Astro", "WordPress", "Shopify", "Next.js"],
+	},
+	{
+		title: "Identité visuelle",
+		tone: "ocre",
+		icon: "triangle",
+		body:
+			"<strong>Logo</strong>, charte graphique, naming, déclinaisons. Une marque qui tient en mouvement comme à l'arrêt — papier, écran ou vitrine.",
+		tags: ["Logotype", "Charte", "Brand book"],
+	},
+	{
+		title: "Design digital & print",
+		tone: "sable",
+		icon: "layers",
+		body:
+			"Brochures, plaquettes, packagings, signalétique, <strong>templates</strong> de communication. Une cohérence visuelle de l'écran au support imprimé.",
+		tags: ["Print", "Édition", "Packaging"],
+	},
+	{
+		title: "Vidéo de marque",
+		tone: "sienne-deep",
+		icon: "play",
+		body:
+			"<strong>Films institutionnels</strong>, capsules sociales, <strong>motion design</strong>, étalonnage. De l'écriture au mix, on garde la main de bout en bout.",
+		tags: ["Réalisation", "Motion", "Mix son"],
+	},
+	{
+		title: "Drone & événementiel",
+		tone: "ocre-soft",
+		icon: "drone",
+		body:
+			"Captations <strong>aériennes</strong>, événements sportifs, retransmissions live. Pilotes <strong>certifiés</strong>, autorisations vol et suivi technique inclus.",
+		tags: ["Drone S1·S2", "Live", "Sport"],
+	},
+	{
+		title: "3D & rendus immobiliers",
+		tone: "warm-mix",
+		icon: "cube",
+		body:
+			"<strong>Modélisation</strong>, perspectives photoréalistes, animations d'architecture, rendus produits. Pour vendre un programme avant la première brique.",
+		tags: ["Archi-viz", "Rendus", "Animation"],
+	},
+];
+---
+
+<section
+	id="expertises"
+	class="exp section-cream section-pad"
+	data-section-mood="cream"
+	aria-labelledby="exp-title"
+>
+	<header class="exp__header">
+		<p class="eyebrow reveal">Notre expertise</p>
+		<h2 id="exp-title" class="h-1 reveal balance" style="--delay:.1s">
+			Quatre métiers, <span class="mark-gradient">six terrains</span> de jeu.
+		</h2>
+		<p class="exp__lead reveal" style="--delay:.2s">
+			De la première ligne de code au dernier rendu 3D, tout est fabriqué
+			en interne par la même équipe. C'est ce qui rend nos projets
+			<strong>cohérents&nbsp;de bout en bout</strong>.
+		</p>
+	</header>
+
+	<ul class="exp__grid">
+		{expertises.map((e, i) => (
+			<li
+				class="expertise-card reveal"
+				data-tone={e.tone}
+				style={`--delay:${0.05 * i + 0.15}s`}
+			>
+				<span class="expertise-icon" aria-hidden="true">
+					<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+						{e.icon === "monitor" && (
+							<>
+								<rect x="6" y="9" width="36" height="24" rx="2" />
+								<path d="M16 41h16M19 33v8M29 33v8" />
+								<path d="M12 15h24M12 19h18" stroke-width="1" opacity=".5" />
+							</>
+						)}
+						{e.icon === "triangle" && (
+							<>
+								<circle cx="17" cy="32" r="9" />
+								<path d="M30 9l11 22H19z" />
+							</>
+						)}
+						{e.icon === "layers" && (
+							<>
+								<path d="M24 8l16 8-16 8-16-8z" />
+								<path d="M8 24l16 8 16-8M8 32l16 8 16-8" opacity=".7" />
+							</>
+						)}
+						{e.icon === "play" && (
+							<>
+								<rect x="6" y="11" width="36" height="26" rx="2" />
+								<path d="M21 18l11 6-11 6z" fill="currentColor" stroke="none" />
+							</>
+						)}
+						{e.icon === "drone" && (
+							<>
+								<circle cx="11" cy="13" r="5" />
+								<circle cx="37" cy="13" r="5" />
+								<circle cx="11" cy="35" r="5" />
+								<circle cx="37" cy="35" r="5" />
+								<path d="M11 18l13 6 13-6M11 30l13-6 13 6M24 24v0" />
+								<rect x="20" y="20" width="8" height="8" rx="1" />
+							</>
+						)}
+						{e.icon === "cube" && (
+							<>
+								<path d="M24 6l16 9v18l-16 9-16-9V15z" />
+								<path d="M8 15l16 9 16-9M24 24v18" opacity=".7" />
+							</>
+						)}
+					</svg>
+				</span>
+				<h3 class="expertise-card__title">{e.title}</h3>
+				<p class="expertise-card__body" set:html={e.body}></p>
+				<ul class="expertise-card__tags">
+					{e.tags.map((t) => (
+						<li class="tag-pill">{t}</li>
+					))}
+				</ul>
+			</li>
+		))}
+	</ul>
+
+	<footer class="exp__footer reveal" style="--delay:.5s">
+		<a class="exp__cta" href="#contact">
+			<span>Discuter d'un projet</span>
+			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M5 12h14M13 5l7 7-7 7" />
+			</svg>
+		</a>
+	</footer>
+</section>
+
+<style>
+	.exp {
+		position: relative;
+	}
+	.exp__header {
+		width: var(--container-narrow);
+		margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		max-width: 56rem;
+	}
+	.exp__lead {
+		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.15rem);
+		color: #4A453E;
+		max-width: 42rem;
+		line-height: 1.65;
+	}
+	.exp__lead strong {
+		color: #0A0908;
+		font-weight: 600;
+	}
+
+	.exp__grid {
+		width: var(--container);
+		margin-inline: auto;
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: clamp(1rem, 1.5vw, 1.5rem);
+		grid-template-columns: 1fr;
+	}
+	@media (min-width: 720px) {
+		.exp__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	@media (min-width: 1100px) {
+		.exp__grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.expertise-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		min-height: 18rem;
+	}
+	.expertise-card__title {
+		font-family: var(--font-display);
+		font-size: clamp(1.35rem, 1.4vw + 0.5rem, 1.65rem);
+		font-weight: 400;
+		line-height: 1.15;
+		color: #0A0908;
+		font-variation-settings: "opsz" 144, "SOFT" 30;
+		letter-spacing: -0.01em;
+	}
+	.expertise-card__body {
+		font-size: 0.95rem;
+		color: #4A453E;
+		line-height: 1.6;
+		flex: 1;
+	}
+	.expertise-card__body :global(strong) {
+		color: #0A0908;
+		font-weight: 600;
+	}
+
+	.expertise-card__tags {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.5rem;
+	}
+	.expertise-card__tags .tag-pill {
+		--local-accent: var(--color-sienne-deep);
+		background: rgba(255, 255, 255, 0.7);
+		color: var(--color-sienne-deep);
+		font-size: 0.65rem;
+		padding: 0.25rem 0.6rem;
+	}
+
+	.exp__footer {
+		display: flex;
+		justify-content: center;
+		margin-top: clamp(2.5rem, 5vw, 3.5rem);
+	}
+	.exp__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.95rem 1.6rem;
+		border-radius: 999px;
+		background: #0A0908;
+		color: #F2EEE5;
+		font-family: var(--font-sans);
+		font-size: 0.9rem;
+		font-weight: 500;
+		letter-spacing: 0.02em;
+		transition:
+			background 0.3s var(--ease-soft),
+			transform 0.3s var(--ease-emphatic);
+	}
+	.exp__cta:hover {
+		background: var(--color-sienne);
+		transform: translateY(-2px);
+	}
+
+	.reveal {
+		transition-delay: var(--delay, 0s);
+	}
+</style>

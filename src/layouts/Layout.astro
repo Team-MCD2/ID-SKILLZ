@@ -1,0 +1,137 @@
+---
+import "../styles/globals.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Fab from "../components/Fab.astro";
+import LenisProvider from "../components/islands/LenisProvider";
+import { site } from "../lib/site";
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	noindex?: boolean;
+}
+
+const {
+	title = `${site.name} — Agence créative · Site web, Design, Vidéo, 3D`,
+	description = site.description,
+	image = "/og.jpg",
+	noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).toString();
+
+const orgSchema = {
+	"@context": "https://schema.org",
+	"@type": ["Organization", "ProfessionalService"],
+	"@id": `${site.url}#organization`,
+	name: site.name,
+	url: site.url,
+	email: site.email,
+	telephone: site.phoneFormatted,
+	logo: `${site.url}/media/logo/id-skillz-light.png`,
+	image: `${site.url}/media/logo/id-skillz-light.png`,
+	description: site.description,
+	founder: site.team.map((m) => ({ "@type": "Person", name: m.name, jobTitle: m.role })),
+	address: [
+		{
+			"@type": "PostalAddress",
+			addressLocality: "Paris",
+			postalCode: "75008",
+			streetAddress: "66 avenue des Champs-Élysées",
+			addressCountry: "FR",
+		},
+		{
+			"@type": "PostalAddress",
+			addressLocality: "Colomiers",
+			postalCode: "31770",
+			streetAddress: "16 chemin de Garrabot",
+			addressCountry: "FR",
+		},
+	],
+	areaServed: { "@type": "Country", name: "France" },
+	sameAs: [site.socials.instagram, site.socials.youtube],
+	taxID: site.tva,
+	vatID: site.tva,
+	identifier: site.siren,
+};
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		<meta property="og:locale" content="fr_FR" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+
+		<meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#F2EEE5" media="(prefers-color-scheme: light)" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="format-detection" content="telephone=yes" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,30..100;1,9..144,300..900,30..100&family=Inter:wght@300..700&display=swap"
+		/>
+
+		<script is:inline>
+			(() => {
+				try {
+					const ls = localStorage.getItem("idskillz-theme");
+					if (ls === "light" || ls === "dark") {
+						document.documentElement.dataset.theme = ls;
+					}
+				} catch (_) {}
+			})();
+		</script>
+
+		<script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+	</head>
+	<body class="grain">
+		<a href="#main" class="skip-link">Aller au contenu</a>
+		<LenisProvider client:load />
+		<Header />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+		<Fab />
+	</body>
+</html>
+
+<style>
+	.skip-link {
+		position: absolute;
+		top: -100px;
+		left: 1rem;
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: var(--text-inverted);
+		border-radius: 4px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		z-index: 9999;
+		transition: top 0.2s;
+	}
+	.skip-link:focus {
+		top: 1rem;
+	}
+</style>

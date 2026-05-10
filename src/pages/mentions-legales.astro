@@ -1,0 +1,176 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../lib/site";
+---
+
+<Layout
+	title={`Mentions légales — ${site.name}`}
+	description="Mentions légales de l'agence ID SKILLZ : éditeur, hébergeur, propriété intellectuelle, RGPD."
+>
+	<article class="legal">
+		<header class="legal__header">
+			<p class="eyebrow">Légal</p>
+			<h1 class="h-1">Mentions légales</h1>
+			<p class="legal__updated">Dernière mise à jour&nbsp;: {new Date().toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" })}</p>
+		</header>
+
+		<section>
+			<h2 class="h-3">1. Éditeur du site</h2>
+			<p>
+				Le présent site est édité par&nbsp;: <strong>{site.name}</strong>, société par actions simplifiée
+				au capital social de 100&nbsp;€, inscrite au Registre du Commerce et des Sociétés sous le numéro
+				<strong>{site.rcs}</strong>.
+			</p>
+			<ul class="legal__list">
+				<li><strong>Siège social</strong>&nbsp;: {site.addresses.paris.lines.join(" — ")}</li>
+				<li><strong>SIREN</strong>&nbsp;: {site.siren}</li>
+				<li><strong>SIRET</strong>&nbsp;: {site.siret}</li>
+				<li><strong>TVA intracommunautaire</strong>&nbsp;: {site.tva}</li>
+				<li><strong>Code APE</strong>&nbsp;: 7022Z (Conseil pour les affaires et autres conseils de gestion)</li>
+				<li><strong>Téléphone</strong>&nbsp;: <a href={`tel:${site.phone}`}>{site.phoneFormatted}</a></li>
+				<li><strong>Email</strong>&nbsp;: <a href={`mailto:${site.email}`}>{site.email}</a></li>
+			</ul>
+			<h3 class="h-3 sub">Direction</h3>
+			<ul class="legal__list">
+				{site.team.map((m) => <li><strong>{m.name}</strong> — {m.role}</li>)}
+			</ul>
+			<p>Directeur de la publication&nbsp;: Bilal Koçhih.</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">2. Hébergeur</h2>
+			<p>
+				Ce site est hébergé par&nbsp;: <strong>Vercel Inc.</strong>, 440 N Barranca Avenue #4133,
+				Covina, CA 91723, États-Unis. <a href="https://vercel.com" target="_blank" rel="noreferrer">vercel.com</a>.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">3. Propriété intellectuelle</h2>
+			<p>
+				L'ensemble du contenu de ce site (textes, images, vidéos, codes, logos, charte graphique) est
+				la propriété exclusive de {site.name} ou de ses partenaires, et est protégé par les lois
+				françaises et internationales relatives à la propriété intellectuelle.
+			</p>
+			<p>
+				Toute reproduction, représentation, modification, publication, transmission, dénaturation,
+				totale ou partielle, du site ou de son contenu, par quelque procédé que ce soit, et sur
+				quelque support que ce soit, est interdite sans l'autorisation préalable écrite de {site.name}.
+			</p>
+			<p>
+				Les marques de nos clients (Subway, Adidas, Sofiane Oumiha, etc.) restent la propriété
+				exclusive de leurs détenteurs respectifs. Leur citation sur ce site relève d'une présentation
+				factuelle de nos travaux.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">4. Données personnelles & RGPD</h2>
+			<p>
+				Les informations recueillies via le formulaire de contact font l'objet d'un traitement
+				informatique destiné à répondre à votre demande. Conformément au Règlement Général sur la
+				Protection des Données (RGPD) et à la loi « Informatique et Libertés » du 6 janvier 1978
+				modifiée, vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition et
+				de portabilité des données vous concernant.
+			</p>
+			<p>
+				Pour exercer ces droits, écrivez-nous à <a href={`mailto:${site.email}`}>{site.email}</a>.
+				Pour plus de détails, consultez notre
+				<a href="/politique-de-confidentialite">politique de confidentialité</a>.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">5. Cookies</h2>
+			<p>
+				Ce site utilise uniquement les cookies strictement nécessaires à son bon fonctionnement
+				(préférence de thème) et, si vous y consentez, des cookies de mesure d'audience anonymisée
+				fournis par Vercel Web Analytics. Aucune donnée n'est revendue ni partagée avec des
+				partenaires publicitaires.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">6. Crédits</h2>
+			<p>
+				Conception, design et développement du site&nbsp;:
+				<a href="https://microdidact.com" target="_blank" rel="noreferrer">Microdidact</a>.
+				Polices&nbsp;: <em>Fraunces</em> (SIL Open Font License) et <em>Inter</em> (SIL Open Font License).
+			</p>
+		</section>
+
+		<a href="/" class="legal__back">← Retour à l'accueil</a>
+	</article>
+</Layout>
+
+<style>
+	.legal {
+		width: var(--container-prose);
+		margin-inline: auto;
+		padding: calc(var(--header-height) + 4rem) 0 4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+	.legal__header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+	.legal__updated {
+		font-size: 0.85rem;
+		color: var(--text-soft);
+		font-family: var(--font-mono);
+	}
+	.legal section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+	.legal h2 {
+		color: var(--text);
+	}
+	.legal h3.sub {
+		font-size: 1rem;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--text-muted);
+		margin-top: 0.75rem;
+	}
+	.legal p {
+		color: var(--text-muted);
+		line-height: 1.7;
+		font-size: 0.95rem;
+	}
+	.legal a {
+		color: var(--accent);
+		border-bottom: 1px solid currentColor;
+	}
+	.legal a:hover {
+		color: var(--text);
+	}
+	.legal strong {
+		color: var(--text);
+		font-weight: 500;
+	}
+	.legal__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		color: var(--text-muted);
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+	.legal__back {
+		font-size: 0.875rem;
+		color: var(--text-muted) !important;
+		border-bottom: 0 !important;
+		padding-top: 2rem;
+	}
+</style>

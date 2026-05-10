@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/sections/Hero.astro";
+import Solutions from "../components/sections/Solutions.astro";
+import Expertises from "../components/sections/Expertises.astro";
+import Process from "../components/sections/Process.astro";
+import Realisations from "../components/sections/Realisations.astro";
+import Studio from "../components/sections/Studio.astro";
+import Reviews from "../components/sections/Reviews.astro";
+import Partners from "../components/sections/Partners.astro";
+import Faq from "../components/sections/Faq.astro";
+import CafeCta from "../components/sections/CafeCta.astro";
+import Contact from "../components/sections/Contact.astro";
+import ScrollReveal from "../components/islands/ScrollReveal";
+---
+
+<Layout>
+	<ScrollReveal client:load />
+
+	<Hero />
+	<Solutions />
+	<Realisations />
+	<Process />
+	<Expertises />
+	<Studio />
+	<Partners />
+	<Reviews />
+	<Faq />
+	<CafeCta />
+	<Contact />
+</Layout>

@@ -1,0 +1,199 @@
+---
+/**
+ * Partners — section "ils nous font confiance" mood "warm-dark".
+ *
+ * Two-column layout 60/40:
+ *   - Left  : parallax-scrolling 2-col grid of partner logo tiles
+ *   - Right : sticky editorial text panel (eyebrow + title + lead + CTA)
+ *
+ * Replaces the old horizontal marquee. Inspired by the Websenso partners
+ * section but in dark warm tones (no navy / no purple).
+ *
+ * Anchor: #partenaires
+ */
+import PartnersParallax from "../islands/PartnersParallax";
+import { clients } from "../../lib/site";
+
+// 10 unique partners. The parallax effect comes from the translate on
+// scroll, not from list density — duplicating caused both visual confusion
+// and duplicate React keys (20 console warnings).
+const tiles = clients;
+---
+
+<section
+	id="partenaires"
+	class="partners section-warm-dark section-pad"
+	data-section-mood="warm-dark"
+	aria-labelledby="partners-title"
+>
+	<div class="partners__inner">
+		<div class="partners__logos">
+			<PartnersParallax clients={[...tiles] as any} client:visible />
+		</div>
+
+		<aside class="partners__text">
+			<p class="eyebrow reveal">Ils nous font confiance</p>
+			<h2 id="partners-title" class="h-1 reveal balance" style="--delay:.1s">
+				Des marques qui ont
+				<span class="mark-gradient">tout à raconter</span>
+				— et qui nous laissent le micro.
+			</h2>
+			<p class="partners__lead reveal" style="--delay:.2s">
+				Subway, Adidas, Sofiane Oumiha, Oniris Communication, Recupp Sport,
+				Hookah Center, Eco Synergy, Carrosserie AMD, Mon Boum, Reno Bat —
+				des restaurateurs aux athlètes olympiques, on partage le même
+				virage&nbsp;: <strong>le travail qui se voit</strong>.
+			</p>
+			<a class="partners__cta reveal" href="#realisations" style="--delay:.3s">
+				<span>Voir les projets</span>
+				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M5 12h14M13 5l7 7-7 7" />
+				</svg>
+			</a>
+		</aside>
+	</div>
+</section>
+
+<style>
+	.partners {
+		position: relative;
+		overflow: hidden;
+	}
+	.partners__inner {
+		width: var(--container);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(2rem, 4vw, 4rem);
+	}
+	@media (min-width: 1024px) {
+		.partners__inner {
+			grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 1fr);
+			gap: clamp(3rem, 6vw, 6rem);
+			align-items: start;
+		}
+	}
+
+	.partners__logos {
+		/* With 10 unique partners in a 2-col desktop layout we get 5 rows.
+		 * Each tile is 16/10 aspect → ~10rem per row at default width →
+		 * ~50rem total. We size to content; no artificial min-height. */
+		position: relative;
+	}
+
+	:global(.partners__wrap) {
+		position: relative;
+		height: 100%;
+	}
+	:global(.partners__col) {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+		will-change: transform;
+	}
+	@media (min-width: 720px) {
+		:global(.partners__col) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+	@media (min-width: 1024px) {
+		:global(.partners__col) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	:global(.partners__tile) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		aspect-ratio: 16 / 10;
+		padding: 1.25rem;
+		background: color-mix(in oklab, var(--bg) 60%, white 6%);
+		border: 1px solid color-mix(in oklab, var(--text) 8%, transparent);
+		border-radius: 0.75rem;
+		transition:
+			background 0.4s var(--ease-soft),
+			border-color 0.4s var(--ease-soft),
+			transform 0.4s var(--ease-emphatic);
+	}
+	:global(.partners__tile:hover) {
+		background: color-mix(in oklab, var(--bg) 50%, var(--color-sienne) 12%);
+		border-color: color-mix(in oklab, var(--color-sienne) 30%, transparent);
+		transform: translateY(-3px);
+	}
+	:global(.partners__tile img) {
+		max-width: 80%;
+		max-height: 60%;
+		object-fit: contain;
+		filter: brightness(0) invert(1);
+		opacity: 0.7;
+		transition:
+			opacity 0.4s var(--ease-soft),
+			filter 0.4s var(--ease-soft);
+	}
+	:global(.partners__tile:hover img) {
+		opacity: 1;
+		filter: none;
+	}
+	:global(.partners__label) {
+		font-family: var(--font-display);
+		font-size: clamp(1.1rem, 1.4vw, 1.45rem);
+		font-style: italic;
+		font-variation-settings: "opsz" 144, "SOFT" 80;
+		letter-spacing: -0.01em;
+		color: color-mix(in oklab, var(--text) 80%, transparent);
+		white-space: nowrap;
+	}
+	:global(.partners__tile:hover .partners__label) {
+		color: var(--color-sienne);
+	}
+
+	.partners__text {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+	@media (min-width: 1024px) {
+		.partners__text {
+			position: sticky;
+			top: clamp(5rem, 12vh, 8rem);
+			align-self: start;
+			padding-top: 2rem;
+		}
+	}
+	.partners__lead {
+		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.1rem);
+		color: var(--text-muted);
+		line-height: 1.65;
+		max-width: 26rem;
+	}
+	.partners__lead strong {
+		color: var(--text);
+		font-weight: 600;
+	}
+	.partners__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.85rem 1.4rem;
+		border-radius: 999px;
+		background: var(--color-sienne);
+		color: #0A0908;
+		font-family: var(--font-sans);
+		font-size: 0.85rem;
+		font-weight: 500;
+		letter-spacing: 0.02em;
+		width: fit-content;
+		transition:
+			background 0.3s var(--ease-soft),
+			transform 0.3s var(--ease-emphatic);
+	}
+	.partners__cta:hover {
+		background: var(--color-sienne-deep);
+		transform: translateY(-2px);
+	}
+
+	.reveal {
+		transition-delay: var(--delay, 0s);
+	}
+</style>

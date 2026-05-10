@@ -1,0 +1,76 @@
+---
+/**
+ * MountainRidge — hand-drawn jagged ridge SVG used to transition the dark
+ * hero into the cream "Solutions" section below it. Inspired by the
+ * Websenso "we descend behind the mountains into the white valley" effect,
+ * but redrawn in an editorial / brutalist line style fitting ID Skillz.
+ *
+ * Usage:
+ *   <MountainRidge fill="#F2EEE5" />          ← fill matches next section bg
+ *   <MountainRidge fill="#F2EEE5" stroke="currentColor" strokeWidth={1.5} />
+ *
+ * The component is positioned absolutely inside its parent via the
+ * `.mountain-ridge` utility (defined in globals.css). Place inside a hero
+ * with `position: relative; overflow: hidden`.
+ */
+interface Props {
+	fill?: string;
+	stroke?: string | null;
+	strokeWidth?: number;
+	/**
+	 * Variant controls peak roughness:
+	 *  - "ridge" : single jagged ridge (hero → solutions transition)
+	 *  - "soft"  : gentler curve (cream → cream subsection divider)
+	 */
+	variant?: "ridge" | "soft";
+	class?: string;
+	ariaHidden?: boolean;
+}
+
+const {
+	fill = "#F2EEE5",
+	stroke = null,
+	strokeWidth = 1.25,
+	variant = "ridge",
+	class: className = "",
+	ariaHidden = true,
+} = Astro.props;
+
+// Path generated to look hand-drawn: irregular peak heights, occasional
+// "false summits" (small bumps before the main peak) for a sketch feel.
+// viewBox is 1440x180 — scales to any width via SVG preserveAspectRatio="none".
+const path = variant === "ridge"
+	? "M0,180 L0,138 " +
+		"L42,128 L78,118 L102,124 L132,108 " +
+		"L168,90 L198,98 L226,82 L258,74 " +
+		"L292,52 L322,38 L344,46 L368,28 " +
+		"L398,14 L428,30 L456,46 L488,32 " +
+		"L518,52 L548,68 L582,48 L614,30 " +
+		"L646,12 L678,28 L708,44 L738,32 " +
+		"L772,52 L808,72 L840,58 L872,78 " +
+		"L904,92 L938,72 L972,84 L1004,94 " +
+		"L1036,108 L1068,98 L1100,84 L1136,98 " +
+		"L1168,112 L1202,124 L1236,108 L1268,118 " +
+		"L1302,128 L1336,118 L1370,128 L1404,138 " +
+		"L1440,144 L1440,180 Z"
+	: "M0,180 L0,150 C 240,130 480,150 720,140 " +
+		"C 960,130 1200,160 1440,148 L1440,180 Z";
+---
+
+<div class:list={["mountain-ridge", className]} aria-hidden={ariaHidden}>
+	<svg
+		viewBox="0 0 1440 180"
+		preserveAspectRatio="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d={path}
+			fill={fill}
+			stroke={stroke ?? "none"}
+			stroke-width={strokeWidth}
+			stroke-linejoin="miter"
+			stroke-linecap="butt"
+			vector-effect="non-scaling-stroke"
+		/>
+	</svg>
+</div>

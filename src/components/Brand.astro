@@ -1,0 +1,82 @@
+---
+/**
+ * Brand wordmark — uses the official id-skillz logo PNG (black on
+ * transparent) and inverts it via CSS filter in dark theme so it adapts
+ * automatically to either color scheme.
+ *
+ * Variants:
+ *   - "wordmark" : iD + SKILLZ, no tagline (header default)
+ *   - "full"     : iD + SKILLZ + "OUR SKILLZ YOUR ID" tagline (footer / hero)
+ *   - "mark"     : just the lowercase iD logomark (small contexts)
+ */
+interface Props {
+	variant?: "mark" | "wordmark" | "full";
+	class?: string;
+	ariaLabel?: string;
+}
+
+const {
+	variant = "wordmark",
+	class: className = "",
+	ariaLabel = "ID SKILLZ",
+} = Astro.props;
+
+const src = "/media/logo/id-skillz-light.png";
+---
+
+<span class:list={["brand", `brand--${variant}`, className]} role="img" aria-label={ariaLabel}>
+	<img src={src} alt="" loading="eager" decoding="async" />
+</span>
+
+<style>
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	.brand img {
+		display: block;
+		height: 100%;
+		width: auto;
+		max-width: 100%;
+		object-fit: contain;
+		/* The asset is black-on-transparent; invert in dark theme */
+		filter: none;
+		transition: filter 0.4s var(--ease-emphatic, ease);
+	}
+
+	/* Dark theme (default) — invert to white */
+	:global(:root[data-theme="dark"]) .brand img,
+	:global(:root:not([data-theme])) .brand img {
+		filter: invert(1) brightness(1.05);
+	}
+
+	@media (prefers-color-scheme: light) {
+		:global(:root:not([data-theme])) .brand img {
+			filter: none;
+		}
+	}
+
+	:global(:root[data-theme="light"]) .brand img {
+		filter: none;
+	}
+
+	.brand--mark img,
+	.brand--wordmark img {
+		/* The 600×600 source PNG stacks: iD mark (top ~38%) → "SKILLZ" wordmark
+		 * (middle ~28%) → "OUR SKILLZ YOUR ID" tagline (bottom ~34%).
+		 * Crop the bottom third aggressively so the wordmark variant truly
+		 * hides the tagline (the previous 18% inset wasn't enough). */
+		object-position: top;
+		clip-path: inset(0 0 36% 0);
+	}
+	/* Mark-only variant crops even more (keeps only the iD logomark) */
+	.brand--mark img {
+		clip-path: inset(0 0 62% 0);
+	}
+
+	.brand--full img {
+		clip-path: none;
+		object-position: center;
+	}
+</style>

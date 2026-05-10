@@ -1,0 +1,173 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../lib/site";
+---
+
+<Layout
+	title={`Politique de confidentialité — ${site.name}`}
+	description="Politique de confidentialité d'ID SKILLZ : finalité du traitement, conservation des données, exercice des droits RGPD."
+>
+	<article class="legal">
+		<header class="legal__header">
+			<p class="eyebrow">Légal</p>
+			<h1 class="h-1">Politique de confidentialité</h1>
+			<p class="legal__updated">
+				Dernière mise à jour&nbsp;:
+				{new Date().toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" })}
+			</p>
+		</header>
+
+		<section>
+			<h2 class="h-3">1. Responsable du traitement</h2>
+			<p>
+				Le responsable du traitement de vos données est <strong>{site.name}</strong>,
+				dont le siège est situé {site.addresses.paris.lines.join(" — ")}.
+				Vous pouvez nous joindre par email à
+				<a href={`mailto:${site.email}`}>{site.email}</a>.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">2. Données collectées</h2>
+			<p>Nous collectons les données suivantes&nbsp;:</p>
+			<ul class="legal__list">
+				<li><strong>Formulaire de contact</strong>&nbsp;: nom, email, société (optionnelle), métiers souhaités, message.</li>
+				<li><strong>Mesure d'audience</strong>&nbsp;: pages visitées, agent utilisateur, pays — anonymisé via Vercel Web Analytics.</li>
+				<li><strong>Préférence de thème</strong>&nbsp;: stockée localement dans votre navigateur (clé <code>idskillz-theme</code>), jamais transmise.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2 class="h-3">3. Finalité du traitement</h2>
+			<p>
+				Vos données ne sont utilisées que pour&nbsp;: (a) répondre à votre demande,
+				(b) constituer un dossier de projet et établir un devis,
+				(c) mesurer l'audience anonymisée du site afin de l'améliorer.
+				Aucune donnée n'est utilisée à des fins de prospection commerciale automatique
+				ni revendue à des tiers.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">4. Base légale</h2>
+			<p>
+				Le traitement repose sur votre consentement explicite (envoi du formulaire) et sur notre
+				intérêt légitime à exercer notre activité professionnelle, conformément au RGPD (article 6).
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">5. Conservation</h2>
+			<p>
+				Les données du formulaire de contact sont conservées 3 ans à compter du dernier échange.
+				Les données de mesure d'audience anonymisée sont conservées 13 mois.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">6. Sous-traitants</h2>
+			<ul class="legal__list">
+				<li><strong>Vercel Inc.</strong> (hébergement & analytics) — États-Unis (DPF certifié).</li>
+				<li><strong>Google LLC</strong> (Fraunces & Inter via Google Fonts) — politique mise à disposition par Google.</li>
+			</ul>
+			<p>
+				Aucun de nos sous-traitants n'utilise vos données à d'autres fins que la fourniture du
+				service technique demandé.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">7. Vos droits</h2>
+			<p>
+				Conformément au RGPD, vous disposez des droits suivants&nbsp;: accès, rectification,
+				effacement, limitation, opposition et portabilité.
+				Pour les exercer, écrivez-nous à
+				<a href={`mailto:${site.email}`}>{site.email}</a> en précisant votre demande.
+				Vous pouvez également introduire une réclamation auprès de la
+				<a href="https://www.cnil.fr/" target="_blank" rel="noreferrer">CNIL</a> (Commission
+				Nationale Informatique et Libertés).
+			</p>
+		</section>
+
+		<section>
+			<h2 class="h-3">8. Sécurité</h2>
+			<p>
+				Vos données transitent en HTTPS chiffré. Nos sauvegardes sont chiffrées et nos accès
+				sont restreints aux personnes habilitées au traitement de votre demande.
+			</p>
+		</section>
+
+		<a href="/" class="legal__back">← Retour à l'accueil</a>
+	</article>
+</Layout>
+
+<style>
+	.legal {
+		width: var(--container-prose);
+		margin-inline: auto;
+		padding: calc(var(--header-height) + 4rem) 0 4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+	.legal__header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+	.legal__updated {
+		font-size: 0.85rem;
+		color: var(--text-soft);
+		font-family: var(--font-mono);
+	}
+	.legal section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+	.legal h2 {
+		color: var(--text);
+	}
+	.legal p {
+		color: var(--text-muted);
+		line-height: 1.7;
+		font-size: 0.95rem;
+	}
+	.legal a {
+		color: var(--accent);
+		border-bottom: 1px solid currentColor;
+	}
+	.legal a:hover {
+		color: var(--text);
+	}
+	.legal strong {
+		color: var(--text);
+		font-weight: 500;
+	}
+	.legal code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		padding: 0.05em 0.35em;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 0.25rem;
+	}
+	.legal__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		color: var(--text-muted);
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+	.legal__back {
+		font-size: 0.875rem;
+		color: var(--text-muted) !important;
+		border-bottom: 0 !important;
+		padding-top: 2rem;
+	}
+</style>

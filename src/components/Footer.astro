@@ -1,0 +1,335 @@
+---
+/**
+ * Footer — massive "CONTACT" typography over a warm-dark surface,
+ * followed by columns (studios / contact / nav) and a thin bottom strip
+ * (legal mentions, partners, microdidact credit).
+ *
+ * Inspired by the Websenso closing footer; reskinned in ID Skillz tones.
+ */
+import Brand from "./Brand.astro";
+import { site, nav } from "../lib/site";
+
+const year = new Date().getFullYear();
+const legals = [
+	{ label: "Mentions légales", href: "/mentions-legales" },
+	{ label: "Politique de confidentialité", href: "/politique-de-confidentialite" },
+];
+---
+
+<footer class="site-footer" data-section-mood="warm-dark">
+	<div class="site-footer__hero">
+		<h2 class="site-footer__shout" aria-hidden="true">
+			<span class="site-footer__shout-line">CON</span>
+			<span class="site-footer__shout-line">TACT</span>
+		</h2>
+		<a class="site-footer__email" href={`mailto:${site.email}`}>
+			<span aria-hidden="true">→</span>
+			<span>{site.email}</span>
+		</a>
+	</div>
+
+	<div class="site-footer__inner">
+		<div class="site-footer__brand">
+			<Brand variant="full" class="site-footer__logo" />
+			<p class="site-footer__tagline">
+				<span>Vos Skillz, Votre ID</span>
+				<span class="hash">#OSYI</span>
+			</p>
+			<p class="site-footer__pitch">
+				Anciennement <em>Mwcrea Agency</em>. Studio créatif fondé à
+				Toulouse en 2022, opérationnel à Colomiers, siège social Paris.
+			</p>
+		</div>
+
+		<div class="site-footer__col">
+			<h4 class="eyebrow">Studios</h4>
+			<address>
+				<p class="addr-label">{site.addresses.paris.label}</p>
+				<a href={site.addresses.paris.href} target="_blank" rel="noreferrer">
+					{site.addresses.paris.lines.map((l) => <span>{l}</span>)}
+				</a>
+				<p class="addr-label">{site.addresses.toulouse.label}</p>
+				<a href={site.addresses.toulouse.href} target="_blank" rel="noreferrer">
+					{site.addresses.toulouse.lines.map((l) => <span>{l}</span>)}
+				</a>
+			</address>
+		</div>
+
+		<div class="site-footer__col">
+			<h4 class="eyebrow">Direct</h4>
+			<ul class="links">
+				<li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+				<li><a href={`tel:${site.phone}`}>{site.phoneFormatted}</a></li>
+				<li>
+					<a href={site.socials.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>
+				</li>
+				<li>
+					<a href={site.socials.youtube} target="_blank" rel="noreferrer">YouTube ↗</a>
+				</li>
+				<li>
+					<a href={site.socials.google} target="_blank" rel="noreferrer">Google Reviews ↗</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="site-footer__col">
+			<h4 class="eyebrow">Navigation</h4>
+			<ul class="links">
+				{nav.map((item) => (
+					<li><a href={item.href}>{item.label}</a></li>
+				))}
+			</ul>
+		</div>
+	</div>
+
+	<div class="site-footer__bottom">
+		<div class="site-footer__bottom-inner">
+			<p class="legal-id">
+				© {year} {site.name} — SAS · {site.rcs} · TVA {site.tva}
+			</p>
+			<ul class="legal-links">
+				{legals.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+			</ul>
+			<p class="microdidact">
+				Site conçu par <a href="https://microdidact.com" target="_blank" rel="noreferrer">Microdidact</a>
+			</p>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		position: relative;
+		background: var(--bg);
+		color: var(--text);
+		padding: 0 0 1.5rem;
+		margin-top: 0;
+	}
+	.site-footer::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(
+				circle at 80% 0%,
+				color-mix(in oklab, var(--color-sienne) 14%, transparent) 0%,
+				transparent 45%
+			),
+			radial-gradient(
+				circle at 0% 100%,
+				color-mix(in oklab, var(--color-ocre) 8%, transparent) 0%,
+				transparent 50%
+			);
+		pointer-events: none;
+	}
+
+	/* --- Massive shout block ---------------------------------------- */
+	.site-footer__hero {
+		width: var(--container);
+		margin-inline: auto;
+		padding-block: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 2vw, 1.5rem);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		position: relative;
+	}
+	.site-footer__shout {
+		display: flex;
+		flex-direction: column;
+		font-family: var(--font-display);
+		font-style: italic;
+		font-weight: 400;
+		font-variation-settings: "opsz" 144, "SOFT" 100;
+		font-size: clamp(4rem, 18vw, 18rem);
+		line-height: 0.82;
+		letter-spacing: -0.05em;
+		margin: 0;
+		color: var(--text);
+	}
+	.site-footer__shout-line {
+		display: block;
+		background: linear-gradient(
+			120deg,
+			var(--color-sienne) 0%,
+			var(--color-ocre) 60%,
+			color-mix(in oklab, var(--color-sable) 80%, white) 100%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.site-footer__email {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		width: fit-content;
+		font-family: var(--font-display);
+		font-size: clamp(1.1rem, 1.4vw + 0.5rem, 1.6rem);
+		font-style: italic;
+		color: var(--text-muted);
+		font-variation-settings: "opsz" 144, "SOFT" 50;
+		transition: color 0.3s var(--ease-soft);
+	}
+	.site-footer__email span:first-child {
+		font-style: normal;
+		color: var(--color-sienne);
+	}
+	.site-footer__email:hover {
+		color: var(--text);
+	}
+
+	/* --- Columns --------------------------------------------------- */
+	.site-footer__inner {
+		width: var(--container);
+		margin-inline: auto;
+		display: grid;
+		gap: 2.5rem 3rem;
+		grid-template-columns: 1fr;
+		padding-top: clamp(2rem, 4vw, 3.5rem);
+		border-top: 1px solid var(--border);
+	}
+	@media (min-width: 768px) {
+		.site-footer__inner {
+			grid-template-columns: 1.4fr repeat(3, 1fr);
+		}
+	}
+
+	.site-footer__brand {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		max-width: 28rem;
+	}
+	.site-footer__logo {
+		height: 4rem;
+		width: auto;
+		color: var(--text);
+	}
+	.site-footer__tagline {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+		font-family: var(--font-display);
+		font-size: 1.05rem;
+		font-style: italic;
+		color: var(--text-muted);
+	}
+	.site-footer__tagline .hash {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-style: normal;
+		letter-spacing: 0.1em;
+		color: var(--color-sienne);
+	}
+	.site-footer__pitch {
+		font-size: 0.88rem;
+		color: var(--text-soft);
+		line-height: 1.6;
+	}
+	.site-footer__pitch em {
+		font-style: italic;
+		color: var(--text-muted);
+	}
+
+	.site-footer__col h4 {
+		margin-bottom: 1.25rem;
+	}
+	address {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-style: normal;
+		font-size: 0.88rem;
+	}
+	address a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding: 0.25rem 0;
+		color: var(--text);
+		transition: color 0.2s;
+		margin-bottom: 0.75rem;
+	}
+	address a:hover {
+		color: var(--color-sienne);
+	}
+	.addr-label {
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--text-soft);
+		margin-top: 0.5rem;
+	}
+
+	.links {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		font-size: 0.88rem;
+	}
+	.links a {
+		color: var(--text);
+		transition: color 0.2s;
+		display: inline-block;
+	}
+	.links a:hover {
+		color: var(--color-sienne);
+	}
+
+	/* --- Bottom strip ---------------------------------------------- */
+	.site-footer__bottom {
+		margin-top: 3.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+	}
+	.site-footer__bottom-inner {
+		width: var(--container);
+		margin-inline: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+	@media (min-width: 768px) {
+		.site-footer__bottom-inner {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+	.legal-id {
+		font-size: 0.72rem;
+		color: var(--text-soft);
+		font-variant-numeric: tabular-nums;
+	}
+	.legal-links {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		gap: 1.5rem;
+	}
+	.legal-links a {
+		font-size: 0.72rem;
+		color: var(--text-muted);
+	}
+	.legal-links a:hover {
+		color: var(--color-sienne);
+	}
+	.microdidact {
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		color: var(--text-soft);
+		font-family: var(--font-mono);
+	}
+	.microdidact a {
+		color: var(--color-sienne);
+	}
+	.microdidact a:hover {
+		color: var(--text);
+	}
+</style>

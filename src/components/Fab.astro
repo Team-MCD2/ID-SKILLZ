@@ -1,0 +1,152 @@
+---
+/**
+ * Fab — Persistent floating action pill, fixed bottom-center.
+ *
+ * Two segments, modeled on Websenso's signature affordance:
+ *   1. Italic-serif "Prendre contact" CTA on the left (highest priority).
+ *   2. Sans "MENU" toggle on the right (opens the off-canvas nav overlay).
+ *
+ * Adaptive theming: a tiny client-side `IntersectionObserver` watches every
+ * `[data-section-mood]` ancestor scroll into view and updates the FAB's
+ * `data-mood` attribute so the pill swaps between dark and cream surfaces
+ * depending on which section is dominant. Falls back to dark mood if no
+ * sections declare moods.
+ */
+import { site } from "../lib/site";
+
+interface Props {
+	contactHref?: string;
+	defaultMood?: "warm-dark" | "cream";
+}
+
+const {
+	contactHref = "#contact",
+	defaultMood = "warm-dark",
+} = Astro.props;
+
+const phoneHref = `tel:${site.phone}`;
+---
+
+<aside
+	class="fab"
+	data-mood={defaultMood}
+	role="complementary"
+	aria-label="Actions rapides"
+>
+	<a class="fab-cta" href={contactHref} data-fab-action="contact">
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2.03Z" />
+		</svg>
+		<span>Prendre contact</span>
+	</a>
+	<button type="button" data-fab-action="menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-overlay">
+		<span>MENU</span>
+		<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<line x1="3" y1="7" x2="21" y2="7" />
+			<line x1="3" y1="17" x2="21" y2="17" />
+		</svg>
+	</button>
+</aside>
+
+<a class="fab-call" href={phoneHref} aria-label={`Appeler ${site.phoneFormatted}`}>
+	<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2.03Z" />
+	</svg>
+</a>
+
+<script>
+	// Adaptive mood: read [data-section-mood] from whichever section currently
+	// covers the FAB's bottom-center hot zone.
+	(() => {
+		const fab = document.querySelector<HTMLElement>(".fab");
+		if (!fab) return;
+		const moodSections = document.querySelectorAll<HTMLElement>(
+			"[data-section-mood]",
+		);
+		if (!moodSections.length) return;
+
+		const updateMood = () => {
+			const fabRect = fab.getBoundingClientRect();
+			const probeY = fabRect.top + fabRect.height / 2;
+			const probeX = fabRect.left + fabRect.width / 2;
+			const el = document.elementFromPoint(probeX, probeY);
+			if (!el) return;
+			const section = (el as HTMLElement).closest<HTMLElement>(
+				"[data-section-mood]",
+			);
+			const mood = section?.dataset.sectionMood ?? "warm-dark";
+			if (fab.dataset.mood !== mood) {
+				fab.dataset.mood = mood;
+			}
+		};
+
+		// Initial + on scroll/resize. Throttled with rAF.
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				updateMood();
+				ticking = false;
+			});
+		};
+		updateMood();
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", updateMood);
+
+		// Menu button stub — wires into Header overlay if present, else falls
+		// back to scrolling the page top so the user can use the regular nav.
+		const menuBtn = document.querySelector<HTMLButtonElement>(
+			".fab [data-fab-action='menu']",
+		);
+		menuBtn?.addEventListener("click", () => {
+			const overlay = document.getElementById("menu-overlay");
+			if (overlay) {
+				const open = overlay.getAttribute("data-open") === "true";
+				overlay.setAttribute("data-open", String(!open));
+				menuBtn.setAttribute("aria-expanded", String(!open));
+			} else {
+				window.scrollTo({ top: 0, behavior: "smooth" });
+			}
+		});
+	})();
+</script>
+
+<style>
+	/* The discrete tel: chip sits to the right of the FAB on desktop, hidden
+	 * on mobile (where the user has the OS dialer). */
+	.fab-call {
+		position: fixed;
+		bottom: 1.5rem;
+		right: 1.5rem;
+		z-index: 80;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 999px;
+		background: var(--bg-elevated);
+		color: var(--text);
+		border: 1px solid var(--border);
+		box-shadow:
+			0 8px 24px -12px rgba(0, 0, 0, 0.5),
+			0 1px 0 rgba(255, 255, 255, 0.06) inset;
+		transition:
+			background 0.3s var(--ease-soft),
+			color 0.3s var(--ease-soft),
+			transform 0.3s var(--ease-soft);
+	}
+
+	.fab-call:hover {
+		background: var(--color-sienne);
+		color: var(--bg);
+		transform: scale(1.06);
+	}
+
+	@media (max-width: 768px) {
+		.fab-call {
+			display: none;
+		}
+	}
+</style>
