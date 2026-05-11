@@ -73,11 +73,12 @@ const expertises: Expertise[] = [
 
 <section
 	id="expertises"
-	class="exp section-cream section-pad"
+	class="exp section-cream"
 	data-section-mood="cream"
 	aria-labelledby="exp-title"
+	data-scroll-tied
 >
-	<header class="exp__header">
+	<header class="exp__header section-pad-top">
 		<p class="eyebrow reveal">Notre expertise</p>
 		<h2 id="exp-title" class="h-1 reveal balance" style="--delay:.1s">
 			Quatre métiers, <span class="mark-gradient">six terrains</span> de jeu.
@@ -87,15 +88,30 @@ const expertises: Expertise[] = [
 			en interne par la même équipe. C'est ce qui rend nos projets
 			<strong>cohérents&nbsp;de bout en bout</strong>.
 		</p>
+		<p class="exp__hint reveal" style="--delay:.3s" aria-hidden="true">
+			<span>Scroll pour explorer</span>
+			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+		</p>
 	</header>
 
-	<ul class="exp__grid">
+	<div class="exp__track-wrap">
+	<div class="exp__track-stage">
+	<ul class="exp__grid exp__track">
 		{expertises.map((e, i) => (
 			<li
 				class="expertise-card reveal"
 				data-tone={e.tone}
 				style={`--delay:${0.05 * i + 0.15}s`}
 			>
+				{/* Websenso signature (00:25-00:27): tiny circular arrow that
+				    scales from 0 to 1 on card hover, signalling the card is a
+				    discoverable surface. Sits in the bottom-right corner. */}
+				<span class="expertise-card__arrow" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M5 12h14M13 5l7 7-7 7" />
+					</svg>
+				</span>
+
 				<span class="expertise-icon" aria-hidden="true">
 					<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
 						{e.icon === "monitor" && (
@@ -151,8 +167,15 @@ const expertises: Expertise[] = [
 			</li>
 		))}
 	</ul>
+	<!-- Progress rail (desktop only): visible bar that fills as the user
+	     scrolls through the horizontal track. Aubergine accent. -->
+	<div class="exp__progress" aria-hidden="true">
+		<div class="exp__progress-fill"></div>
+	</div>
+	</div>
+	</div>
 
-	<footer class="exp__footer reveal" style="--delay:.5s">
+	<footer class="exp__footer reveal section-pad-bottom" style="--delay:.5s">
 		<a class="exp__cta" href="#contact">
 			<span>Discuter d'un projet</span>
 			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -185,6 +208,23 @@ const expertises: Expertise[] = [
 		font-weight: 600;
 	}
 
+	/* The exp section now uses a horizontal scroll-tied track on desktop
+	 * (>=1024px), and a vertical card stack on mobile/tablet. The structure
+	 * is `.exp__track-wrap > .exp__track-stage > .exp__grid.exp__track`. */
+
+	/* Top/bottom padding tokens manually applied to header/footer (instead
+	 * of section-pad on the section root) because the section root now hosts
+	 * a pinned scroll-tied area that should sit edge-to-edge. */
+	.section-pad-top { padding-top: clamp(4rem, 8vw, 7rem); }
+	.section-pad-bottom { padding-bottom: max(clamp(4rem, 8vw, 7rem), var(--fab-safe)); }
+
+	/* Mobile/tablet: track wraps and the grid is the classic 1-col/2-col grid. */
+	.exp__track-wrap {
+		position: relative;
+	}
+	.exp__track-stage {
+		position: relative;
+	}
 	.exp__grid {
 		width: var(--container);
 		margin-inline: auto;
@@ -194,14 +234,117 @@ const expertises: Expertise[] = [
 		gap: clamp(1rem, 1.5vw, 1.5rem);
 		grid-template-columns: 1fr;
 	}
-	@media (min-width: 720px) {
+	@media (min-width: 720px) and (max-width: 1023px) {
 		.exp__grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
-	@media (min-width: 1100px) {
-		.exp__grid {
-			grid-template-columns: repeat(3, 1fr);
+
+	.exp__hint {
+		display: none;
+	}
+	.exp__progress {
+		display: none;
+	}
+
+	/* Desktop scroll-tied horizontal track. The outer wrap is tall (2.5
+	 * viewport-heights of vertical scroll), the inner stage is sticky
+	 * pinned at top, and the grid becomes a flex row that translates
+	 * horizontally according to the wrap's scroll progress (--p). */
+	@media (min-width: 1024px) {
+		.exp__hint {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			color: var(--accent-cool);
+			font-family: var(--font-mono, ui-monospace, monospace);
+			font-size: 0.75rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			margin-top: 0.5rem;
+		}
+		.exp__hint svg {
+			animation: expHintBob 1.8s var(--ease-emphatic) infinite alternate;
+		}
+		@keyframes expHintBob {
+			from { transform: translateY(-2px); }
+			to   { transform: translateY(4px); }
+		}
+
+		.exp__track-wrap {
+			height: 250vh;
+		}
+		.exp__track-stage {
+			position: sticky;
+			top: var(--header-height, 4rem);
+			height: calc(100vh - var(--header-height, 4rem));
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			gap: clamp(1rem, 2vw, 2rem);
+		}
+		.exp__grid.exp__track {
+			width: max-content;
+			margin: 0;
+			display: flex;
+			gap: clamp(1rem, 1.6vw, 1.75rem);
+			padding-inline: clamp(2rem, 6vw, 6rem);
+			grid-template-columns: none;
+			/* Translate driven by --p (0..1) and the negative travel distance
+			 * which is computed in JS at runtime and stored on the wrap. */
+			transform: translate3d(var(--exp-translate, 0px), 0, 0);
+			will-change: transform;
+		}
+		.exp__grid.exp__track > li.expertise-card {
+			width: clamp(20rem, 28vw, 26rem);
+			height: clamp(22rem, 60vh, 28rem);
+			flex-shrink: 0;
+			min-height: 0;
+		}
+
+		.exp__progress {
+			display: block;
+			position: relative;
+			width: min(48rem, 70%);
+			margin: 0 auto;
+			height: 3px;
+			border-radius: 2px;
+			background: color-mix(in oklab, #0A0908 12%, transparent);
+			overflow: hidden;
+		}
+		.exp__progress-fill {
+			position: absolute;
+			inset: 0;
+			transform: scaleX(var(--p, 0));
+			transform-origin: left center;
+			background: linear-gradient(
+				90deg,
+				var(--accent-cool) 0%,
+				var(--accent-cool-soft) 100%
+			);
+		}
+
+		/* Inside the horizontal track, the standard .reveal opacity/transform
+		 * fights with the horizontal translate. Reset reveal-on-track so the
+		 * cards always render with opacity 1 and the only motion is from the
+		 * track translate above. */
+		.exp__track .expertise-card.reveal {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.exp__track-wrap { height: auto; }
+		.exp__track-stage { position: static; height: auto; overflow: visible; }
+		.exp__grid.exp__track {
+			width: var(--container);
+			margin-inline: auto;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			transform: none;
+			padding-inline: 0;
 		}
 	}
 
@@ -210,6 +353,41 @@ const expertises: Expertise[] = [
 		flex-direction: column;
 		gap: 0.85rem;
 		min-height: 18rem;
+		position: relative;
+	}
+
+	/* Bottom-right hover arrow: appears (scale 0 → 1) when the card is
+	 * hovered or focused-within. Carries the cool accent color for a
+	 * chromatic counterpoint with the warm card backgrounds. */
+	.expertise-card__arrow {
+		position: absolute;
+		top: 1.25rem;
+		right: 1.25rem;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 999px;
+		background: var(--accent-cool);
+		color: var(--text);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transform: scale(0) rotate(-25deg);
+		opacity: 0;
+		transition:
+			transform 0.45s var(--ease-emphatic),
+			opacity 0.3s var(--ease-soft);
+		pointer-events: none;
+		z-index: 2;
+	}
+	.expertise-card:hover .expertise-card__arrow,
+	.expertise-card:focus-within .expertise-card__arrow {
+		transform: scale(1) rotate(0deg);
+		opacity: 1;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.expertise-card__arrow {
+			transition: none;
+		}
 	}
 	.expertise-card__title {
 		font-family: var(--font-display);
@@ -277,3 +455,71 @@ const expertises: Expertise[] = [
 		transition-delay: var(--delay, 0s);
 	}
 </style>
+
+<script>
+	/**
+	 * Expertises scroll-tied horizontal track controller.
+	 *
+	 * Only activates on viewports >=1024px and when the user hasn't asked
+	 * for reduced-motion. Reads the wrap's bounding rect, derives a 0..1
+	 * progress, applies the matching horizontal translate to the track,
+	 * and updates the aubergine progress bar at the bottom of the stage.
+	 *
+	 * The translate distance is computed dynamically as
+	 *   trackWidth - viewportWidth
+	 * so it works regardless of the number of cards or their flex sizes.
+	 */
+	(() => {
+		const section = document.querySelector<HTMLElement>(".exp[data-scroll-tied]");
+		if (!section) return;
+		const wrap = section.querySelector<HTMLElement>(".exp__track-wrap");
+		const track = section.querySelector<HTMLElement>(".exp__track");
+		if (!wrap || !track) return;
+
+		const desktop = window.matchMedia("(min-width: 1024px)");
+		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+		let travel = 0;
+
+		const measure = () => {
+			if (!desktop.matches || reduced.matches) {
+				travel = 0;
+				track.style.removeProperty("--exp-translate");
+				section.style.removeProperty("--p");
+				return;
+			}
+			travel = Math.max(0, track.scrollWidth - window.innerWidth);
+		};
+
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			if (!desktop.matches || reduced.matches) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				const rect = wrap.getBoundingClientRect();
+				const total = rect.height - window.innerHeight;
+				if (total <= 0) { ticking = false; return; }
+				const raw = Math.max(0, Math.min(1, -rect.top / total));
+				section.style.setProperty("--p", raw.toFixed(4));
+				track.style.setProperty(
+					"--exp-translate",
+					`${(-raw * travel).toFixed(2)}px`,
+				);
+				ticking = false;
+			});
+		};
+
+		measure();
+		onScroll();
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", () => {
+			measure();
+			onScroll();
+		});
+		desktop.addEventListener("change", () => {
+			measure();
+			onScroll();
+		});
+	})();
+</script>

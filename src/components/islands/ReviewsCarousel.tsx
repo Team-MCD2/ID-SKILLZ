@@ -1,5 +1,5 @@
 import useEmblaCarousel from "embla-carousel-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Review {
 	author: string;
@@ -23,6 +23,8 @@ export default function ReviewsCarousel({ reviews }: Props) {
 
 	const [selected, setSelected] = useState(0);
 	const [snaps, setSnaps] = useState<number[]>([]);
+	const [paused, setPaused] = useState(false);
+	const viewportRef = useRef<HTMLDivElement>(null);
 
 	const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
 	const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -41,8 +43,48 @@ export default function ReviewsCarousel({ reviews }: Props) {
 		};
 	}, [emblaApi]);
 
+	// Auto-cycle every 6.5s like the Realisations carousel. Pauses while
+	// the user hovers/focuses the strip, and also when the section is
+	// scrolled out of the viewport (saves activity / honors visibility).
+	useEffect(() => {
+		if (!emblaApi) return;
+		const reduced = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+		if (reduced) return;
+		const tick = () => {
+			if (paused) return;
+			emblaApi.scrollNext();
+		};
+		const id = setInterval(tick, 6500);
+		return () => clearInterval(id);
+	}, [emblaApi, paused]);
+
+	// Pause when the strip leaves the viewport.
+	useEffect(() => {
+		const el = viewportRef.current;
+		if (!el || !("IntersectionObserver" in window)) return;
+		const io = new IntersectionObserver(
+			(entries) => {
+				const entry = entries[0];
+				setPaused((p) => (entry.isIntersecting ? p : true));
+				if (entry.isIntersecting) setPaused(false);
+			},
+			{ threshold: 0.25 },
+		);
+		io.observe(el);
+		return () => io.disconnect();
+	}, []);
+
 	return (
-		<div className="rev-carousel">
+		<div
+			className="rev-carousel"
+			ref={viewportRef}
+			onMouseEnter={() => setPaused(true)}
+			onMouseLeave={() => setPaused(false)}
+			onFocus={() => setPaused(true)}
+			onBlur={() => setPaused(false)}
+		>
 			<div className="rev-carousel__viewport" ref={emblaRef}>
 				<div className="rev-carousel__container">
 					{reviews.map((r) => (

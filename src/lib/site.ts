@@ -135,7 +135,7 @@ export const services = [
 			},
 		],
 		video: "/media/videos/05-SOS_CHAUFFEUR_-_TEASER.mp4",
-		poster: "/media/clients/eco-synergy.png",
+		poster: null,
 	},
 	{
 		slug: "video",
@@ -384,7 +384,7 @@ export const projects: Project[] = [
 		category: "design",
 		year: "2024",
 		summary: "Identité atelier carrosserie : logo blason, déclinaisons NB, communication garage.",
-		media: { poster: "/media/clients/carrosserie-amd.png" },
+		media: {},
 	},
 	{
 		slug: "eco-synergy-identite",
@@ -393,7 +393,7 @@ export const projects: Project[] = [
 		category: "design",
 		year: "2024",
 		summary: "Branding eco / agroalimentaire : logo, packaging, supports salons pro.",
-		media: { poster: "/media/clients/eco-synergy.png" },
+		media: {},
 	},
 	{
 		slug: "hookah-center-identite",
@@ -402,7 +402,7 @@ export const projects: Project[] = [
 		category: "design",
 		year: "2024",
 		summary: "Direction artistique épurée NB pour le concept Hookah Center.",
-		media: { poster: "/media/clients/hookah-center.png" },
+		media: {},
 	},
 	{
 		slug: "mon-boum-streetfood",
@@ -411,7 +411,7 @@ export const projects: Project[] = [
 		category: "design",
 		year: "2024",
 		summary: "Identité street-food gourmande : logo bicolore, signalétique camion, supports.",
-		media: { poster: "/media/clients/mon-boum.png" },
+		media: {},
 	},
 	{
 		slug: "reno-bat-identite",
@@ -420,24 +420,63 @@ export const projects: Project[] = [
 		category: "design",
 		year: "2024",
 		summary: "Identité visuelle premium pour société d'investissement & rénovation immobilière.",
-		media: { poster: "/media/clients/reno-bat.png" },
+		media: {},
 	},
 ] as const;
 
 /* ---------------------------------------------------------------------------
  * Clients (logos for the marquee)
  * ------------------------------------------------------------------------- */
+/**
+ * Clients logos.
+ *
+ * All entries use `logo: null` by design: the raw PNG files under
+ * /media/clients(-mono)/ were corrupt on delivery (blank or unrelated
+ * screenshots) so we render every partner through the shared
+ * `ClientBadge.astro` component, which draws a branded SVG badge per
+ * known brand (Mon Boum oval, Reno Bat buildings, Hookah Center, etc.)
+ * and falls back to a clean italic serif label otherwise.
+ *
+ * When clean brand assets are dropped into `/media/clients/<slug>.svg`
+ * later, swap `logo: null` to the path and update `ClientBadge` to
+ * prefer the image over the SVG fallback.
+ */
 export const clients = [
-	{ name: "Carrosserie AMD", logo: "/media/clients-mono/carrosserie-amd.png" },
-	{ name: "Eco Synergy", logo: "/media/clients-mono/eco-synergy.png" },
-	{ name: "Hookah Center", logo: "/media/clients-mono/hookah-center.png" },
-	{ name: "Mon Boum", logo: "/media/clients-mono/mon-boum.png" },
-	{ name: "Reno Bat Invest & Conseil", logo: "/media/clients-mono/reno-bat.png" },
+	{ name: "Carrosserie AMD", logo: null, label: "Carrosserie AMD" },
+	{ name: "Eco Synergy", logo: null, label: "Eco Synergy" },
+	{ name: "Hookah Center", logo: null, label: "Hookah Center" },
+	{ name: "Mon Boum", logo: null, label: "Mon Boum" },
+	{ name: "Reno Bat Invest & Conseil", logo: null, label: "Reno Bat" },
 	{ name: "Subway", logo: null, label: "Subway" },
 	{ name: "Adidas", logo: null, label: "Adidas" },
 	{ name: "Sofiane Oumiha", logo: null, label: "Sofiane Oumiha" },
 	{ name: "Oniris Communication", logo: null, label: "Oniris" },
 	{ name: "Recupp Sport", logo: null, label: "Recupp Sport" },
+] as const;
+
+/* ---------------------------------------------------------------------------
+ * Partner slides — used by PartnersSlideshow component.
+ * Mirrors the Websenso pattern: 4 logos × N sets, each set paired with a
+ * synchronized editorial phrase. Sets auto-cycle every ~5.5s.
+ * Clients may repeat across sets (Adidas / Subway sit at the intersection
+ * of two sector clusters in our case).
+ * ------------------------------------------------------------------------- */
+export const partnerSlides = [
+	{
+		logos: ["Carrosserie AMD", "Reno Bat Invest & Conseil", "Mon Boum", "Adidas"],
+		phrase:
+			"Du commerce de proximité aux marques globales — chaque secteur a son tempo, on s'aligne.",
+	},
+	{
+		logos: ["Adidas", "Sofiane Oumiha", "Recupp Sport", "Subway"],
+		phrase:
+			"Athlètes olympiques, franchises sportives, marques retail — la pression du dimanche soir, on connaît.",
+	},
+	{
+		logos: ["Subway", "Hookah Center", "Eco Synergy", "Oniris Communication"],
+		phrase:
+			"Restauration, lifestyle, communication — on parle leur langue parce qu'on l'a tous testée.",
+	},
 ] as const;
 
 /* ---------------------------------------------------------------------------

@@ -17,14 +17,26 @@ const legals = [
 ---
 
 <footer class="site-footer" data-section-mood="warm-dark">
-	<div class="site-footer__hero">
+	<div class="site-footer__hero reveal">
 		<h2 class="site-footer__shout" aria-hidden="true">
-			<span class="site-footer__shout-line">CON</span>
-			<span class="site-footer__shout-line">TACT</span>
+			<span class="site-footer__shout-line" style="--li:0">
+				<span class="site-footer__shout-inner">CON</span>
+			</span>
+			<span class="site-footer__shout-line" style="--li:1">
+				<span class="site-footer__shout-inner">TACT</span>
+			</span>
 		</h2>
-		<a class="site-footer__email" href={`mailto:${site.email}`}>
-			<span aria-hidden="true">→</span>
-			<span>{site.email}</span>
+		<a class="site-footer__email" href={`mailto:${site.email}`} aria-label={`\u00c9crire \u00e0 ${site.email}`}>
+			<span aria-hidden="true" class="site-footer__email-arrow">→</span>
+			<span class="site-footer__email-text" aria-hidden="true">
+				{site.email.split("").map((ch, i) => (
+					<span
+						class="site-footer__email-char"
+						style={`--ci:${i}; --dir:${i % 2 === 0 ? 1 : -1}`}
+					>{ch === " " ? "\u00a0" : ch}</span>
+				))}
+			</span>
+			<span class="visually-hidden">{site.email}</span>
 		</a>
 	</div>
 
@@ -148,6 +160,14 @@ const legals = [
 	}
 	.site-footer__shout-line {
 		display: block;
+		overflow: hidden;
+		line-height: 1;
+	}
+	.site-footer__shout-inner {
+		display: inline-block;
+		transform: translateY(110%);
+		transition: transform 0.9s var(--ease-emphatic);
+		transition-delay: calc(var(--li, 0) * 100ms + 150ms);
 		background: linear-gradient(
 			120deg,
 			var(--color-sienne) 0%,
@@ -159,6 +179,16 @@ const legals = [
 		color: transparent;
 		-webkit-text-fill-color: transparent;
 	}
+	.site-footer__hero.is-visible .site-footer__shout-inner {
+		transform: translateY(0);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.site-footer__shout-inner {
+			transition: none;
+			transform: none;
+		}
+	}
+
 	.site-footer__email {
 		display: inline-flex;
 		align-items: center;
@@ -171,12 +201,47 @@ const legals = [
 		font-variation-settings: "opsz" 144, "SOFT" 50;
 		transition: color 0.3s var(--ease-soft);
 	}
-	.site-footer__email span:first-child {
+	.site-footer__email-arrow {
 		font-style: normal;
-		color: var(--color-sienne);
+		color: var(--accent-cool);
+		display: inline-block;
+		transition: transform 0.35s var(--ease-emphatic),
+			color 0.3s var(--ease-soft);
 	}
 	.site-footer__email:hover {
-		color: var(--text);
+		color: var(--accent-cool);
+	}
+	.site-footer__email:hover .site-footer__email-arrow {
+		transform: translateX(6px);
+	}
+
+	/* "Blind" email animation: each character enters with a small
+	 * alternating Y offset and a fade, staggered per index. Once
+	 * the hero block becomes visible the characters land at rest.
+	 * Matches the Websenso footer signature. */
+	.site-footer__email-text {
+		display: inline-flex;
+		flex-wrap: wrap;
+	}
+	.site-footer__email-char {
+		display: inline-block;
+		opacity: 0;
+		transform: translateY(calc(var(--dir, 1) * 0.55em));
+		transition:
+			opacity 0.55s var(--ease-emphatic),
+			transform 0.65s var(--ease-emphatic);
+		transition-delay: calc(var(--ci, 0) * 25ms + 350ms);
+	}
+	.site-footer__hero.is-visible .site-footer__email-char {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.site-footer__email-char {
+			transition: none;
+			opacity: 1;
+			transform: none;
+		}
 	}
 
 	/* --- Columns --------------------------------------------------- */

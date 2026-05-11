@@ -33,6 +33,12 @@ const src = "/media/logo/id-skillz-light.png";
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-start;
+		/* Each variant defines its own intrinsic height below so the size is
+		 * self-contained and doesn't rely on parent scoped CSS reaching the
+		 * span (Astro scope hashes don't cross component boundaries, so a
+		 * `.site-header__logo` rule declared in Header.astro wouldn't apply
+		 * to this span). */
+		flex-shrink: 0;
 	}
 	.brand img {
 		display: block;
@@ -43,6 +49,29 @@ const src = "/media/logo/id-skillz-light.png";
 		/* The asset is black-on-transparent; invert in dark theme */
 		filter: none;
 		transition: filter 0.4s var(--ease-emphatic, ease);
+	}
+
+	/* Self-sizing per variant. The source PNG is a 600×600 vertical stack:
+	 *   [iD mark (top ~38%) | SKILLZ wordmark (middle ~28%) | tagline (~34%)].
+	 * Heights here are the full image container height — the visible
+	 * portion after each variant's clip-path is roughly:
+	 *   - mark      : height × 0.38  (only the iD logomark)
+	 *   - wordmark  : height × 0.64  (iD + SKILLZ, tagline clipped)
+	 *   - full      : height × 1.00  (iD + SKILLZ + tagline)
+	 *
+	 * Previously the nav wordmark was 2.2rem → only ~22px of actual logo
+	 * visible. Bumped to 3rem so ~30px of logo shows (much more readable).
+	 * Previously the footer full was 4rem → tagline barely legible at
+	 * ~0.55rem tall. Bumped to 6.5rem so the tagline lands at ~2.2rem
+	 * which is the readability target the screenshots called for. */
+	.brand--mark {
+		height: 2.2rem;
+	}
+	.brand--wordmark {
+		height: 3rem;
+	}
+	.brand--full {
+		height: 6.5rem;
 	}
 
 	/* Dark theme (default) — invert to white */

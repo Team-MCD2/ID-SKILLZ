@@ -1,184 +1,339 @@
 ---
 /**
- * Partners — section "ils nous font confiance" mood "warm-dark".
+ * Partners — section "scroll-tied slideshow" mood "warm-dark".
  *
- * Two-column layout 60/40:
- *   - Left  : parallax-scrolling 2-col grid of partner logo tiles
- *   - Right : sticky editorial text panel (eyebrow + title + lead + CTA)
+ * Pinned-feel section (~1.5 viewport-heights of scroll travel). The
+ * outer wrapper is tall, the inner `partners__stage` is sticky and the
+ * N logo sets cross-fade progressively based on scroll progress. Each
+ * set shows a 2×2 grid of 4 brand badges + its synchronized editorial
+ * phrase. On the right, a sticky text panel stays pinned with title +
+ * CTA leading to #realisations.
  *
- * Replaces the old horizontal marquee. Inspired by the Websenso partners
- * section but in dark warm tones (no navy / no purple).
+ * Why not React island? The cross-fade is purely scroll-driven with a
+ * single passive listener — no need for React state. We also reuse
+ * ClientBadge.astro directly (cleaner than duplicating SVG in JSX).
  *
- * Anchor: #partenaires
+ * Anchor: #partners
  */
-import PartnersParallax from "../islands/PartnersParallax";
-import { clients } from "../../lib/site";
+import { partnerSlides, clients } from "../../lib/site";
+import ClientBadge from "../ClientBadge.astro";
 
-// 10 unique partners. The parallax effect comes from the translate on
-// scroll, not from list density — duplicating caused both visual confusion
-// and duplicate React keys (20 console warnings).
-const tiles = clients;
+// Resolve each partner slide's logo strings to the full client objects
+// so ClientBadge gets the correct name + label. Guards against missing
+// entries at build time.
+const slides = partnerSlides.map((s) => ({
+	logos: s.logos.map((name) => {
+		const c = clients.find((x) => x.name === name);
+		return c ?? { name, label: name };
+	}),
+	phrase: s.phrase,
+}));
 ---
 
 <section
-	id="partenaires"
-	class="partners section-warm-dark section-pad"
+	id="partners"
+	class="partners section-warm-dark"
 	data-section-mood="warm-dark"
 	aria-labelledby="partners-title"
+	data-scroll-tied
 >
-	<div class="partners__inner">
-		<div class="partners__logos">
-			<PartnersParallax clients={[...tiles] as any} client:visible />
-		</div>
+	<h2 id="partners-title" class="visually-hidden">
+		Ils nous ont fait confiance
+	</h2>
 
-		<aside class="partners__text">
-			<p class="eyebrow reveal">Ils nous font confiance</p>
-			<h2 id="partners-title" class="h-1 reveal balance" style="--delay:.1s">
-				Des marques qui ont
-				<span class="mark-gradient">tout à raconter</span>
-				— et qui nous laissent le micro.
-			</h2>
-			<p class="partners__lead reveal" style="--delay:.2s">
-				Subway, Adidas, Sofiane Oumiha, Oniris Communication, Recupp Sport,
-				Hookah Center, Eco Synergy, Carrosserie AMD, Mon Boum, Reno Bat —
-				des restaurateurs aux athlètes olympiques, on partage le même
-				virage&nbsp;: <strong>le travail qui se voit</strong>.
-			</p>
-			<a class="partners__cta reveal" href="#realisations" style="--delay:.3s">
-				<span>Voir les projets</span>
-				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M5 12h14M13 5l7 7-7 7" />
-				</svg>
-			</a>
-		</aside>
+	<div class="partners__wrap">
+		<div class="partners__stage">
+			<div class="partners__inner">
+				<!-- LEFT: the 2×2 logo grid, one absolute slide per set -->
+				<div class="partners__stack" aria-live="polite">
+					{slides.map((s, i) => (
+						<div class="partners__slide" data-index={i} aria-hidden={i !== 0}>
+							<div class="partners__grid">
+								{s.logos.map((c, j) => (
+									<div class="partners__tile" style={`--j:${j}`}>
+										<ClientBadge name={c.name} label={c.label} />
+									</div>
+								))}
+							</div>
+							<p class="partners__phrase">{s.phrase}</p>
+						</div>
+					))}
+				</div>
+
+				<!-- RIGHT: sticky editorial panel -->
+				<aside class="partners__panel">
+					<p class="eyebrow">Ils nous font confiance</p>
+					<h3 class="h-2 balance">
+						<span>Restauration, sport, industrie, lifestyle — on prend</span>
+						<span class="mark-gradient">&nbsp;le même virage&nbsp;</span>
+						<span>avec chacun de nos clients.</span>
+					</h3>
+					<a class="partners__cta" href="#realisations">
+						<span>Voir les projets</span>
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M2 8h12M9 3l5 5-5 5" />
+						</svg>
+					</a>
+
+					<!-- Progress dots: one per slide. Keyboard-accessible as tabs. -->
+					<div class="partners__dots" role="tablist" aria-label="Secteur de partenaires">
+						{slides.map((_, i) => (
+							<button
+								type="button"
+								role="tab"
+								class="partners__dot"
+								data-dot={i}
+								aria-label={`Aller au set ${i + 1} sur ${slides.length}`}
+								aria-selected={i === 0}
+							/>
+						))}
+					</div>
+				</aside>
+			</div>
+		</div>
 	</div>
 </section>
+
+<script>
+	/**
+	 * Scroll-tied cross-fade controller.
+	 *
+	 * - Outer wrapper is `partners__wrap` at 150vh (1.5 viewport-heights).
+	 * - Inner `partners__stage` is sticky at top:var(--header-h).
+	 * - We compute progress from 0 to 1 based on wrap's rect.top relative
+	 *   to its total travel distance, then assign the active slide index.
+	 *
+	 * Accessibility: if reduced-motion is set, we render all slides with
+	 * opacity 0 except the first, and disable the scroll handler. Dots
+	 * remain clickable and jump-scroll the wrap to the matching offset.
+	 */
+	(() => {
+		const section = document.querySelector<HTMLElement>(".partners[data-scroll-tied]");
+		if (!section) return;
+		const wrap = section.querySelector<HTMLElement>(".partners__wrap");
+		const slides = Array.from(section.querySelectorAll<HTMLElement>(".partners__slide"));
+		const dots = Array.from(section.querySelectorAll<HTMLButtonElement>(".partners__dot"));
+		if (!wrap || slides.length === 0) return;
+		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const setActive = (idx: number) => {
+			slides.forEach((s, i) => {
+				const on = i === idx;
+				s.setAttribute("aria-hidden", String(!on));
+				s.dataset.active = on ? "true" : "false";
+			});
+			dots.forEach((d, i) => {
+				d.setAttribute("aria-selected", String(i === idx));
+				d.dataset.active = i === idx ? "true" : "false";
+			});
+		};
+		setActive(0);
+
+		if (!reduced) {
+			let ticking = false;
+			const onScroll = () => {
+				if (ticking) return;
+				ticking = true;
+				requestAnimationFrame(() => {
+					const rect = wrap.getBoundingClientRect();
+					const total = rect.height - window.innerHeight;
+					if (total <= 0) { ticking = false; return; }
+					const raw = Math.max(0, Math.min(1, -rect.top / total));
+					const idx = Math.min(slides.length - 1, Math.floor(raw * slides.length));
+					setActive(idx);
+					// Expose progress to CSS so each slide can interpolate
+					// its own opacity / translate against --p (0..1).
+					section.style.setProperty("--p", raw.toFixed(3));
+					ticking = false;
+				});
+			};
+			onScroll();
+			window.addEventListener("scroll", onScroll, { passive: true });
+			window.addEventListener("resize", onScroll);
+		}
+
+		// Dot click → jump-scroll to the matching third.
+		dots.forEach((dot, i) => {
+			dot.addEventListener("click", () => {
+				const total = wrap.offsetHeight - window.innerHeight;
+				const target = wrap.offsetTop + (total * (i / (slides.length - 1 || 1)));
+				window.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
+			});
+		});
+	})();
+</script>
 
 <style>
 	.partners {
 		position: relative;
-		overflow: hidden;
+		background: var(--bg);
+		color: var(--text);
 	}
+
+	/* Outer wrapper: 1.5 viewport-heights of scroll travel so the user
+	 * sees ~1.5vh of content pass while the inner stays pinned. */
+	.partners__wrap {
+		position: relative;
+		height: 250vh;
+	}
+	@media (max-width: 768px) {
+		.partners__wrap {
+			/* On mobile, reduce travel so the user isn't scrolling for
+			 * minutes; slides still progress but less stretch per set. */
+			height: 220vh;
+		}
+	}
+
+	/* Inner sticky stage: pinned to the top of the viewport during the
+	 * wrap's travel range. */
+	.partners__stage {
+		position: sticky;
+		top: var(--header-height, 4rem);
+		height: calc(100vh - var(--header-height, 4rem));
+		display: flex;
+		align-items: center;
+		padding-block: clamp(2rem, 6vw, 5rem);
+		padding-inline: var(--gutter, 1.5rem);
+	}
+
 	.partners__inner {
-		width: var(--container);
+		width: 100%;
+		max-width: 72rem;
 		margin-inline: auto;
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: clamp(2rem, 4vw, 4rem);
-	}
-	@media (min-width: 1024px) {
-		.partners__inner {
-			grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 1fr);
-			gap: clamp(3rem, 6vw, 6rem);
-			align-items: start;
-		}
-	}
-
-	.partners__logos {
-		/* With 10 unique partners in a 2-col desktop layout we get 5 rows.
-		 * Each tile is 16/10 aspect → ~10rem per row at default width →
-		 * ~50rem total. We size to content; no artificial min-height. */
-		position: relative;
-	}
-
-	:global(.partners__wrap) {
-		position: relative;
-		height: 100%;
-	}
-	:global(.partners__col) {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 0.75rem;
-		will-change: transform;
-	}
-	@media (min-width: 720px) {
-		:global(.partners__col) {
-			grid-template-columns: repeat(3, 1fr);
-		}
-	}
-	@media (min-width: 1024px) {
-		:global(.partners__col) {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	:global(.partners__tile) {
-		display: flex;
+		gap: clamp(1.5rem, 3vw, 3rem);
 		align-items: center;
-		justify-content: center;
-		aspect-ratio: 16 / 10;
-		padding: 1.25rem;
-		background: color-mix(in oklab, var(--bg) 60%, white 6%);
-		border: 1px solid color-mix(in oklab, var(--text) 8%, transparent);
-		border-radius: 0.75rem;
-		transition:
-			background 0.4s var(--ease-soft),
-			border-color 0.4s var(--ease-soft),
-			transform 0.4s var(--ease-emphatic);
 	}
-	:global(.partners__tile:hover) {
-		background: color-mix(in oklab, var(--bg) 50%, var(--color-sienne) 12%);
-		border-color: color-mix(in oklab, var(--color-sienne) 30%, transparent);
-		transform: translateY(-3px);
-	}
-	:global(.partners__tile img) {
-		max-width: 80%;
-		max-height: 60%;
-		object-fit: contain;
-		filter: brightness(0) invert(1);
-		opacity: 0.7;
-		transition:
-			opacity 0.4s var(--ease-soft),
-			filter 0.4s var(--ease-soft);
-	}
-	:global(.partners__tile:hover img) {
-		opacity: 1;
-		filter: none;
-	}
-	:global(.partners__label) {
-		font-family: var(--font-display);
-		font-size: clamp(1.1rem, 1.4vw, 1.45rem);
-		font-style: italic;
-		font-variation-settings: "opsz" 144, "SOFT" 80;
-		letter-spacing: -0.01em;
-		color: color-mix(in oklab, var(--text) 80%, transparent);
-		white-space: nowrap;
-	}
-	:global(.partners__tile:hover .partners__label) {
-		color: var(--color-sienne);
+	@media (min-width: 960px) {
+		.partners__inner {
+			grid-template-columns: 1.15fr 1fr;
+			gap: clamp(2rem, 5vw, 4rem);
+		}
 	}
 
-	.partners__text {
+	/* Logo stack: slides are absolutely-positioned on top of each other
+	 * and cross-fade via opacity + subtle scale. */
+	.partners__stack {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		max-height: 32rem;
+	}
+	@media (max-width: 960px) {
+		.partners__stack {
+			aspect-ratio: 5 / 4;
+			max-height: 28rem;
+		}
+	}
+
+	.partners__slide {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transform: scale(0.96) translateY(12px);
+		transition:
+			opacity 0.7s var(--ease-emphatic),
+			transform 0.9s var(--ease-emphatic);
+		pointer-events: none;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
 	}
-	@media (min-width: 1024px) {
-		.partners__text {
-			position: sticky;
-			top: clamp(5rem, 12vh, 8rem);
-			align-self: start;
-			padding-top: 2rem;
+	.partners__slide[data-active="true"] {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+		pointer-events: auto;
+	}
+
+	.partners__grid {
+		flex: 1;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-template-rows: repeat(2, 1fr);
+		gap: clamp(0.75rem, 1.5vw, 1.25rem);
+		min-height: 0;
+	}
+
+	.partners__tile {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: clamp(0.75rem, 2vw, 1.5rem);
+		border-radius: 18px;
+		background: color-mix(in oklab, var(--bg-elevated, #1a1714) 80%, var(--color-sable) 20%);
+		border: 1px solid var(--border);
+		color: var(--text);
+		overflow: hidden;
+		transition:
+			background 0.5s var(--ease-soft),
+			border-color 0.3s var(--ease-soft),
+			transform 0.5s var(--ease-emphatic);
+		/* Per-tile stagger on active slide */
+		opacity: 0;
+		transform: translateY(18px);
+		transition-delay: calc(var(--j, 0) * 90ms);
+	}
+	.partners__slide[data-active="true"] .partners__tile {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	.partners__tile:hover {
+		background: color-mix(in oklab, var(--accent-cool) 14%, var(--bg-elevated));
+		border-color: var(--accent-cool);
+		transform: translateY(-4px);
+	}
+
+	/* Editorial phrase under the grid — sits below the 2×2 tiles without
+	 * overlapping. On mobile we reduce the max-width so it doesn't push
+	 * the grid too narrow. */
+	.partners__phrase {
+		font-family: var(--font-display);
+		font-size: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
+		font-style: italic;
+		color: var(--text-muted);
+		line-height: 1.5;
+		max-width: 36rem;
+		padding-inline: 0.5rem;
+		font-variation-settings: "opsz" 144, "SOFT" 30;
+	}
+
+	.partners__panel {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		align-items: flex-start;
+		border-left: 2px solid var(--accent-cool);
+		padding-left: clamp(1rem, 2vw, 1.75rem);
+	}
+	@media (max-width: 960px) {
+		.partners__panel {
+			border-left: none;
+			padding-left: 0;
+			border-top: 2px solid var(--accent-cool);
+			padding-top: 1.25rem;
 		}
 	}
-	.partners__lead {
-		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.1rem);
-		color: var(--text-muted);
-		line-height: 1.65;
-		max-width: 26rem;
-	}
-	.partners__lead strong {
+	.partners__panel h3 {
+		font-weight: 400;
+		font-variation-settings: "opsz" 144, "SOFT" 30;
 		color: var(--text);
-		font-weight: 600;
+		font-size: clamp(1.35rem, 1.6vw + 0.5rem, 2rem);
+		line-height: 1.25;
 	}
+	.partners__panel h3 span {
+		display: inline;
+	}
+
 	.partners__cta {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.6rem;
-		padding: 0.85rem 1.4rem;
+		padding: 0.85rem 1.5rem;
 		border-radius: 999px;
-		background: var(--color-sienne);
-		color: #0A0908;
+		background: var(--accent-cool);
+		color: var(--text);
 		font-family: var(--font-sans);
 		font-size: 0.85rem;
 		font-weight: 500;
@@ -186,14 +341,49 @@ const tiles = clients;
 		width: fit-content;
 		transition:
 			background 0.3s var(--ease-soft),
+			color 0.3s var(--ease-soft),
 			transform 0.3s var(--ease-emphatic);
 	}
 	.partners__cta:hover {
-		background: var(--color-sienne-deep);
+		background: var(--text);
+		color: var(--bg);
 		transform: translateY(-2px);
 	}
+	.partners__cta svg {
+		transition: transform 0.3s var(--ease-emphatic);
+	}
+	.partners__cta:hover svg {
+		transform: translateX(2px);
+	}
 
-	.reveal {
-		transition-delay: var(--delay, 0s);
+	/* Progress dots: visible under the CTA on desktop, pinned under the
+	 * editorial text on mobile. Active dot paints in accent-cool. */
+	.partners__dots {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.5rem;
+	}
+	.partners__dot {
+		width: 2rem;
+		height: 3px;
+		border-radius: 2px;
+		border: none;
+		background: color-mix(in oklab, var(--text) 25%, transparent);
+		cursor: pointer;
+		transition: background 0.3s var(--ease-soft), width 0.3s var(--ease-emphatic);
+	}
+	.partners__dot[aria-selected="true"] {
+		background: var(--accent-cool);
+		width: 2.5rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.partners__slide,
+		.partners__tile {
+			transition: none !important;
+		}
+		.partners__slide[data-active="true"] .partners__tile {
+			transition-delay: 0ms;
+		}
 	}
 </style>

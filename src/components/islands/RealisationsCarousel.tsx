@@ -9,7 +9,7 @@ interface Project {
 	category: "site-web" | "design" | "video" | "3d";
 	year: string;
 	summary: string;
-	media: { poster?: string; video?: string };
+	media: { poster?: string | null; video?: string | null };
 }
 
 interface Props {
@@ -24,21 +24,58 @@ const CATEGORY_LABEL: Record<Project["category"], string> = {
 };
 
 /**
+ * Per-category slide dwell time (ms). Videos get the longest slot
+ * because the user needs time to read motion; designs get the shortest
+ * because they're static posters that land in one glance; 3D and
+ * site-web sit in the middle. Splide picks up `data-splide-interval`
+ * on each <li> to override the global interval.
+ */
+const CATEGORY_INTERVAL: Record<Project["category"], number> = {
+	video: 5200,
+	"3d": 4000,
+	"site-web": 4000,
+	design: 2800,
+};
+
+/**
  * RealisationsCarousel — 3-up center-focused auto-rotating carousel.
  *
- * Visual logic:
- *   - Center slide  : large, sharp, full opacity, video plays on hover
- *   - Side slides   : smaller scale, lower opacity, slight blur
- *   - Background    : transparent (parent section paints cream)
- *   - Auto-rotate   : 4.5s, pauses on hover & focus, respects reduced-motion
- *
- * Inspired by the Websenso project carousel but adapted to ID Skillz brand
- * tones (sienne, ocre) and editorial typography.
+ * Behavior:
+ *   - Splide loop/center with per-slide auto-advance interval keyed on
+ *     the project category (design = 2.8s, video = 5.2s, etc.)
+ *   - When a slide becomes the active one, its <video> starts playing
+ *     (center slide only); all others pause + rewind.
+ *   - When the whole carousel scrolls out of the viewport, every video
+ *     pauses to save bandwidth (IntersectionObserver).
+ *   - On hover/focus, Splide auto-pauses and the card is also forced
+ *     to play so desktop users can linger on a specific slide.
+ *   - Design projects without a poster/video fall back to a styled
+ *     editorial placeholder with the brand name + category label so
+ *     the carousel never shows an empty tile.
  */
 export default function RealisationsCarousel({ projects }: Props) {
 	const splideRef = useRef<HTMLDivElement>(null);
 	const splideInstance = useRef<Splide | null>(null);
+	const cardsRef = useRef<(HTMLElement | null)[]>([]);
+	const videosRef = useRef<(HTMLVideoElement | null)[]>([]);
 	const [activeIndex, setActiveIndex] = useState(0);
+	const [inView, setInView] = useState(true);
+
+	// Play the active video, pause all others. Called from Splide events
+	// and whenever the carousel's viewport visibility changes.
+	const syncVideos = (activeIdx: number, visible: boolean) => {
+		videosRef.current.forEach((v, i) => {
+			if (!v) return;
+			if (i === activeIdx && visible) {
+				v.play().catch(() => {
+					/* browsers block autoplay sometimes; video stays static */
+				});
+			} else {
+				v.pause();
+				if (i !== activeIdx) v.currentTime = 0;
+			}
+		});
+	};
 
 	useEffect(() => {
 		if (!splideRef.current) return;
@@ -53,7 +90,7 @@ export default function RealisationsCarousel({ projects }: Props) {
 			gap: "1.5rem",
 			padding: { left: "0", right: "0" },
 			autoplay: !reduced,
-			interval: 4500,
+			interval: 4000,
 			pauseOnHover: true,
 			pauseOnFocus: true,
 			arrows: true,
@@ -92,6 +129,28 @@ export default function RealisationsCarousel({ projects }: Props) {
 		};
 	}, []);
 
+	// Whenever active slide or viewport visibility changes, sync videos.
+	useEffect(() => {
+		syncVideos(activeIndex, inView);
+	}, [activeIndex, inView]);
+
+	// IntersectionObserver on the whole carousel: pause every video when
+	// it's scrolled out of the viewport so background tabs don't chew
+	// bandwidth.
+	useEffect(() => {
+		const el = splideRef.current;
+		if (!el || !("IntersectionObserver" in window)) return;
+		const io = new IntersectionObserver(
+			(entries) => {
+				const entry = entries[0];
+				setInView(entry.isIntersecting);
+			},
+			{ rootMargin: "0px", threshold: 0.25 },
+		);
+		io.observe(el);
+		return () => io.disconnect();
+	}, []);
+
 	const active = projects[activeIndex] ?? projects[0];
 
 	return (
@@ -99,9 +158,18 @@ export default function RealisationsCarousel({ projects }: Props) {
 			<div className="splide" ref={splideRef} aria-label="Carousel des réalisations">
 				<div className="splide__track">
 					<ul className="splide__list">
-						{projects.map((p) => (
-							<li className="splide__slide rcarousel__slide" key={p.slug}>
-								<RealisationCard project={p} />
+						{projects.map((p, i) => (
+							<li
+								className="splide__slide rcarousel__slide"
+								key={p.slug}
+								data-splide-interval={CATEGORY_INTERVAL[p.category]}
+								data-category={p.category}
+							>
+								<RealisationCard
+									project={p}
+									cardRef={(el) => (cardsRef.current[i] = el)}
+									videoRef={(el) => (videosRef.current[i] = el)}
+								/>
 							</li>
 						))}
 					</ul>
@@ -122,54 +190,48 @@ export default function RealisationsCarousel({ projects }: Props) {
 	);
 }
 
-function RealisationCard({ project: p }: { project: Project }) {
-	const videoRef = useRef<HTMLVideoElement>(null);
+interface CardProps {
+	project: Project;
+	cardRef: (el: HTMLElement | null) => void;
+	videoRef: (el: HTMLVideoElement | null) => void;
+}
 
-	const onEnter = () => {
-		videoRef.current?.play().catch(() => {});
-	};
-	const onLeave = () => {
-		const v = videoRef.current;
-		if (!v) return;
-		v.pause();
-		v.currentTime = 0;
-	};
+function RealisationCard({ project: p, cardRef, videoRef }: CardProps) {
+	const hasPoster = Boolean(p.media.poster);
+	const hasVideo = Boolean(p.media.video);
 
 	return (
 		<article
+			ref={cardRef as React.Ref<HTMLElement>}
 			className="rcarousel__card"
 			data-category={p.category}
-			onMouseEnter={onEnter}
-			onMouseLeave={onLeave}
-			onFocus={onEnter}
-			onBlur={onLeave}
 			tabIndex={0}
 		>
 			<div className="rcarousel__media">
-				{p.media.poster && (
+				{hasPoster && (
 					<img
 						className="rcarousel__poster"
-						src={p.media.poster}
+						src={p.media.poster as string}
 						alt=""
 						loading="lazy"
 						decoding="async"
 					/>
 				)}
-				{p.media.video && (
+				{hasVideo && (
 					<video
 						ref={videoRef}
 						className="rcarousel__video"
-						src={p.media.video}
+						src={p.media.video as string}
 						muted
 						loop
 						playsInline
 						preload="metadata"
-						poster={p.media.poster}
+						poster={p.media.poster ?? undefined}
 						aria-hidden="true"
 					/>
 				)}
-				{!p.media.poster && !p.media.video && (
-					<span className="rcarousel__placeholder" aria-hidden="true" />
+				{!hasPoster && !hasVideo && (
+					<DesignPlaceholder client={p.client} label={CATEGORY_LABEL[p.category]} />
 				)}
 				<span className="rcarousel__badge">{CATEGORY_LABEL[p.category]}</span>
 			</div>
@@ -178,5 +240,35 @@ function RealisationCard({ project: p }: { project: Project }) {
 				<p className="rcarousel__client">{p.client}</p>
 			</div>
 		</article>
+	);
+}
+
+/**
+ * Fallback poster rendered when a project has neither poster image nor
+ * video file (happens for the design slides because the /media/clients/
+ * PNGs were corrupt on delivery). Shows an editorial dark card with
+ * the client name in large italic serif and the category chip on top,
+ * so the carousel never displays an empty tile.
+ */
+function DesignPlaceholder({ client, label }: { client: string; label: string }) {
+	return (
+		<div className="rcarousel__placeholder" role="img" aria-label={`${client} — ${label}`}>
+			<span className="rcarousel__placeholder-chip">{label}</span>
+			<span className="rcarousel__placeholder-name">{client}</span>
+			<svg
+				className="rcarousel__placeholder-glyph"
+				viewBox="0 0 120 120"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.25"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M30 60 L90 60" />
+				<path d="M60 30 L60 90" />
+				<circle cx="60" cy="60" r="28" />
+			</svg>
+		</div>
 	);
 }

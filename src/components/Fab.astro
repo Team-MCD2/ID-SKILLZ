@@ -94,21 +94,40 @@ const phoneHref = `tel:${site.phone}`;
 		window.addEventListener("scroll", onScroll, { passive: true });
 		window.addEventListener("resize", updateMood);
 
-		// Menu button stub — wires into Header overlay if present, else falls
-		// back to scrolling the page top so the user can use the regular nav.
+		// Menu button: open the same drawer as the header burger. The
+		// Header component exposes `window.__idskillzToggleMenu(open)` so
+		// both entry-points (header burger + FAB pill) control a single
+		// drawer instance.
 		const menuBtn = document.querySelector<HTMLButtonElement>(
 			".fab [data-fab-action='menu']",
 		);
 		menuBtn?.addEventListener("click", () => {
-			const overlay = document.getElementById("menu-overlay");
-			if (overlay) {
-				const open = overlay.getAttribute("data-open") === "true";
-				overlay.setAttribute("data-open", String(!open));
+			const w = window as unknown as {
+				__idskillzToggleMenu?: (open: boolean) => void;
+			};
+			if (typeof w.__idskillzToggleMenu === "function") {
+				const open = menuBtn.getAttribute("aria-expanded") === "true";
+				w.__idskillzToggleMenu(!open);
+				// aria-expanded is also updated by toggleMenu itself, but
+				// we set it eagerly here for immediate visual feedback.
 				menuBtn.setAttribute("aria-expanded", String(!open));
-			} else {
-				window.scrollTo({ top: 0, behavior: "smooth" });
 			}
 		});
+
+		// Hide the .fab-call phone icon when the footer scrolls into view so
+		// it doesn't overlap the "Site conçu par Microdidact" credit line.
+		const fabCall = document.querySelector<HTMLAnchorElement>(".fab-call");
+		const footer = document.querySelector(".site-footer");
+		if (fabCall && footer && "IntersectionObserver" in window) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					const entry = entries[0];
+					fabCall.dataset.hidden = entry.isIntersecting ? "true" : "false";
+				},
+				{ rootMargin: "0px 0px -40% 0px" },
+			);
+			io.observe(footer);
+		}
 	})();
 </script>
 
@@ -135,7 +154,17 @@ const phoneHref = `tel:${site.phone}`;
 		transition:
 			background 0.3s var(--ease-soft),
 			color 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-soft);
+			opacity 0.4s var(--ease-soft),
+			transform 0.4s var(--ease-emphatic);
+	}
+	/* When the footer enters the viewport the IO handler above sets
+	 * data-hidden="true"; the pill slides down and fades so it doesn't
+	 * cover the microdidact credit line that sits in the footer's
+	 * bottom strip. */
+	.fab-call[data-hidden="true"] {
+		opacity: 0;
+		transform: translateY(1rem) scale(0.9);
+		pointer-events: none;
 	}
 
 	.fab-call:hover {

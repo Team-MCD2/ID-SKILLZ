@@ -59,6 +59,21 @@
 	--info-soft: var(--color-ocre-soft);
 	--whisper: var(--color-sable);
 
+	/* Cool counter-accent — used on key CTAs, expertise card hover arrows,
+	 * partners sticky panel tint. Three variants are pre-defined; the active
+	 * one is selected via `[data-cool-theme]` on <html> (default: aubergine).
+	 * Switch in browser console for A/B preview:
+	 *   document.documentElement.dataset.coolTheme = 'teal' | 'navy' | 'aubergine'
+	 */
+	--cool-aubergine: #3A1F3D;
+	--cool-aubergine-soft: #6B3E70;
+	--cool-teal: #1E4843;
+	--cool-teal-soft: #3A6F69;
+	--cool-navy: #1A2540;
+	--cool-navy-soft: #38486E;
+	--accent-cool: var(--cool-aubergine);
+	--accent-cool-soft: var(--cool-aubergine-soft);
+
 	/* Effects */
 	--shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.6);
 	--shadow-elevated: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 32px 64px -16px rgba(0, 0, 0, 0.7);
@@ -125,6 +140,22 @@
 	--text-muted: #B8B0A4;
 	--text-soft: #8C857A;
 	--text-inverted: #0A0908;
+}
+
+/* Cool-accent A/B switches. Default is aubergine (declared above); these
+ * overrides only flip the active --accent-cool when the body declares an
+ * explicit alternative. */
+:root[data-cool-theme="teal"] {
+	--accent-cool: var(--cool-teal);
+	--accent-cool-soft: var(--cool-teal-soft);
+}
+:root[data-cool-theme="navy"] {
+	--accent-cool: var(--cool-navy);
+	--accent-cool-soft: var(--cool-navy-soft);
+}
+:root[data-cool-theme="aubergine"] {
+	--accent-cool: var(--cool-aubergine);
+	--accent-cool-soft: var(--cool-aubergine-soft);
 }
 
 /* ---------------------------------------------------------------------------
@@ -263,14 +294,19 @@
 	margin-inline: auto;
 }
 
-/* Gradient highlight (Websenso-inspired mark with background-clip:text) */
+/* Gradient highlight (Websenso-inspired mark with background-clip:text).
+ * Two stops use the warm sienne→ocre, the third introduces the cool
+ * accent so the headline carries the chromatic tension throughout the
+ * page (Websenso ties their "digitales" mark to violet→pink; here we
+ * do sienne→ocre→aubergine to signal both warm AND cool palettes). */
 @utility mark-gradient {
 	background: linear-gradient(
-		120deg,
+		115deg,
 		var(--color-sienne) 0%,
-		var(--color-sienne) 25%,
-		var(--color-ocre) 60%,
-		var(--color-sable) 100%
+		var(--color-sienne) 18%,
+		var(--color-ocre) 48%,
+		var(--accent-cool-soft) 82%,
+		var(--accent-cool) 100%
 	);
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -312,6 +348,22 @@
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
 	color: var(--color-ocre);
+}
+
+/* Visually hidden — accessible-only text. Used for screen-reader labels
+ * and aria-hidden=false wrappers when we want the content to be available
+ * to AT but not visually rendered (e.g. footer email's full string when
+ * the visible version is split character-by-character for animation). */
+@utility visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 /* Hairline divider */

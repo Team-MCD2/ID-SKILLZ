@@ -169,6 +169,16 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		max-width: 22rem;
 	}
 
+	/* Eyebrow gets the cool accent for chromatic contrast against the
+	 * warm-dark backdrop. The eyebrow utility from globals.css uses
+	 * --local-accent which is sienne; we override locally here. */
+	.proc__sticky .eyebrow {
+		color: var(--accent-cool-soft);
+	}
+	.proc__sticky .eyebrow::before {
+		background: var(--accent-cool-soft);
+	}
+
 	.proc__cta {
 		display: flex;
 		flex-wrap: wrap;
@@ -200,13 +210,14 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		transform: translateY(-2px);
 	}
 	.proc__btn--ghost {
-		border: 1px solid var(--border-strong);
+		border: 1px solid color-mix(in oklab, var(--accent-cool) 50%, transparent);
 		color: var(--text);
 	}
 	.proc__btn--ghost:hover {
-		border-color: var(--text);
-		background: var(--text);
-		color: var(--bg);
+		border-color: var(--accent-cool);
+		background: var(--accent-cool);
+		color: var(--text);
+		transform: translateY(-2px);
 	}
 
 	/* ----- Right column: stacked steps ---------------------------- */
@@ -235,6 +246,33 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		align-self: start;
 		padding-top: 0.1rem;
 		color: var(--text);
+		/* Watermark number slides in from the left as the step enters view.
+		 * Combined with the existing .reveal opacity fade-in, this gives each
+		 * step its own little "materialize" beat that draws the eye through
+		 * the six-step list as the user scrolls. */
+		transform: translateX(-24px);
+		opacity: 0;
+		transition:
+			transform 0.8s var(--ease-emphatic),
+			opacity 0.6s var(--ease-soft);
+	}
+	.proc-step.is-visible .proc-step__num {
+		transform: translateX(0);
+		opacity: 1;
+	}
+	.proc-step__num::after {
+		/* Cool-accent underline that draws in beneath the number once visible,
+		 * mirroring the editorial "section marker" feel of Websenso. */
+		content: "";
+		display: block;
+		width: 0;
+		height: 2px;
+		background: var(--accent-cool);
+		margin-top: 0.6rem;
+		transition: width 0.9s var(--ease-emphatic) 0.5s;
+	}
+	.proc-step.is-visible .proc-step__num::after {
+		width: 2.5rem;
 	}
 	.proc-step__head {
 		display: flex;
@@ -244,7 +282,17 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		flex-wrap: wrap;
 	}
 	.proc-step__pill {
-		--local-accent: var(--color-ocre);
+		--local-accent: var(--accent-cool-soft);
+		background: color-mix(in oklab, var(--accent-cool) 18%, transparent);
+		color: color-mix(in oklab, var(--accent-cool-soft) 90%, white);
+		border: 1px solid color-mix(in oklab, var(--accent-cool) 35%, transparent);
+		transition:
+			background 0.4s var(--ease-soft),
+			border-color 0.4s var(--ease-soft);
+	}
+	.proc-step.is-visible .proc-step__pill {
+		background: color-mix(in oklab, var(--accent-cool) 28%, transparent);
+		border-color: color-mix(in oklab, var(--accent-cool) 55%, transparent);
 	}
 	.proc-step__pill svg {
 		flex-shrink: 0;
@@ -252,8 +300,22 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 	.proc-step__glyph {
 		width: 2.25rem;
 		height: 2.25rem;
-		color: color-mix(in oklab, var(--color-sienne-soft) 80%, transparent);
+		color: var(--accent-cool-soft);
 		flex-shrink: 0;
+		/* Stroke-draw animation: each glyph's path lengths are normalized via
+		 * pathLength=1 in JS would be cleaner, but we approximate with a long
+		 * dasharray that traces the stroke from 0 to full length when the
+		 * step enters view. */
+		stroke-dasharray: 220;
+		stroke-dashoffset: 220;
+		transition: stroke-dashoffset 1.2s var(--ease-emphatic) 0.35s,
+			color 0.4s var(--ease-soft);
+	}
+	.proc-step.is-visible .proc-step__glyph {
+		stroke-dashoffset: 0;
+	}
+	.proc-step:hover .proc-step__glyph {
+		color: var(--accent-cool);
 	}
 	.proc-step__title {
 		font-family: var(--font-display);
@@ -263,12 +325,46 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		color: var(--text);
 		font-variation-settings: "opsz" 144, "SOFT" 30;
 		letter-spacing: -0.01em;
+		/* Subtle title slide-in from the right that lags the number by a
+		 * fraction of a second so the eye lands on the watermark first. */
+		transform: translateX(12px);
+		opacity: 0;
+		transition:
+			transform 0.7s var(--ease-emphatic) 0.15s,
+			opacity 0.55s var(--ease-soft) 0.15s;
+	}
+	.proc-step.is-visible .proc-step__title {
+		transform: translateX(0);
+		opacity: 1;
 	}
 	.proc-step__text {
 		font-size: clamp(0.95rem, 0.7vw + 0.5rem, 1.05rem);
 		color: var(--text-muted);
 		line-height: 1.65;
 		max-width: 38rem;
+		opacity: 0;
+		transform: translateY(8px);
+		transition:
+			transform 0.6s var(--ease-emphatic) 0.3s,
+			opacity 0.5s var(--ease-soft) 0.3s;
+	}
+	.proc-step.is-visible .proc-step__text {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.proc-step__num,
+		.proc-step__title,
+		.proc-step__text,
+		.proc-step__glyph,
+		.proc-step__num::after {
+			transition: none !important;
+			transform: none !important;
+			opacity: 1 !important;
+			stroke-dashoffset: 0 !important;
+			width: 2.5rem !important;
+		}
 	}
 
 	@media (min-width: 1024px) {

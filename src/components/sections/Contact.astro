@@ -100,8 +100,14 @@ import { site } from "../../lib/site";
 	}
 
 	.contact__inner {
+		/* Base container uses the global gutter system. On narrow
+		 * viewports we slightly inset the grid from the section edges
+		 * so the form card border doesn't butt right up against the
+		 * screen edge (feedback pass noted the form was "too close
+		 * to the borders" on mobile). */
 		width: var(--container);
 		margin-inline: auto;
+		padding-inline: clamp(0.5rem, 2vw, 0rem);
 		display: grid;
 		gap: 3rem;
 		grid-template-columns: 1fr;
@@ -110,6 +116,7 @@ import { site } from "../../lib/site";
 		.contact__inner {
 			grid-template-columns: 1fr 1fr;
 			gap: 5rem;
+			padding-inline: 0;
 		}
 	}
 
