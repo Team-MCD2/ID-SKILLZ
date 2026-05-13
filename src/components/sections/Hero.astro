@@ -27,7 +27,7 @@ const stats = [
 
 <section
 	id="hero"
-	class="hero section-warm-dark"
+	class="hero"
 	data-section-mood="warm-dark"
 	aria-labelledby="hero-title"
 >
@@ -40,107 +40,56 @@ const stats = [
 			loop
 			playsinline
 			preload="metadata"
-			poster="/media/renders/render-immeuble-terrasse-cafe.jpg"
 			disablePictureInPicture
 			disableRemotePlayback
 		></video>
-		<div class="hero__veil"></div>
+		<div class="hero__overlay"></div>
 	</div>
 
-	<!-- Editorial sketch glyph, top-right -->
-	<svg
-		class="hero__sketch"
-		viewBox="0 0 120 120"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="1.25"
-		stroke-linecap="round"
-		stroke-linejoin="round"
-		aria-hidden="true"
-	>
-		<!-- Star/sparkle — abstract creativity mark -->
-		<path d="M60 18 L66 54 L102 60 L66 66 L60 102 L54 66 L18 60 L54 54 Z" />
-		<circle cx="60" cy="60" r="3" fill="currentColor" stroke="none" />
-		<!-- Hand-sketched bracket -->
-		<path d="M14 10 Q 10 10 10 14 L 10 22" />
-		<path d="M106 110 Q 110 110 110 106 L 110 98" />
-	</svg>
-
 	<div class="hero__inner">
-		<p class="eyebrow hero__eyebrow reveal">Studio créatif · Paris · Toulouse</p>
+		<div class="hero__metadata reveal">
+			<span class="eyebrow"><span class="eyebrow-prefix">///</span> AG_CREATIVE_SYSTEM_V2.0</span>
+			<span class="eyebrow"><span class="eyebrow-prefix">///</span> LOC: 48.8566_N_2.3522_E</span>
+		</div>
 
 		<h1
 			id="hero-title"
-			class="hero__title h-display reveal balance"
+			class="hero__title h-display reveal"
 			style="--delay:.15s"
 		>
-			On construit
-			<span class="mark-gradient">des marques</span>
-			qu&rsquo;on n&rsquo;oublie pas.
+			Expériences<br />
+			<span class="mark-gradient">Numériques</span><span class="hero__cursor">_</span>
 		</h1>
 
 		<p class="hero__lead reveal" style="--delay:.3s">
-			Site internet, identité visuelle, vidéo de marque, modélisation 3D.
-			Quatre métiers&nbsp;— une seule signature&nbsp;: <em>Our Skillz, Your ID</em>.
+			Nous fusionnons Design de pointe, Stratégie et Tech pour bâtir les fleurons digitaux de demain.
 		</p>
 
 		<div class="hero__actions reveal" style="--delay:.45s">
-			<a class="btn btn--primary" href="#contact">
-				<span>Démarrer un projet</span>
-				<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-					<path d="M2 8h12M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-				</svg>
-			</a>
-			<a class="btn btn--ghost" href="#realisations">
-				<span>Voir le travail</span>
-			</a>
+			<a class="btn-hud btn-hud-primary" href="#contact">Initialiser_Projet</a>
+			<a class="btn-hud" href="#realisations">Voir_Portfolio</a>
 		</div>
 
 		<dl class="hero__stats reveal" style="--delay:.6s">
 			{stats.map((s, i) => (
-				<div class="hero__stat" data-index={i}>
+				<div class="hero__stat">
 					<dt>{s.value}</dt>
 					<dd>{s.label}</dd>
 				</div>
 			))}
 		</dl>
 	</div>
-
-	<!-- Mountain ridge transitioning to the cream Solutions section below.
-	     Fill explicitly set to the cream surface color so the SVG paints the
-	     "valley" we descend into. -->
-	<MountainRidge fill="#F2EEE5" variant="ridge" />
 </section>
 
 <style>
 	.hero {
 		position: relative;
-		min-height: 100dvh;
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
-		padding-block: calc(var(--header-height) + 3rem) clamp(8rem, 14vw, 14rem);
+		padding-top: var(--header-height);
 		overflow: hidden;
 		isolation: isolate;
-		/* The hero veil is always dark regardless of theme (the video
-		 * is a color-rich showreel we darken with a grayscale filter +
-		 * black linear veil). So we force cream text tokens here so the
-		 * copy stays legible even when the user flips the site to light
-		 * mode. Without this the H1 and lead would render in dark colors
-		 * over the dark veil — unreadable. */
-		--hero-text: #F2EEE5;
-		--hero-text-muted: color-mix(in oklab, #F2EEE5 78%, transparent);
-		--hero-text-soft: color-mix(in oklab, #F2EEE5 55%, transparent);
-	}
-	@media (max-width: 640px) {
-		.hero {
-			/* On narrow viewports the video background is heavy and the
-			 * 100dvh min-height can trap the user past the fold. Cap it to
-			 * a tighter ratio so the mountain ridge transition is visible
-			 * near the viewport bottom without a long scroll. */
-			min-height: 85dvh;
-			padding-block: calc(var(--header-height) + 2rem) clamp(5rem, 10vw, 9rem);
-		}
 	}
 
 	.hero__bg {
@@ -152,236 +101,93 @@ const stats = [
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		filter: grayscale(0.55) contrast(1.05) brightness(0.9);
+		opacity: 0.15;
+		filter: grayscale(1) contrast(1.2);
 	}
-	.hero__veil {
+	.hero__overlay {
 		position: absolute;
 		inset: 0;
-		z-index: -1;
-		background:
-			radial-gradient(
-				ellipse at 18% 25%,
-				color-mix(in oklab, var(--color-sienne) 22%, transparent) 0%,
-				transparent 55%
-			),
-			linear-gradient(
-				180deg,
-				rgba(10, 9, 8, 0.55) 0%,
-				rgba(10, 9, 8, 0.65) 35%,
-				rgba(10, 9, 8, 0.88) 80%,
-				rgba(10, 9, 8, 0.96) 100%
-			);
-	}
-	@media (max-width: 640px) {
-		/* Mobile: push the veil a touch darker since text sits closer to
-		 * the center of the frame where the showreel video tends to be
-		 * brighter. */
-		.hero__veil {
-			background:
-				radial-gradient(
-					ellipse at 50% 30%,
-					color-mix(in oklab, var(--color-sienne) 18%, transparent) 0%,
-					transparent 50%
-				),
-				linear-gradient(
-					180deg,
-					rgba(10, 9, 8, 0.7) 0%,
-					rgba(10, 9, 8, 0.78) 40%,
-					rgba(10, 9, 8, 0.92) 80%,
-					rgba(10, 9, 8, 0.98) 100%
-				);
-		}
-	}
-
-	.hero__sketch {
-		position: absolute;
-		top: clamp(5.5rem, 8vw, 7.5rem);
-		right: clamp(1rem, 4vw, 3rem);
-		width: clamp(5rem, 8vw, 7rem);
-		height: auto;
-		color: color-mix(in oklab, var(--color-ocre) 60%, transparent);
-		pointer-events: none;
-		opacity: 0.7;
-		animation: heroSketchFloat 6s var(--ease-emphatic) infinite alternate;
-	}
-	@keyframes heroSketchFloat {
-		from { transform: translate3d(0, 0, 0) rotate(-2deg); }
-		to   { transform: translate3d(-6px, 8px, 0) rotate(3deg); }
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.hero__sketch { animation: none; }
+		background: radial-gradient(circle at 50% 50%, transparent 0%, #080808 90%);
 	}
 
 	.hero__inner {
-		position: relative;
 		width: var(--container);
 		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
-		gap: 1.4rem;
-		max-width: 64rem;
+		gap: 2.5rem;
+		padding-block: 4rem;
 	}
 
-	.hero__eyebrow {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.hero__eyebrow::before {
-		content: "";
-		width: 1.75rem;
-		height: 1px;
-		background: var(--color-ocre);
+	.hero__metadata {
+		display: flex;
+		gap: 2rem;
+		margin-bottom: -1rem;
 	}
 
 	.hero__title {
-		max-width: 18ch;
-		color: var(--hero-text);
+		max-width: 12ch;
 	}
-	.hero__title .mark-gradient {
-		display: inline-block;
+
+	.hero__cursor {
+		color: var(--tech);
+		animation: blink 1s step-end infinite;
+	}
+
+	@keyframes blink {
+		from, to { opacity: 1; }
+		50% { opacity: 0; }
 	}
 
 	.hero__lead {
-		max-width: 38rem;
-		font-size: clamp(1.05rem, 1.4vw + 0.5rem, 1.35rem);
-		color: var(--hero-text-muted);
-		line-height: 1.55;
-		font-weight: 300;
-	}
-	.hero__lead em {
-		font-family: var(--font-display);
-		font-style: italic;
-		color: var(--hero-text);
-	}
-	.hero__eyebrow {
-		color: var(--hero-text-muted);
+		max-width: 32rem;
+		font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+		color: var(--text-muted);
+		line-height: 1.5;
 	}
 
 	.hero__actions {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		margin-top: 0.5rem;
+		gap: 1.5rem;
+		margin-top: 1rem;
 	}
 
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.95rem 1.6rem;
-		border-radius: 999px;
-		font-size: 0.95rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		transition:
-			transform 0.3s var(--ease-emphatic),
-			background 0.2s,
-			color 0.2s,
-			border-color 0.2s;
-	}
-	.btn--primary {
-		background: var(--color-sienne);
-		color: var(--bg);
-	}
-	.btn--primary:hover {
-		transform: translateY(-2px);
-		background: var(--color-sienne-deep);
-	}
-	.btn--ghost {
-		background: transparent;
-		color: var(--hero-text);
-		border: 1px solid color-mix(in oklab, var(--hero-text) 32%, transparent);
-	}
-	.btn--ghost:hover {
-		background: var(--hero-text);
-		color: #0A0908;
-		border-color: var(--hero-text);
-	}
-
-	/* ----- Stats divider ------------------------------------------------ */
 	.hero__stats {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 1.5rem 2.5rem;
-		margin-top: 2.25rem;
-		padding-top: 1.75rem;
-		position: relative;
-		/* Hairline border kept neutral; the chromatic accent is the
-		 * animated underline below. */
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: 2rem;
+		margin-top: 4rem;
+		padding-top: 2rem;
 		border-top: 1px solid var(--border);
 	}
-	.hero__stats::before {
-		/* Cool-accent line that draws across the top border when the hero
-		 * reveals — anchors the eye in the aubergine palette before any
-		 * other section announces itself. */
-		content: "";
-		position: absolute;
-		top: -1px;
-		left: 0;
-		height: 2px;
-		width: 0;
-		background: linear-gradient(
-			90deg,
-			var(--accent-cool) 0%,
-			var(--accent-cool-soft) 60%,
-			transparent 100%
-		);
-		transition: width 1.2s var(--ease-emphatic) 0.7s;
-	}
-	.hero__stats.is-visible::before {
-		width: 30%;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.hero__stats::before { width: 30%; transition: none; }
-	}
-	/* Stat dt values get a cool-accent dot before them on hover for that
-	 * Websenso "hovered link is alive" feel. */
-	.hero__stat dt {
-		position: relative;
-	}
-	.hero__stat:hover dt {
-		color: var(--accent-cool-soft);
-		transition: color 0.3s var(--ease-soft);
-	}
+
 	.hero__stat dt {
 		font-family: var(--font-display);
-		font-size: clamp(1.15rem, 1.5vw + 0.5rem, 1.65rem);
-		font-weight: 500;
-		font-variation-settings: "opsz" 144, "SOFT" 20;
-		color: var(--hero-text);
-		line-height: 1;
-		letter-spacing: -0.02em;
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: #fff;
+		margin-bottom: 0.5rem;
 	}
+
 	.hero__stat dd {
-		margin: 0.4rem 0 0;
-		font-size: 0.78rem;
-		font-weight: 400;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
 		text-transform: uppercase;
-		letter-spacing: 0.14em;
-		color: var(--hero-text-soft);
+		letter-spacing: 0.1em;
+		color: var(--tech);
 	}
 
 	@media (max-width: 768px) {
+		.hero__inner {
+			gap: 2rem;
+			padding-block: 2rem;
+		}
+		.hero__metadata {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
 		.hero__stats {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 1.25rem 1.5rem;
+			grid-template-columns: repeat(2, 1fr);
 		}
-	}
-
-	/* ----- Mountain ridge palette swap when on light theme.
-	         The MountainRidge component ships with a hardcoded fill so we
-	         override via CSS targeting the inserted SVG when theme is light. */
-	:root[data-theme="light"] .hero .mountain-ridge svg path,
-	@media (prefers-color-scheme: light) {
-		:root:not([data-theme]) .hero .mountain-ridge svg path {
-			/* Light theme: cream → cream, no visible ridge needed */
-			fill: #F2EEE5;
-		}
-	}
-
-	/* Reveal cascade */
-	.reveal {
-		transition-delay: var(--delay, 0s);
 	}
 </style>

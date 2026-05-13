@@ -56,6 +56,7 @@ const headings = [
 <style>
 	.studio {
 		position: relative;
+		background: #080808;
 	}
 
 	:global(.teamscroll) {
@@ -69,101 +70,59 @@ const headings = [
 		overflow: hidden;
 		display: grid;
 		grid-template-columns: 1fr;
-		/* Default (mobile-first): pin the text to the top of the sticky
-		 * panel so the headline sits close to the nav bar when the
-		 * section locks. Desktop overrides below re-centers the compo. */
-		align-items: flex-start;
+		align-items: center;
 	}
 	@media (min-width: 1024px) {
 		:global(.teamscroll__inner) {
-			grid-template-columns: minmax(20rem, 32rem) minmax(0, 1fr);
-			gap: clamp(2rem, 5vw, 5rem);
-			padding-inline: clamp(1.5rem, 4vw, 4rem);
+			grid-template-columns: 1fr 1.2fr;
+			gap: 4rem;
+			padding-inline: clamp(4rem, 10vw, 15vw);
 		}
 	}
 
 	:global(.teamscroll__text) {
 		position: relative;
-		z-index: 3;
-		padding: clamp(1.5rem, 4vw, 3rem);
-		padding-top: calc(var(--header-height) + 1.25rem);
+		z-index: 10;
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
-	}
-	@media (min-width: 1024px) {
-		:global(.teamscroll__inner) {
-			/* Desktop keeps the vertical centered composition so the left
-			 * editorial column floats in the middle next to the image. */
-			align-items: center;
-		}
-		:global(.teamscroll__text) {
-			padding-top: clamp(1.5rem, 4vw, 3rem);
-		}
+		gap: 2rem;
 	}
 
-	@media (max-width: 1023px) {
-		:global(.teamscroll__text) {
-			/* Remove the fade-gradient behind the text: it bleeds onto the
-			 * edges of the image and looks like a dirty halo (Image 1 & 7
-			 * from the feedback pass). We now rely on a single global veil
-			 * painted on the image itself (see .teamscroll__slide img filter
-			 * below) to keep the text legible against any image. */
-			background: none;
-			max-width: 38rem;
-		}
-		/* Stale rule kept as a no-op so the linear-gradient block below
-		 * (which was the visual offender) stops painting. */
-		:global(.teamscroll__text).legacy-gradient {
-			background: linear-gradient(
-				180deg,
-				color-mix(in oklab, var(--bg) 92%, transparent) 0%,
-				color-mix(in oklab, var(--bg) 0%, transparent) 100%
-			);
-		}
+	:global(.teamscroll__meta) {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
 	}
 
 	:global(.teamscroll__heading) {
-		min-height: 3em;
-		transition: opacity 0.5s var(--ease-emphatic);
+		max-width: 12ch;
 	}
 
 	:global(.teamscroll__caption) {
-		font-size: clamp(0.95rem, 0.7vw + 0.5rem, 1.05rem);
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
 		color: var(--text-muted);
-		line-height: 1.65;
+		line-height: 1.6;
 		max-width: 28rem;
-		min-height: 5em;
 	}
 
 	:global(.teamscroll__steps) {
 		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.5rem;
+		gap: 1rem;
+		margin-top: 1rem;
 	}
 	:global(.teamscroll__step) {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.4rem;
-		height: 2.4rem;
-		border-radius: 999px;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text-soft);
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.06em;
-		cursor: pointer;
-		transition:
-			background 0.3s var(--ease-soft),
-			color 0.3s var(--ease-soft),
-			border-color 0.3s var(--ease-soft);
+		font-size: 0.75rem;
+		color: var(--text-soft);
+		transition: all 0.3s var(--ease-soft);
 	}
 	:global(.teamscroll__step.is-active) {
-		background: var(--color-sienne);
-		border-color: var(--color-sienne);
-		color: #0A0908;
+		color: var(--tech);
+		text-shadow: 0 0 8px var(--tech);
 	}
 
 	:global(.teamscroll__stage) {
@@ -174,73 +133,82 @@ const headings = [
 		align-items: center;
 		justify-content: center;
 	}
-	@media (max-width: 1023px) {
-		:global(.teamscroll__stage) {
-			position: absolute;
-			inset: 0;
-			z-index: 1;
-		}
-	}
 
 	:global(.teamscroll__slide) {
 		position: absolute;
 		inset: 0;
-		margin: auto;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		opacity: 0;
-		transform: scale(var(--scale, 0.7));
-		transition:
-			opacity 0.6s var(--ease-emphatic),
-			transform 0.8s var(--ease-emphatic);
+		transform: scale(var(--scale, 0.75));
+		transition: all 0.8s var(--ease-emphatic);
 	}
 	:global(.teamscroll__slide.is-active) {
 		opacity: 1;
 	}
-	:global(.teamscroll__slide img) {
-		width: calc(100% * var(--scale, 0.7));
-		height: calc(100% * var(--scale, 0.7));
-		max-width: min(60rem, 90%);
+
+	:global(.teamscroll__frame) {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		max-width: 90%;
 		max-height: 80vh;
-		object-fit: cover;
-		border-radius: 1rem;
-		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		border: 1px solid var(--border);
 	}
-	:global(.teamscroll__slide:nth-child(3) img) {
-		max-width: 100%;
-		max-height: 90vh;
-		border-radius: 0.5rem;
+
+	:global(.teamscroll__slide img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0.6;
+		filter: grayscale(1);
+		transition: all 1s var(--ease-soft);
+	}
+	:global(.teamscroll__slide.is-active img) {
+		opacity: 0.8;
+		filter: grayscale(0.5);
+	}
+
+	:global(.teamscroll__overlay) {
+		position: absolute;
+		bottom: 1.5rem;
+		left: 1.5rem;
+		display: flex;
+		gap: 1rem;
+	}
+	:global(.teamscroll__overlay .tag) {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		padding: 0.25rem 0.6rem;
+		background: rgba(0, 0, 0, 0.6);
+		color: var(--tech);
+		border: 1px solid var(--tech);
 	}
 
 	@media (max-width: 1023px) {
-		:global(.teamscroll__slide img) {
-			max-width: 100%;
-			max-height: 100vh;
-			width: 100vw;
-			height: 100vh;
-			border-radius: 0;
-			object-fit: cover;
-			/* Darker filter than before so the headline above never
-			 * fights the render's bright windows / sky for contrast. */
-			filter: brightness(0.42) saturate(1.05);
+		:global(.teamscroll__inner) {
+			padding: 2rem;
+			padding-top: var(--header-height);
 		}
-		/* Full-bleed linear veil painted as a pseudo over the slide so
-		 * the text header at the top of the viewport always has a dark
-		 * wash beneath it. Stronger at the top, fades by the bottom 40%. */
-		:global(.teamscroll__slide.is-active)::after {
-			content: "";
+		:global(.teamscroll__stage) {
 			position: absolute;
 			inset: 0;
-			background: linear-gradient(
-				180deg,
-				rgba(10, 9, 8, 0.85) 0%,
-				rgba(10, 9, 8, 0.55) 35%,
-				rgba(10, 9, 8, 0.35) 60%,
-				rgba(10, 9, 8, 0.75) 100%
-			);
-			pointer-events: none;
-			z-index: 2;
+			z-index: -1;
+		}
+		:global(.teamscroll__slide img) {
+			width: 100vw;
+			height: 100vh;
+			opacity: 0.3 !important;
+		}
+		:global(.teamscroll__frame) {
+			max-width: 100%;
+			max-height: 100%;
+			border: none;
 		}
 	}
 

@@ -1,186 +1,113 @@
 ---
 /**
- * Expertises — section "6 cartes" mood "cream".
+ * Expertises — section "6 modules" mood "warm-dark".
  *
- * Six cards in a 3x2 grid (collapses to 2x3 on tablet, 1x6 on mobile),
- * each painted with a soft radial-gradient tone (sienne / ocre / sable /
- * sienne-deep / ocre-soft / warm-mix), an abstract geometric SVG glyph,
- * a serif title and an editorial body with bold keyword highlights,
- * plus a row of stack-pills (technologies / livrables).
+ * Six cards in a horizontal track (scroll-tied on desktop),
+ * each featuring technical metadata, monospaced status logs,
+ * and sharp HUD framing.
  *
  * Anchor: #expertises
  */
 
 interface Expertise {
 	title: string;
-	tone: "sienne" | "ocre" | "sable" | "sienne-deep" | "ocre-soft" | "warm-mix";
-	icon: "monitor" | "triangle" | "layers" | "play" | "drone" | "cube";
-	body: string; // raw HTML with <strong> tags allowed
+	body: string;
 	tags: string[];
 }
 
 const expertises: Expertise[] = [
 	{
 		title: "Sites web sur-mesure",
-		tone: "sienne",
-		icon: "monitor",
-		body:
-			"Sites <strong>vitrines</strong>, <strong>e-commerce</strong> et applications web pensés pour <strong>convertir</strong>. Code propre, performances mesurées, SEO en filigrane.",
+		body: "Sites <strong>vitrines</strong>, <strong>e-commerce</strong> et applications web pensés pour <strong>convertir</strong>. Code propre, performances mesurées, SEO en filigrane.",
 		tags: ["Astro", "WordPress", "Shopify", "Next.js"],
 	},
 	{
 		title: "Identité visuelle",
-		tone: "ocre",
-		icon: "triangle",
-		body:
-			"<strong>Logo</strong>, charte graphique, naming, déclinaisons. Une marque qui tient en mouvement comme à l'arrêt — papier, écran ou vitrine.",
+		body: "<strong>Logo</strong>, charte graphique, naming, déclinaisons. Une marque qui tient en mouvement comme à l'arrêt — papier, écran ou vitrine.",
 		tags: ["Logotype", "Charte", "Brand book"],
 	},
 	{
 		title: "Design digital & print",
-		tone: "sable",
-		icon: "layers",
-		body:
-			"Brochures, plaquettes, packagings, signalétique, <strong>templates</strong> de communication. Une cohérence visuelle de l'écran au support imprimé.",
+		body: "Brochures, plaquettes, packagings, signalétique, <strong>templates</strong> de communication. Une cohérence visuelle de l'écran au support imprimé.",
 		tags: ["Print", "Édition", "Packaging"],
 	},
 	{
 		title: "Vidéo de marque",
-		tone: "sienne-deep",
-		icon: "play",
-		body:
-			"<strong>Films institutionnels</strong>, capsules sociales, <strong>motion design</strong>, étalonnage. De l'écriture au mix, on garde la main de bout en bout.",
+		body: "<strong>Films institutionnels</strong>, capsules sociales, <strong>motion design</strong>, étalonnage. De l'écriture au mix, on garde la main de bout en bout.",
 		tags: ["Réalisation", "Motion", "Mix son"],
 	},
 	{
 		title: "Drone & événementiel",
-		tone: "ocre-soft",
-		icon: "drone",
-		body:
-			"Captations <strong>aériennes</strong>, événements sportifs, retransmissions live. Pilotes <strong>certifiés</strong>, autorisations vol et suivi technique inclus.",
+		body: "Captations <strong>aériennes</strong>, événements sportifs, retransmissions live. Pilotes <strong>certifiés</strong>, autorisations vol et suivi technique inclus.",
 		tags: ["Drone S1·S2", "Live", "Sport"],
 	},
 	{
 		title: "3D & rendus immobiliers",
-		tone: "warm-mix",
-		icon: "cube",
-		body:
-			"<strong>Modélisation</strong>, perspectives photoréalistes, animations d'architecture, rendus produits. Pour vendre un programme avant la première brique.",
-		tags: ["Archi-viz", "Rendus", "Animation"],
+		body: "<strong>Modélisation</strong>, perspectives photoréalistes, animations d'architecture, rendus produits. Pour vendre un programme avant la première brique.",
+		tags: ["Archi-viz", "Rendu 3D", "Animation"],
 	},
 ];
 ---
 
 <section
 	id="expertises"
-	class="exp section-cream"
-	data-section-mood="cream"
+	class="exp section-warm-dark"
+	data-section-mood="warm-dark"
 	aria-labelledby="exp-title"
 	data-scroll-tied
 >
 	<header class="exp__header section-pad-top">
-		<p class="eyebrow reveal">Notre expertise</p>
-		<h2 id="exp-title" class="h-1 reveal balance" style="--delay:.1s">
-			Quatre métiers, <span class="mark-gradient">six terrains</span> de jeu.
+		<p class="eyebrow reveal"><span class="eyebrow-prefix">///</span> CORE_CAPABILITIES</p>
+		<h2 id="exp-title" class="h-1 reveal" style="--delay:.1s">
+			Quatre métiers, <span class="mark-gradient">six vecteurs</span> de jeu.
 		</h2>
 		<p class="exp__lead reveal" style="--delay:.2s">
 			De la première ligne de code au dernier rendu 3D, tout est fabriqué
-			en interne par la même équipe. C'est ce qui rend nos projets
-			<strong>cohérents&nbsp;de bout en bout</strong>.
+			en interne par la même équipe. Cohérence technique et esthétique absolue.
 		</p>
 		<p class="exp__hint reveal" style="--delay:.3s" aria-hidden="true">
-			<span>Scroll pour explorer</span>
+			<span>SYSTEM_SCAN: EXPLORATION_READY</span>
 			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
 		</p>
 	</header>
 
 	<div class="exp__track-wrap">
-	<div class="exp__track-stage">
-	<ul class="exp__grid exp__track">
-		{expertises.map((e, i) => (
-			<li
-				class="expertise-card reveal"
-				data-tone={e.tone}
-				style={`--delay:${0.05 * i + 0.15}s`}
-			>
-				{/* Websenso signature (00:25-00:27): tiny circular arrow that
-				    scales from 0 to 1 on card hover, signalling the card is a
-				    discoverable surface. Sits in the bottom-right corner. */}
-				<span class="expertise-card__arrow" aria-hidden="true">
-					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M5 12h14M13 5l7 7-7 7" />
-					</svg>
-				</span>
+		<div class="exp__track-stage">
+			<ul class="exp__grid exp__track">
+				{expertises.map((e, i) => (
+					<li
+						class="expertise-card reveal corner-brackets"
+						style={`--delay:${0.05 * i + 0.15}s`}
+					>
+						<div class="expertise-card__meta">
+							<span class="expertise-card__num">[ MODULE_0{i + 1} ]</span>
+							<span class="expertise-card__status">READY</span>
+						</div>
 
-				<span class="expertise-icon" aria-hidden="true">
-					<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-						{e.icon === "monitor" && (
-							<>
-								<rect x="6" y="9" width="36" height="24" rx="2" />
-								<path d="M16 41h16M19 33v8M29 33v8" />
-								<path d="M12 15h24M12 19h18" stroke-width="1" opacity=".5" />
-							</>
-						)}
-						{e.icon === "triangle" && (
-							<>
-								<circle cx="17" cy="32" r="9" />
-								<path d="M30 9l11 22H19z" />
-							</>
-						)}
-						{e.icon === "layers" && (
-							<>
-								<path d="M24 8l16 8-16 8-16-8z" />
-								<path d="M8 24l16 8 16-8M8 32l16 8 16-8" opacity=".7" />
-							</>
-						)}
-						{e.icon === "play" && (
-							<>
-								<rect x="6" y="11" width="36" height="26" rx="2" />
-								<path d="M21 18l11 6-11 6z" fill="currentColor" stroke="none" />
-							</>
-						)}
-						{e.icon === "drone" && (
-							<>
-								<circle cx="11" cy="13" r="5" />
-								<circle cx="37" cy="13" r="5" />
-								<circle cx="11" cy="35" r="5" />
-								<circle cx="37" cy="35" r="5" />
-								<path d="M11 18l13 6 13-6M11 30l13-6 13 6M24 24v0" />
-								<rect x="20" y="20" width="8" height="8" rx="1" />
-							</>
-						)}
-						{e.icon === "cube" && (
-							<>
-								<path d="M24 6l16 9v18l-16 9-16-9V15z" />
-								<path d="M8 15l16 9 16-9M24 24v18" opacity=".7" />
-							</>
-						)}
-					</svg>
-				</span>
-				<h3 class="expertise-card__title">{e.title}</h3>
-				<p class="expertise-card__body" set:html={e.body}></p>
-				<ul class="expertise-card__tags">
-					{e.tags.map((t) => (
-						<li class="tag-pill">{t}</li>
-					))}
-				</ul>
-			</li>
-		))}
-	</ul>
-	<!-- Progress rail (desktop only): visible bar that fills as the user
-	     scrolls through the horizontal track. Aubergine accent. -->
-	<div class="exp__progress" aria-hidden="true">
-		<div class="exp__progress-fill"></div>
-	</div>
-	</div>
+						<h3 class="expertise-card__title">{e.title}</h3>
+						<p class="expertise-card__body" set:html={e.body}></p>
+						
+						<ul class="expertise-card__tags">
+							{e.tags.map((t) => (
+								<li class="tag-pill">{t}</li>
+							))}
+						</ul>
+						
+						<div class="expertise-card__bottom">
+							<span class="expertise-card__uid">UID: 0x{Math.random().toString(16).slice(2, 6).toUpperCase()}</span>
+						</div>
+					</li>
+				))}
+			</ul>
+			<div class="exp__progress" aria-hidden="true">
+				<div class="exp__progress-fill"></div>
+			</div>
+		</div>
 	</div>
 
 	<footer class="exp__footer reveal section-pad-bottom" style="--delay:.5s">
-		<a class="exp__cta" href="#contact">
-			<span>Discuter d'un projet</span>
-			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-				<path d="M5 12h14M13 5l7 7-7 7" />
-			</svg>
+		<a class="btn-hud" href="#contact">
+			Initialiser_Session
 		</a>
 	</footer>
 </section>
@@ -188,37 +115,23 @@ const expertises: Expertise[] = [
 <style>
 	.exp {
 		position: relative;
+		background: #080808;
 	}
 	.exp__header {
-		width: var(--container-narrow);
-		margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+		width: var(--container);
+		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
-		max-width: 56rem;
+		padding-bottom: 2rem;
 	}
 	.exp__lead {
-		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.15rem);
-		color: #4A453E;
-		max-width: 42rem;
-		line-height: 1.65;
-	}
-	.exp__lead strong {
-		color: #0A0908;
-		font-weight: 600;
+		max-width: 32rem;
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		line-height: 1.6;
 	}
 
-	/* The exp section now uses a horizontal scroll-tied track on desktop
-	 * (>=1024px), and a vertical card stack on mobile/tablet. The structure
-	 * is `.exp__track-wrap > .exp__track-stage > .exp__grid.exp__track`. */
-
-	/* Top/bottom padding tokens manually applied to header/footer (instead
-	 * of section-pad on the section root) because the section root now hosts
-	 * a pinned scroll-tied area that should sit edge-to-edge. */
-	.section-pad-top { padding-top: clamp(4rem, 8vw, 7rem); }
-	.section-pad-bottom { padding-bottom: max(clamp(4rem, 8vw, 7rem), var(--fab-safe)); }
-
-	/* Mobile/tablet: track wraps and the grid is the classic 1-col/2-col grid. */
 	.exp__track-wrap {
 		position: relative;
 	}
@@ -231,10 +144,11 @@ const expertises: Expertise[] = [
 		list-style: none;
 		padding: 0;
 		display: grid;
-		gap: clamp(1rem, 1.5vw, 1.5rem);
+		gap: 1.5rem;
 		grid-template-columns: 1fr;
 	}
-	@media (min-width: 720px) and (max-width: 1023px) {
+	
+	@media (min-width: 768px) and (max-width: 1023px) {
 		.exp__grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
@@ -247,21 +161,17 @@ const expertises: Expertise[] = [
 		display: none;
 	}
 
-	/* Desktop scroll-tied horizontal track. The outer wrap is tall (2.5
-	 * viewport-heights of vertical scroll), the inner stage is sticky
-	 * pinned at top, and the grid becomes a flex row that translates
-	 * horizontally according to the wrap's scroll progress (--p). */
 	@media (min-width: 1024px) {
 		.exp__hint {
 			display: inline-flex;
 			align-items: center;
-			gap: 0.5rem;
-			color: var(--accent-cool);
-			font-family: var(--font-mono, ui-monospace, monospace);
-			font-size: 0.75rem;
-			letter-spacing: 0.12em;
+			gap: 0.75rem;
+			color: var(--tech);
+			font-family: var(--font-mono);
+			font-size: 0.65rem;
+			letter-spacing: 0.1em;
 			text-transform: uppercase;
-			margin-top: 0.5rem;
+			margin-top: 1rem;
 		}
 		.exp__hint svg {
 			animation: expHintBob 1.8s var(--ease-emphatic) infinite alternate;
@@ -272,45 +182,40 @@ const expertises: Expertise[] = [
 		}
 
 		.exp__track-wrap {
-			height: 250vh;
+			height: 300vh;
 		}
 		.exp__track-stage {
 			position: sticky;
-			top: var(--header-height, 4rem);
-			height: calc(100vh - var(--header-height, 4rem));
+			top: 0;
+			height: 100vh;
 			overflow: hidden;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			gap: clamp(1rem, 2vw, 2rem);
+			gap: 3rem;
 		}
 		.exp__grid.exp__track {
 			width: max-content;
 			margin: 0;
 			display: flex;
-			gap: clamp(1rem, 1.6vw, 1.75rem);
-			padding-inline: clamp(2rem, 6vw, 6rem);
-			grid-template-columns: none;
-			/* Translate driven by --p (0..1) and the negative travel distance
-			 * which is computed in JS at runtime and stored on the wrap. */
+			gap: 2rem;
+			padding-inline: clamp(4rem, 10vw, 15vw);
 			transform: translate3d(var(--exp-translate, 0px), 0, 0);
 			will-change: transform;
 		}
-		.exp__grid.exp__track > li.expertise-card {
-			width: clamp(20rem, 28vw, 26rem);
-			height: clamp(22rem, 60vh, 28rem);
+		.expertise-card {
+			width: 24rem;
+			height: 28rem;
 			flex-shrink: 0;
-			min-height: 0;
 		}
 
 		.exp__progress {
 			display: block;
 			position: relative;
-			width: min(48rem, 70%);
+			width: 40rem;
 			margin: 0 auto;
-			height: 3px;
-			border-radius: 2px;
-			background: color-mix(in oklab, #0A0908 12%, transparent);
+			height: 2px;
+			background: rgba(255, 255, 255, 0.05);
 			overflow: hidden;
 		}
 		.exp__progress-fill {
@@ -318,137 +223,76 @@ const expertises: Expertise[] = [
 			inset: 0;
 			transform: scaleX(var(--p, 0));
 			transform-origin: left center;
-			background: linear-gradient(
-				90deg,
-				var(--accent-cool) 0%,
-				var(--accent-cool-soft) 100%
-			);
-		}
-
-		/* Inside the horizontal track, the standard .reveal opacity/transform
-		 * fights with the horizontal translate. Reset reveal-on-track so the
-		 * cards always render with opacity 1 and the only motion is from the
-		 * track translate above. */
-		.exp__track .expertise-card.reveal {
-			opacity: 1;
-			transform: none;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.exp__track-wrap { height: auto; }
-		.exp__track-stage { position: static; height: auto; overflow: visible; }
-		.exp__grid.exp__track {
-			width: var(--container);
-			margin-inline: auto;
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			transform: none;
-			padding-inline: 0;
+			background: var(--tech);
+			box-shadow: 0 0 10px var(--tech);
 		}
 	}
 
 	.expertise-card {
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid var(--border);
+		padding: 2.5rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.85rem;
-		min-height: 18rem;
-		position: relative;
+		gap: 1.5rem;
+		transition: all 0.4s var(--ease-soft);
+	}
+	.expertise-card:hover {
+		background: rgba(255, 255, 255, 0.05);
+		border-color: var(--tech);
 	}
 
-	/* Bottom-right hover arrow: appears (scale 0 → 1) when the card is
-	 * hovered or focused-within. Carries the cool accent color for a
-	 * chromatic counterpoint with the warm card backgrounds. */
-	.expertise-card__arrow {
-		position: absolute;
-		top: 1.25rem;
-		right: 1.25rem;
-		width: 2.25rem;
-		height: 2.25rem;
-		border-radius: 999px;
-		background: var(--accent-cool);
-		color: var(--text);
-		display: inline-flex;
+	.expertise-card__meta {
+		display: flex;
+		justify-content: space-between;
 		align-items: center;
-		justify-content: center;
-		transform: scale(0) rotate(-25deg);
-		opacity: 0;
-		transition:
-			transform 0.45s var(--ease-emphatic),
-			opacity 0.3s var(--ease-soft);
-		pointer-events: none;
-		z-index: 2;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
 	}
-	.expertise-card:hover .expertise-card__arrow,
-	.expertise-card:focus-within .expertise-card__arrow {
-		transform: scale(1) rotate(0deg);
-		opacity: 1;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.expertise-card__arrow {
-			transition: none;
-		}
-	}
+
 	.expertise-card__title {
-		font-family: var(--font-display);
-		font-size: clamp(1.35rem, 1.4vw + 0.5rem, 1.65rem);
-		font-weight: 400;
-		line-height: 1.15;
-		color: #0A0908;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
-		letter-spacing: -0.01em;
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #fff;
+		margin-bottom: 0.5rem;
 	}
+
 	.expertise-card__body {
-		font-size: 0.95rem;
-		color: #4A453E;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
 		line-height: 1.6;
+		color: var(--text-muted);
 		flex: 1;
-	}
-	.expertise-card__body :global(strong) {
-		color: #0A0908;
-		font-weight: 600;
 	}
 
 	.expertise-card__tags {
-		list-style: none;
-		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
-		margin-top: 0.5rem;
+		gap: 0.5rem;
+		list-style: none;
 	}
-	.expertise-card__tags .tag-pill {
-		--local-accent: var(--color-sienne-deep);
-		background: rgba(255, 255, 255, 0.7);
-		color: var(--color-sienne-deep);
-		font-size: 0.65rem;
-		padding: 0.25rem 0.6rem;
+	.tag-pill {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		padding: 0.3rem 0.75rem;
+		border: 1px solid var(--border);
+		color: var(--text-soft);
+		text-transform: uppercase;
+	}
+
+	.expertise-card__bottom {
+		margin-top: auto;
+		font-family: var(--font-mono);
+		font-size: 0.55rem;
+		color: var(--text-soft);
+		opacity: 0.4;
 	}
 
 	.exp__footer {
 		display: flex;
 		justify-content: center;
-		margin-top: clamp(2.5rem, 5vw, 3.5rem);
-	}
-	.exp__cta {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.95rem 1.6rem;
-		border-radius: 999px;
-		background: #0A0908;
-		color: #F2EEE5;
-		font-family: var(--font-sans);
-		font-size: 0.9rem;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		transition:
-			background 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
-	}
-	.exp__cta:hover {
-		background: var(--color-sienne);
-		transform: translateY(-2px);
+		padding-top: 4rem;
 	}
 
 	.reveal {
@@ -459,15 +303,6 @@ const expertises: Expertise[] = [
 <script>
 	/**
 	 * Expertises scroll-tied horizontal track controller.
-	 *
-	 * Only activates on viewports >=1024px and when the user hasn't asked
-	 * for reduced-motion. Reads the wrap's bounding rect, derives a 0..1
-	 * progress, applies the matching horizontal translate to the track,
-	 * and updates the aubergine progress bar at the bottom of the stage.
-	 *
-	 * The translate distance is computed dynamically as
-	 *   trackWidth - viewportWidth
-	 * so it works regardless of the number of cards or their flex sizes.
 	 */
 	(() => {
 		const section = document.querySelector<HTMLElement>(".exp[data-scroll-tied]");

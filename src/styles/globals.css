@@ -11,19 +11,16 @@
  */
 
 @theme {
-	/* Brand-static accents (identiques light/dark) */
-	--color-sienne: #B85B3D;
-	--color-sienne-deep: #8E3F26;
-	--color-sienne-soft: #D9846A;
+	/* HUD Accents (Tech Cinématographique) */
+	--color-aubergine: #3A1F3D;
+	--color-aubergine-soft: #6B3E70;
 	--color-ocre: #B8924E;
-	--color-ocre-deep: #8E6E37;
 	--color-ocre-soft: #D9B776;
-	--color-sable: #D4C4AB;
-	--color-sable-deep: #B89F7E;
-
+	--color-vantablack: #080808;
+	
 	/* Typographie */
-	--font-display: "Fraunces", "PP Editorial", "Times New Roman", serif;
-	--font-sans: "Inter", "Söhne", "Helvetica Neue", system-ui, sans-serif;
+	--font-display: "Space Grotesk", system-ui, sans-serif;
+	--font-sans: "Inter", system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, monospace;
 
 	/* Easing */
@@ -39,123 +36,39 @@
 :root {
 	color-scheme: dark;
 
-	/* Theme-aware tokens — defaults for DARK */
-	--bg: #0A0908;
-	--bg-elevated: #14110F;
-	--bg-overlay: rgba(10, 9, 8, 0.85);
-	--surface: #1A1714;
-	--surface-hover: #221E1A;
-	--border: #2A2520;
-	--border-strong: #3A332C;
-	--text: #F2EEE5;
-	--text-muted: #B8B0A4;
-	--text-soft: #8C857A;
-	--text-inverted: #0A0908;
+	/* Core HUD Tokens */
+	--bg: #080808; /* Vantablack base */
+	--bg-elevated: #111111;
+	--bg-overlay: rgba(8, 8, 8, 0.9);
+	--surface: #151515;
+	--border: rgba(255, 255, 255, 0.1);
+	--border-strong: rgba(255, 255, 255, 0.2);
+	
+	--text: #FFFFFF;
+	--text-muted: rgba(255, 255, 255, 0.6);
+	--text-soft: rgba(255, 255, 255, 0.4);
+	--text-inverted: #080808;
 
-	/* Accents (referenced from --color-* but exposed for non-tailwind use) */
-	--accent: var(--color-sienne);
-	--accent-soft: var(--color-sienne-soft);
-	--info: var(--color-ocre);
-	--info-soft: var(--color-ocre-soft);
-	--whisper: var(--color-sable);
-
-	/* Cool counter-accent — used on key CTAs, expertise card hover arrows,
-	 * partners sticky panel tint. Three variants are pre-defined; the active
-	 * one is selected via `[data-cool-theme]` on <html> (default: aubergine).
-	 * Switch in browser console for A/B preview:
-	 *   document.documentElement.dataset.coolTheme = 'teal' | 'navy' | 'aubergine'
-	 */
-	--cool-aubergine: #3A1F3D;
-	--cool-aubergine-soft: #6B3E70;
-	--cool-teal: #1E4843;
-	--cool-teal-soft: #3A6F69;
-	--cool-navy: #1A2540;
-	--cool-navy-soft: #38486E;
-	--accent-cool: var(--cool-aubergine);
-	--accent-cool-soft: var(--cool-aubergine-soft);
-
-	/* Effects */
-	--shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.6);
-	--shadow-elevated: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 32px 64px -16px rgba(0, 0, 0, 0.7);
-
-	/* Layout — gutters scale with viewport so sections breathe properly:
-	 * ~1.25rem on phones, ~2rem on tablets, up to ~5rem on wide desktops. */
-	--header-height: 4.5rem;
-	--gutter: max(1.25rem, min(5rem, 4vw));
-	--container: min(96rem, 100vw - (var(--gutter) * 2));
-	--container-narrow: min(72rem, 100vw - (var(--gutter) * 2));
-	--container-prose: min(40rem, 100vw - (var(--gutter) * 2));
-	/* Safe bottom inset for content above the floating action button.
-	 * FAB is ~56px tall + 1.5rem bottom = ~6rem clear zone needed. */
-	--fab-safe: 6rem;
+	/* Accents */
+	--accent: var(--color-aubergine);
+	--accent-soft: var(--color-aubergine-soft);
+	--tech: var(--color-ocre);
+	--tech-soft: var(--color-ocre-soft);
+	
+	/* Global UI Tokens */
+	--header-height: 5rem;
+	--gutter: max(1.5rem, min(5rem, 5vw));
+	--container: min(100rem, 100vw - (var(--gutter) * 2));
+	--container-narrow: min(76rem, 100vw - (var(--gutter) * 2));
+	--fab-safe: 6.5rem;
 }
 
+/* Force dark theme globally — the new DA is strictly cinematic */
+:root[data-theme="light"],
 @media (prefers-color-scheme: light) {
 	:root:not([data-theme="dark"]) {
-		color-scheme: light;
-		--bg: #F2EEE5;
-		--bg-elevated: #FAF7F0;
-		--bg-overlay: rgba(242, 238, 229, 0.85);
-		--surface: #EFEAE0;
-		--surface-hover: #E5DFD3;
-		--border: #D4CDC1;
-		--border-strong: #B8AE9E;
-		--text: #0A0908;
-		--text-muted: #4A453E;
-		--text-soft: #6B6258;
-		--text-inverted: #F2EEE5;
-		--shadow-card: 0 1px 0 rgba(0, 0, 0, 0.04) inset, 0 24px 48px -24px rgba(120, 90, 60, 0.18);
-		--shadow-elevated: 0 1px 0 rgba(0, 0, 0, 0.06) inset, 0 32px 64px -16px rgba(120, 90, 60, 0.25);
+		/* We suppress the light theme variables to maintain Art Direction consistency */
 	}
-}
-
-/* Manual override (for theme switcher) */
-:root[data-theme="light"] {
-	color-scheme: light;
-	--bg: #F2EEE5;
-	--bg-elevated: #FAF7F0;
-	--bg-overlay: rgba(242, 238, 229, 0.85);
-	--surface: #EFEAE0;
-	--surface-hover: #E5DFD3;
-	--border: #D4CDC1;
-	--border-strong: #B8AE9E;
-	--text: #0A0908;
-	--text-muted: #4A453E;
-	--text-soft: #6B6258;
-	--text-inverted: #F2EEE5;
-	--shadow-card: 0 1px 0 rgba(0, 0, 0, 0.04) inset, 0 24px 48px -24px rgba(120, 90, 60, 0.18);
-	--shadow-elevated: 0 1px 0 rgba(0, 0, 0, 0.06) inset, 0 32px 64px -16px rgba(120, 90, 60, 0.25);
-}
-
-:root[data-theme="dark"] {
-	color-scheme: dark;
-	--bg: #0A0908;
-	--bg-elevated: #14110F;
-	--bg-overlay: rgba(10, 9, 8, 0.85);
-	--surface: #1A1714;
-	--surface-hover: #221E1A;
-	--border: #2A2520;
-	--border-strong: #3A332C;
-	--text: #F2EEE5;
-	--text-muted: #B8B0A4;
-	--text-soft: #8C857A;
-	--text-inverted: #0A0908;
-}
-
-/* Cool-accent A/B switches. Default is aubergine (declared above); these
- * overrides only flip the active --accent-cool when the body declares an
- * explicit alternative. */
-:root[data-cool-theme="teal"] {
-	--accent-cool: var(--cool-teal);
-	--accent-cool-soft: var(--cool-teal-soft);
-}
-:root[data-cool-theme="navy"] {
-	--accent-cool: var(--cool-navy);
-	--accent-cool-soft: var(--cool-navy-soft);
-}
-:root[data-cool-theme="aubergine"] {
-	--accent-cool: var(--cool-aubergine);
-	--accent-cool-soft: var(--cool-aubergine-soft);
 }
 
 /* ---------------------------------------------------------------------------
@@ -192,7 +105,8 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
-		scroll-behavior: smooth;
+		/* scroll-behavior: smooth is intentionally omitted — Lenis handles
+		 * smooth scrolling and the two fight during hydration. */
 		hanging-punctuation: first last;
 	}
 
@@ -274,6 +188,11 @@
 		outline-offset: 3px;
 		border-radius: 2px;
 	}
+
+	/* Ensure anchor links don't land behind the fixed header */
+	section[id] {
+		scroll-margin-top: var(--header-height, 4.5rem);
+	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -289,65 +208,70 @@
 	margin-inline: auto;
 }
 
-@utility container-prose {
-	width: var(--container-prose);
-	margin-inline: auto;
-}
-
-/* Gradient highlight (Websenso-inspired mark with background-clip:text).
- * Two stops use the warm sienne→ocre, the third introduces the cool
- * accent so the headline carries the chromatic tension throughout the
- * page (Websenso ties their "digitales" mark to violet→pink; here we
- * do sienne→ocre→aubergine to signal both warm AND cool palettes). */
+/* HUD Gradient highlight */
 @utility mark-gradient {
 	background: linear-gradient(
-		115deg,
-		var(--color-sienne) 0%,
-		var(--color-sienne) 18%,
-		var(--color-ocre) 48%,
-		var(--accent-cool-soft) 82%,
-		var(--accent-cool) 100%
+		135deg,
+		#FFFFFF 0%,
+		var(--color-ocre) 50%,
+		var(--color-aubergine-soft) 100%
 	);
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
 	-webkit-text-fill-color: transparent;
-	font-style: italic;
-	font-variation-settings: "opsz" 144, "SOFT" 100;
 }
 
-/* Headline display sizes (responsive clamp) — éditorial, contenu, lisible */
+/* Headline display sizes — Monumental & Aggressive */
 @utility h-display {
-	font-size: clamp(2.5rem, 6vw + 0.5rem, 6.5rem);
-	line-height: 0.98;
-	letter-spacing: -0.03em;
+	font-family: var(--font-display);
+	font-size: clamp(3.5rem, 8vw + 1rem, 8.5rem);
+	line-height: 0.92;
+	letter-spacing: -0.05em;
+	text-transform: uppercase;
+	font-weight: 800;
 }
 
 @utility h-1 {
-	font-size: clamp(2rem, 4vw + 0.5rem, 3.75rem);
-	line-height: 1.02;
-	letter-spacing: -0.025em;
+	font-family: var(--font-display);
+	font-size: clamp(2.5rem, 5vw + 0.5rem, 5rem);
+	line-height: 0.95;
+	letter-spacing: -0.04em;
+	text-transform: uppercase;
+	font-weight: 700;
 }
 
 @utility h-2 {
-	font-size: clamp(1.75rem, 2.6vw + 0.5rem, 2.75rem);
-	line-height: 1.05;
-	letter-spacing: -0.02em;
+	font-family: var(--font-display);
+	font-size: clamp(2rem, 3.5vw, 3.5rem);
+	line-height: 1;
+	letter-spacing: -0.03em;
+	text-transform: uppercase;
+	font-weight: 700;
 }
 
 @utility h-3 {
-	font-size: clamp(1.4rem, 1.8vw + 0.4rem, 2rem);
+	font-family: var(--font-display);
+	font-size: clamp(1.5rem, 2vw + 0.5rem, 2.5rem);
 	line-height: 1.1;
-	letter-spacing: -0.015em;
+	letter-spacing: -0.02em;
+	text-transform: uppercase;
 }
 
 @utility eyebrow {
-	font-family: var(--font-sans);
-	font-size: 0.75rem;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
 	font-weight: 500;
-	letter-spacing: 0.18em;
+	letter-spacing: 0.25em;
 	text-transform: uppercase;
-	color: var(--color-ocre);
+	color: var(--tech);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+@utility eyebrow-prefix {
+	opacity: 0.4;
+	font-weight: 400;
 }
 
 /* Visually hidden — accessible-only text. Used for screen-reader labels
@@ -466,369 +390,261 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Multi-section design system (Websenso-inspired structure, ID Skillz palette)
- *
- * The home page alternates between four section "moods" to create the same
- * vertical rhythm as Websenso: dark warm hero, cream solutions, cream
- * project carousel with warm orb, dark warm process/expertises, cream team
- * scrolljack, dark warm parallax partners, cream testimonials, and a
- * gradient-filled café CTA card. Section classes set bg + text + accent
- * tokens locally so each section is self-contained.
+ * HUD System Section Moods
  * --------------------------------------------------------------------------- */
 
-@utility balance {
-	text-wrap: balance;
-}
-
-/* Standard vertical padding for full-bleed sections.
- * Bottom pad always clears the floating action button so persistent content
- * (CTAs, small print) never sits behind it. */
 @utility section-pad {
-	padding-top: clamp(4rem, 8vw, 7rem);
-	padding-bottom: max(clamp(4rem, 8vw, 7rem), var(--fab-safe));
+	padding-top: clamp(6rem, 12vw, 10rem);
+	padding-bottom: max(clamp(6rem, 12vw, 10rem), var(--fab-safe));
 }
 
 @utility section-pad-tight {
-	padding-top: clamp(2.5rem, 5vw, 4rem);
-	padding-bottom: max(clamp(2.5rem, 5vw, 4rem), var(--fab-safe));
+	padding-top: clamp(4rem, 8vw, 6rem);
+	padding-bottom: max(clamp(4rem, 8vw, 6rem), var(--fab-safe));
 }
 
-/* Dark warm editorial — used by hero, expertises (variant), partners-parallax */
+/* The primary HUD mood: Vantablack + Aubergine */
 @utility section-warm-dark {
 	background: var(--bg);
 	color: var(--text);
-	--local-accent: var(--color-sienne);
-	--local-accent-soft: var(--color-sienne-soft);
-	--local-info: var(--color-ocre);
+	--local-accent: var(--accent);
+	--local-accent-soft: var(--accent-soft);
+	--local-tech: var(--tech);
 }
 
-/* Cream / light — used by solutions, process, expertises, team, testimonials */
+/* Secondary Tech mood: Slightly lighter surface with grid visibility */
 @utility section-cream {
-	background: #F2EEE5;
-	color: #0A0908;
-	--local-accent: var(--color-sienne-deep);
-	--local-accent-soft: var(--color-sienne);
-	--local-info: var(--color-ocre-deep);
-	--local-text-muted: #4A453E;
-	--local-text-soft: #6B6258;
-	--local-border: #D4CDC1;
+	background: var(--bg-elevated);
+	color: var(--text);
+	--local-accent: var(--accent);
+	--local-tech: var(--tech);
+	--local-border: var(--border);
 }
 
-/* Cream surface + a soft warm radial-gradient orb floating behind content.
- * The Websenso "Solutions" section uses this trick. We expose --orb-x/--orb-y
- * so callers can place it. */
-@utility section-cream-orb {
-	background:
-		radial-gradient(
-			circle at var(--orb-x, 80%) var(--orb-y, 50%),
-			color-mix(in oklab, var(--color-sienne) 32%, transparent) 0%,
-			color-mix(in oklab, var(--color-ocre) 16%, transparent) 28%,
-			transparent 55%
-		),
-		#F2EEE5;
-	color: #0A0908;
-	--local-accent: var(--color-sienne-deep);
-	--local-accent-soft: var(--color-sienne);
-	--local-info: var(--color-ocre-deep);
-	--local-text-muted: #4A453E;
+/* ---------------------------------------------------------------------------
+ * HUD Components (Buttons, Badges)
+ * --------------------------------------------------------------------------- */
+
+/* HUD Button: Bracketed style [ TEXT ] */
+@utility btn-hud {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 1rem 2rem;
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid var(--border);
+	transition: all 0.4s var(--ease-emphatic);
+	position: relative;
 }
 
-/* Dark warm with extra warmth — used by partners parallax */
-@utility section-dark-warm {
-	background:
-		radial-gradient(
-			ellipse at 20% -10%,
-			color-mix(in oklab, var(--color-sienne) 18%, transparent) 0%,
-			transparent 45%
-		),
-		#0A0908;
-	color: #F2EEE5;
-	--local-accent: var(--color-sienne-soft);
-	--local-info: var(--color-ocre-soft);
+@utility btn-hud-primary {
+	background: var(--accent);
+	border-color: var(--accent);
+}
+
+.btn-hud::before {
+	content: "[";
+	margin-right: 0.25rem;
+	color: var(--tech);
+	transition: transform 0.3s var(--ease-soft);
+}
+.btn-hud::after {
+	content: "]";
+	margin-left: 0.25rem;
+	color: var(--tech);
+	transition: transform 0.3s var(--ease-soft);
+}
+
+.btn-hud:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: var(--text);
+	transform: translateY(-2px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Tech Badge / Tag */
+@utility tag-tech {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.85rem;
+	background: rgba(184, 146, 78, 0.1);
+	color: var(--tech);
+	font-family: var(--font-mono);
+	font-size: 0.65rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	border-left: 2px solid var(--tech);
 }
 
 /* Watermark display number ("01" through "06" behind process steps).
  * Sized with clamp so it scales gracefully; deliberately weak alpha so it
  * reads as a layer-below decoration. */
-@utility watermark-number {
-	font-family: var(--font-display);
-	font-weight: 400;
-	font-size: clamp(2.25rem, 5vw, 3.5rem);
-	line-height: 1;
-	letter-spacing: -0.04em;
-	color: color-mix(in oklab, currentColor 30%, transparent);
-	font-variation-settings: "opsz" 144, "SOFT" 0;
-}
-
-/* Small uppercase pill (used for project tags, step durations, expertise tags) */
-@utility tag-pill {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	padding: 0.35rem 0.75rem;
-	border-radius: 999px;
-	background: color-mix(in oklab, var(--local-accent, var(--accent)) 14%, transparent);
-	color: var(--local-accent, var(--accent));
-	font-family: var(--font-sans);
-	font-size: 0.75rem;
-	font-weight: 500;
-	letter-spacing: 0.06em;
-	white-space: nowrap;
-}
-
-/* Outlined "ghost" pill (for primary CTAs in cream sections) */
-@utility pill-ghost {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.85rem 1.5rem;
-	border-radius: 999px;
-	border: 1px solid currentColor;
-	font-family: var(--font-sans);
-	font-size: 0.875rem;
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	transition:
-		background 0.3s var(--ease-soft),
-		color 0.3s var(--ease-soft),
-		transform 0.3s var(--ease-soft);
-}
-
-.pill-ghost:hover {
-	background: currentColor;
-	color: var(--bg);
-	transform: translateY(-1px);
-}
-
-/* Solid pill — used by FAB and primary CTAs */
-@utility pill-solid {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.85rem 1.5rem;
-	border-radius: 999px;
-	background: var(--local-accent, var(--accent));
-	color: var(--bg);
-	font-family: var(--font-sans);
-	font-size: 0.875rem;
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	transition:
-		background 0.3s var(--ease-soft),
-		transform 0.3s var(--ease-soft);
-}
-
-.pill-solid:hover {
-	background: color-mix(in oklab, var(--local-accent, var(--accent)) 80%, white);
-	transform: translateY(-1px);
-}
-
 /* ---------------------------------------------------------------------------
- * Floating Action Button (FAB) — persistent bottom-center pill
- * Two-segment design: solid dark "Prendre contact" + lighter "MENU" toggle.
+ * HUD Components (Advanced)
  * --------------------------------------------------------------------------- */
+
+/* Floating Action Button (FAB) — HUD Controller Style */
 .fab {
 	position: fixed;
-	bottom: 1.25rem;
+	bottom: 1.5rem;
 	left: 50%;
 	transform: translateX(-50%);
-	z-index: 80;
+	z-index: 100;
 	display: inline-flex;
 	align-items: stretch;
-	border-radius: 999px;
-	background: var(--bg);
+	background: rgba(8, 8, 8, 0.85);
+	backdrop-filter: blur(16px);
+	border: 1px solid var(--border-strong);
 	color: var(--text);
-	box-shadow:
-		0 1px 0 rgba(255, 255, 255, 0.08) inset,
-		0 18px 36px -16px rgba(0, 0, 0, 0.55),
-		0 4px 12px -4px rgba(0, 0, 0, 0.35);
-	font-family: var(--font-sans);
-	font-size: 0.8rem;
-	letter-spacing: 0.04em;
-	overflow: hidden;
-	backdrop-filter: blur(8px);
-	transition:
-		transform 0.4s var(--ease-emphatic),
-		box-shadow 0.4s var(--ease-emphatic);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+	transition: transform 0.4s var(--ease-emphatic);
 }
 
 .fab > * {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.45rem;
-	padding: 0.85rem 1.25rem;
-	color: inherit;
-	font-weight: 500;
-	border: 0;
-	background: none;
-	cursor: pointer;
+	gap: 0.6rem;
+	padding: 0.75rem 1.5rem;
 	transition: background 0.3s var(--ease-soft);
+	border-right: 1px solid var(--border);
 }
 
-.fab > *:hover {
-	background: var(--surface-hover);
+.fab > *:last-child {
+	border-right: 0;
 }
 
 .fab > .fab-cta {
-	background: var(--text);
-	color: var(--bg);
-	font-family: var(--font-display);
-	font-style: italic;
-	font-size: 0.95rem;
-	font-weight: 500;
-	padding-inline: 1.4rem;
+	background: var(--accent);
+	color: #FFFFFF;
+	font-weight: 700;
 }
 
 .fab > .fab-cta:hover {
-	background: var(--color-sienne);
-	color: var(--bg);
+	background: var(--accent-soft);
 }
 
-@media (max-width: 480px) {
+.fab > button:hover {
+	background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 640px) {
 	.fab {
-		bottom: 0.75rem;
-		font-size: 0.72rem;
+		bottom: 1rem;
+		width: calc(100vw - 2rem);
+		justify-content: center;
 	}
 	.fab > * {
-		padding-inline: 0.95rem;
+		flex: 1;
+		justify-content: center;
+		padding-inline: 0.5rem;
 	}
 }
 
-/* When .fab is on a cream-section page, swap the surface tokens locally so
- * the segments still contrast properly. */
-.fab[data-mood="cream"] {
-	background: #FFFFFF;
-	color: #0A0908;
-	box-shadow:
-		0 1px 0 rgba(255, 255, 255, 0.6) inset,
-		0 18px 36px -16px rgba(120, 90, 60, 0.25),
-		0 4px 12px -4px rgba(120, 90, 60, 0.15);
-}
-
-.fab[data-mood="cream"] > .fab-cta {
-	background: #0A0908;
-	color: #FFFFFF;
-}
-
-/* ---------------------------------------------------------------------------
- * Mountain ridge mask — used by the hero / solutions transition to create
- * the Websenso-style "we scroll behind the mountains into the white valley"
- * effect. The SVG path is provided by the <MountainRidge> Astro component;
- * this utility just sets the layout so the SVG sits flush at the bottom of
- * the dark hero, with the next section's background peeking through.
- * --------------------------------------------------------------------------- */
-.mountain-ridge {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: -1px; /* hide sub-pixel gap */
-	width: 100%;
-	height: clamp(80px, 12vw, 180px);
-	display: block;
-	pointer-events: none;
-	z-index: 5;
-}
-
-.mountain-ridge svg {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
-/* ---------------------------------------------------------------------------
- * Card with soft radial-gradient background, used by the Expertises grid.
- * Six color variants matching the Websenso card palette but in ID Skillz
- * tones (sienne / ocre / sable instead of violet / pink / peach).
- * --------------------------------------------------------------------------- */
+/* Expertise / Asset Cards */
 @utility expertise-card {
 	position: relative;
-	padding: clamp(1.5rem, 2.5vw, 2.25rem);
-	border-radius: 1.25rem;
-	border: 1px solid color-mix(in oklab, currentColor 8%, transparent);
-	background: #FFFFFF;
+	padding: 2rem;
+	background: rgba(255, 255, 255, 0.02);
+	border: 1px solid var(--border);
+	transition: all 0.5s var(--ease-emphatic);
 	overflow: hidden;
-	isolation: isolate;
-	transition:
-		transform 0.5s var(--ease-emphatic),
-		box-shadow 0.5s var(--ease-emphatic);
-}
-
-.expertise-card::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: -1;
-	background: var(--card-gradient, transparent);
-	opacity: 0.85;
 }
 
 .expertise-card:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 24px 48px -24px rgba(120, 60, 30, 0.25);
+	background: rgba(255, 255, 255, 0.05);
+	border-color: var(--tech);
+	transform: translateY(-4px);
 }
 
-.expertise-card[data-tone="sienne"] {
-	--card-gradient: radial-gradient(
-		circle at 15% 0%,
-		color-mix(in oklab, var(--color-sienne) 28%, white) 0%,
-		white 55%
-	);
-}
-
-.expertise-card[data-tone="ocre"] {
-	--card-gradient: radial-gradient(
-		circle at 0% 100%,
-		color-mix(in oklab, var(--color-ocre) 26%, white) 0%,
-		white 55%
-	);
-}
-
-.expertise-card[data-tone="sable"] {
-	--card-gradient: radial-gradient(
-		circle at 100% 0%,
-		color-mix(in oklab, var(--color-sable) 60%, white) 0%,
-		white 55%
-	);
-}
-
-.expertise-card[data-tone="sienne-deep"] {
-	--card-gradient: radial-gradient(
-		circle at 50% 100%,
-		color-mix(in oklab, var(--color-sienne-deep) 22%, white) 0%,
-		white 55%
-	);
-}
-
-.expertise-card[data-tone="ocre-soft"] {
-	--card-gradient: radial-gradient(
-		circle at 100% 100%,
-		color-mix(in oklab, var(--color-ocre-soft) 34%, white) 0%,
-		white 55%
-	);
-}
-
-.expertise-card[data-tone="warm-mix"] {
-	--card-gradient: radial-gradient(
-		circle at 50% 0%,
-		color-mix(in oklab, var(--color-sienne-soft) 24%, white) 0%,
-		color-mix(in oklab, var(--color-ocre-soft) 18%, white) 40%,
-		white 70%
-	);
-}
-
-/* Geometric icon sizing inside expertise cards */
 .expertise-icon {
 	display: inline-flex;
-	width: 2.75rem;
-	height: 2.75rem;
-	color: currentColor;
-	margin-bottom: 1.25rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	color: var(--tech);
+	margin-bottom: 1.5rem;
+	opacity: 0.8;
 }
 
-.expertise-icon svg {
-	width: 100%;
-	height: 100%;
-	stroke: currentColor;
-	stroke-width: 1.5;
-	fill: none;
+/* ---------------------------------------------------------------------------
+ * Cinematic Overlays (Grid & Grain)
+ * --------------------------------------------------------------------------- */
+
+.grain::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	pointer-events: none;
+	opacity: 0.05;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
+
+.split-grid {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background-size: 60px 60px;
+	background-image: 
+		linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+	mask-image: radial-gradient(circle at 50% 50%, transparent 10%, black 100%);
+	-webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 10%, black 100%);
+}
+
+.corner-brackets {
+	position: relative;
+}
+.corner-brackets::before,
+.corner-brackets::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border-color: var(--tech);
+	border-style: solid;
+	opacity: 0.5;
+	pointer-events: none;
+}
+.corner-brackets::before { top: 0; left: 0; border-width: 1px 0 0 1px; }
+.corner-brackets::after { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+/* ---------------------------------------------------------------------------
+ * Transitions & Misc
+ * --------------------------------------------------------------------------- */
+
+.mono-list {
+	list-style: none;
+	padding: 0;
+	font-family: var(--font-mono);
+	font-size: 0.85rem;
+}
+
+.mono-list li {
+	padding-block: 0.75rem;
+	border-bottom: 1px solid var(--border);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.mono-list li::before {
+	content: "// " attr(data-index);
+	color: var(--tech);
+	margin-right: 1rem;
+	font-size: 0.7rem;
+}
+

@@ -3,6 +3,8 @@ import "../styles/globals.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Fab from "../components/Fab.astro";
+import Preloader from "../components/Preloader.astro";
+import StatusBar from "../components/StatusBar.astro";
 import LenisProvider from "../components/islands/LenisProvider";
 import { site } from "../lib/site";
 
@@ -16,7 +18,7 @@ interface Props {
 const {
 	title = `${site.name} — Agence créative · Site web, Design, Vidéo, 3D`,
 	description = site.description,
-	image = "/og.jpg",
+	image = "/media/logo/id-skillz-light.png",
 	noindex = false,
 } = Astro.props;
 
@@ -80,32 +82,57 @@ const orgSchema = {
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
 
-		<meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)" />
-		<meta name="theme-color" content="#F2EEE5" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#080808" />
+		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="format-detection" content="telephone=yes" />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+		/>
+		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,30..100;1,9..144,300..900,30..100&family=Inter:wght@300..700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+			media="print"
+			onload="this.media='all'"
 		/>
 
 		<script is:inline>
 			(() => {
-				try {
-					const ls = localStorage.getItem("idskillz-theme");
-					if (ls === "light" || ls === "dark") {
-						document.documentElement.dataset.theme = ls;
-					}
-				} catch (_) {}
+				document.documentElement.dataset.theme = "dark";
 			})();
 		</script>
 
 		<script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
 	</head>
 	<body class="grain">
+		<!-- HUD Background Shell -->
+		<div class="hud-background" aria-hidden="true">
+			<div class="hud-halo hud-halo--1"></div>
+			<div class="hud-halo hud-halo--2"></div>
+			<div class="split-grid"></div>
+		</div>
+
+		<!-- Viewport Metadata -->
+		<div class="viewport-hud pointer-events-none" aria-hidden="true">
+			<div class="hud-meta hud-meta--top-right">
+				<div class="hud-meta__rec">
+					<span class="hud-meta__dot"></span>
+					REC_ACTIVE
+				</div>
+				<div class="hud-meta__line">RES: 3840x2160</div>
+				<div class="hud-meta__line">FPS: 59.94</div>
+			</div>
+			<div class="hud-meta hud-meta--bottom-left">
+				<div class="hud-meta__line">ENGINE_ID: SKILLZ_V2</div>
+			</div>
+		</div>
+
+		<Preloader />
 		<a href="#main" class="skip-link">Aller au contenu</a>
 		<LenisProvider client:load />
 		<Header />
@@ -114,20 +141,101 @@ const orgSchema = {
 		</main>
 		<Footer />
 		<Fab />
+		<StatusBar />
 	</body>
 </html>
 
 <style>
+	.hud-background {
+		position: fixed;
+		inset: 0;
+		background: #080808;
+		z-index: -10;
+		overflow: hidden;
+	}
+
+	.hud-halo {
+		position: absolute;
+		width: 60vw;
+		height: 60vw;
+		border-radius: 50%;
+		filter: blur(140px);
+		opacity: 0.15;
+		mix-blend-mode: screen;
+		pointer-events: none;
+	}
+
+	.hud-halo--1 {
+		top: -10%;
+		right: -10%;
+		background: var(--accent);
+	}
+
+	.hud-halo--2 {
+		bottom: 10%;
+		left: -5%;
+		background: var(--color-aubergine-soft);
+		opacity: 0.08;
+	}
+
+	.viewport-hud {
+		position: fixed;
+		inset: 2rem;
+		z-index: 90;
+	}
+
+	.hud-meta {
+		position: absolute;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.2em;
+		color: var(--text-soft);
+		text-transform: uppercase;
+	}
+
+	.hud-meta--top-right {
+		top: 1.5rem;
+		right: 0;
+		text-align: right;
+	}
+
+	.hud-meta--bottom-left {
+		bottom: 3rem;
+		left: 0;
+	}
+
+	.hud-meta__rec {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		color: #ef4444;
+		margin-bottom: 0.25rem;
+		font-weight: 700;
+	}
+
+	.hud-meta__dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentColor;
+		animation: pulse 1.5s ease-in-out infinite;
+	}
+
+	@keyframes pulse {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.3; }
+	}
+
 	.skip-link {
 		position: absolute;
 		top: -100px;
 		left: 1rem;
 		padding: 0.5rem 1rem;
 		background: var(--accent);
-		color: var(--text-inverted);
-		border-radius: 4px;
-		font-size: 0.875rem;
-		font-weight: 500;
+		color: #fff;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
 		z-index: 9999;
 		transition: top 0.2s;
 	}

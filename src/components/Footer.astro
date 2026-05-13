@@ -16,8 +16,13 @@ const legals = [
 ];
 ---
 
-<footer class="site-footer" data-section-mood="warm-dark">
+<footer class="site-footer corner-brackets" data-section-mood="warm-dark">
 	<div class="site-footer__hero reveal">
+		<div class="site-footer__meta">
+			<span class="meta-id">[ SYSTEM_END ]</span>
+			<span class="meta-log">END_LOG: 0x1A4B</span>
+		</div>
+		
 		<h2 class="site-footer__shout" aria-hidden="true">
 			<span class="site-footer__shout-line" style="--li:0">
 				<span class="site-footer__shout-inner">CON</span>
@@ -26,69 +31,57 @@ const legals = [
 				<span class="site-footer__shout-inner">TACT</span>
 			</span>
 		</h2>
-		<a class="site-footer__email" href={`mailto:${site.email}`} aria-label={`\u00c9crire \u00e0 ${site.email}`}>
-			<span aria-hidden="true" class="site-footer__email-arrow">→</span>
-			<span class="site-footer__email-text" aria-hidden="true">
-				{site.email.split("").map((ch, i) => (
-					<span
-						class="site-footer__email-char"
-						style={`--ci:${i}; --dir:${i % 2 === 0 ? 1 : -1}`}
-					>{ch === " " ? "\u00a0" : ch}</span>
-				))}
+		
+		<a class="site-footer__email" href={`mailto:${site.email}`}>
+			<span class="site-footer__email-text">
+				{site.email.toUpperCase()}
 			</span>
-			<span class="visually-hidden">{site.email}</span>
 		</a>
 	</div>
 
 	<div class="site-footer__inner">
 		<div class="site-footer__brand">
 			<Brand variant="full" class="site-footer__logo" />
-			<p class="site-footer__tagline">
-				<span>Vos Skillz, Votre ID</span>
-				<span class="hash">#OSYI</span>
-			</p>
 			<p class="site-footer__pitch">
-				Anciennement <em>Mwcrea Agency</em>. Studio créatif fondé à
-				Toulouse en 2022, opérationnel à Colomiers, siège social Paris.
+				[ STATUS: OPERATIONAL ] // Anciennement Mwcrea Agency. 
+				Studio créatif fondé à Toulouse en 2022. 
+				Performance technique et esthétique garantie.
 			</p>
 		</div>
 
 		<div class="site-footer__col">
-			<h4 class="eyebrow">Studios</h4>
+			<h4 class="eyebrow"><span class="eyebrow-prefix">///</span> LOCATIONS</h4>
 			<address>
-				<p class="addr-label">{site.addresses.paris.label}</p>
-				<a href={site.addresses.paris.href} target="_blank" rel="noreferrer">
-					{site.addresses.paris.lines.map((l) => <span>{l}</span>)}
-				</a>
-				<p class="addr-label">{site.addresses.toulouse.label}</p>
-				<a href={site.addresses.toulouse.href} target="_blank" rel="noreferrer">
-					{site.addresses.toulouse.lines.map((l) => <span>{l}</span>)}
-				</a>
+				<div class="addr-block">
+					<span class="addr-label">PARIS_HQ</span>
+					<a href={site.addresses.paris.href} target="_blank" rel="noreferrer">
+						{site.addresses.paris.lines.join(", ")}
+					</a>
+				</div>
+				<div class="addr-block">
+					<span class="addr-label">TOULOUSE_STUDIO</span>
+					<a href={site.addresses.toulouse.href} target="_blank" rel="noreferrer">
+						{site.addresses.toulouse.lines.join(", ")}
+					</a>
+				</div>
 			</address>
 		</div>
 
 		<div class="site-footer__col">
-			<h4 class="eyebrow">Direct</h4>
+			<h4 class="eyebrow"><span class="eyebrow-prefix">///</span> CHANNELS</h4>
 			<ul class="links">
-				<li><a href={`mailto:${site.email}`}>{site.email}</a></li>
-				<li><a href={`tel:${site.phone}`}>{site.phoneFormatted}</a></li>
-				<li>
-					<a href={site.socials.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>
-				</li>
-				<li>
-					<a href={site.socials.youtube} target="_blank" rel="noreferrer">YouTube ↗</a>
-				</li>
-				<li>
-					<a href={site.socials.google} target="_blank" rel="noreferrer">Google Reviews ↗</a>
-				</li>
+				<li><a href={`mailto:${site.email}`}>MAIL: {site.email}</a></li>
+				<li><a href={`tel:${site.phone}`}>VOICE: {site.phoneFormatted}</a></li>
+				<li><a href={site.socials.instagram} target="_blank" rel="noreferrer">INSTAGRAM</a></li>
+				<li><a href={site.socials.youtube} target="_blank" rel="noreferrer">YOUTUBE</a></li>
 			</ul>
 		</div>
 
 		<div class="site-footer__col">
-			<h4 class="eyebrow">Navigation</h4>
+			<h4 class="eyebrow"><span class="eyebrow-prefix">///</span> SYSTEM_MAP</h4>
 			<ul class="links">
 				{nav.map((item) => (
-					<li><a href={item.href}>{item.label}</a></li>
+					<li><a href={item.href}>{item.label.toUpperCase()}</a></li>
 				))}
 			</ul>
 		</div>
@@ -97,13 +90,13 @@ const legals = [
 	<div class="site-footer__bottom">
 		<div class="site-footer__bottom-inner">
 			<p class="legal-id">
-				© {year} {site.name} — SAS · {site.rcs} · TVA {site.tva}
+				[ © {year} {site.name} ] // SAS // {site.rcs} // TVA {site.tva}
 			</p>
 			<ul class="legal-links">
-				{legals.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+				{legals.map((l) => <li><a href={l.href}>{l.label.toUpperCase()}</a></li>)}
 			</ul>
 			<p class="microdidact">
-				Site conçu par <a href="https://microdidact.com" target="_blank" rel="noreferrer">Microdidact</a>
+				[ ENGINE: <a href="https://microdidact.com" target="_blank" rel="noreferrer">MICRODIDACT</a> ]
 			</p>
 		</div>
 	</div>
@@ -112,289 +105,155 @@ const legals = [
 <style>
 	.site-footer {
 		position: relative;
-		background: var(--bg);
-		color: var(--text);
-		padding: 0 0 1.5rem;
-		margin-top: 0;
-	}
-	.site-footer::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		background:
-			radial-gradient(
-				circle at 80% 0%,
-				color-mix(in oklab, var(--color-sienne) 14%, transparent) 0%,
-				transparent 45%
-			),
-			radial-gradient(
-				circle at 0% 100%,
-				color-mix(in oklab, var(--color-ocre) 8%, transparent) 0%,
-				transparent 50%
-			);
-		pointer-events: none;
+		background: #080808;
+		color: #fff;
+		border-top: 1px solid var(--border);
+		margin-top: 4rem;
 	}
 
-	/* --- Massive shout block ---------------------------------------- */
 	.site-footer__hero {
 		width: var(--container);
 		margin-inline: auto;
-		padding-block: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 2vw, 1.5rem);
+		padding-block: 6rem 4rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-		position: relative;
+		gap: 2rem;
 	}
+
+	.site-footer__meta {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
+		opacity: 0.8;
+	}
+
 	.site-footer__shout {
-		display: flex;
-		flex-direction: column;
 		font-family: var(--font-display);
-		font-style: italic;
-		font-weight: 400;
-		font-variation-settings: "opsz" 144, "SOFT" 100;
-		font-size: clamp(4rem, 18vw, 18rem);
-		line-height: 0.82;
-		letter-spacing: -0.05em;
+		font-weight: 700;
+		font-size: clamp(5rem, 20vw, 16rem);
+		line-height: 0.8;
+		color: #fff;
 		margin: 0;
-		color: var(--text);
+		letter-spacing: -0.05em;
 	}
-	.site-footer__shout-line {
-		display: block;
-		overflow: hidden;
-		line-height: 1;
-	}
+	.site-footer__shout-line { display: block; overflow: hidden; }
 	.site-footer__shout-inner {
 		display: inline-block;
-		transform: translateY(110%);
-		transition: transform 0.9s var(--ease-emphatic);
-		transition-delay: calc(var(--li, 0) * 100ms + 150ms);
-		background: linear-gradient(
-			120deg,
-			var(--color-sienne) 0%,
-			var(--color-ocre) 60%,
-			color-mix(in oklab, var(--color-sable) 80%, white) 100%
-		);
-		-webkit-background-clip: text;
-		background-clip: text;
-		color: transparent;
-		-webkit-text-fill-color: transparent;
+		transform: translateY(100%);
+		transition: transform 0.8s var(--ease-emphatic);
+		transition-delay: calc(var(--li, 0) * 100ms);
 	}
-	.site-footer__hero.is-visible .site-footer__shout-inner {
-		transform: translateY(0);
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.site-footer__shout-inner {
-			transition: none;
-			transform: none;
-		}
-	}
+	.site-footer__hero.is-visible .site-footer__shout-inner { transform: translateY(0); }
 
 	.site-footer__email {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		width: fit-content;
-		font-family: var(--font-display);
-		font-size: clamp(1.1rem, 1.4vw + 0.5rem, 1.6rem);
-		font-style: italic;
-		color: var(--text-muted);
-		font-variation-settings: "opsz" 144, "SOFT" 50;
-		transition: color 0.3s var(--ease-soft);
+		font-family: var(--font-mono);
+		font-size: clamp(1rem, 2vw, 1.5rem);
+		color: var(--tech);
+		text-decoration: none;
+		transition: opacity 0.3s var(--ease-soft);
 	}
-	.site-footer__email-arrow {
-		font-style: normal;
-		color: var(--accent-cool);
-		display: inline-block;
-		transition: transform 0.35s var(--ease-emphatic),
-			color 0.3s var(--ease-soft);
-	}
-	.site-footer__email:hover {
-		color: var(--accent-cool);
-	}
-	.site-footer__email:hover .site-footer__email-arrow {
-		transform: translateX(6px);
-	}
+	.site-footer__email:hover { opacity: 0.7; }
 
-	/* "Blind" email animation: each character enters with a small
-	 * alternating Y offset and a fade, staggered per index. Once
-	 * the hero block becomes visible the characters land at rest.
-	 * Matches the Websenso footer signature. */
-	.site-footer__email-text {
-		display: inline-flex;
-		flex-wrap: wrap;
-	}
-	.site-footer__email-char {
-		display: inline-block;
-		opacity: 0;
-		transform: translateY(calc(var(--dir, 1) * 0.55em));
-		transition:
-			opacity 0.55s var(--ease-emphatic),
-			transform 0.65s var(--ease-emphatic);
-		transition-delay: calc(var(--ci, 0) * 25ms + 350ms);
-	}
-	.site-footer__hero.is-visible .site-footer__email-char {
-		opacity: 1;
-		transform: translateY(0);
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.site-footer__email-char {
-			transition: none;
-			opacity: 1;
-			transform: none;
-		}
-	}
-
-	/* --- Columns --------------------------------------------------- */
 	.site-footer__inner {
 		width: var(--container);
 		margin-inline: auto;
 		display: grid;
-		gap: 2.5rem 3rem;
-		grid-template-columns: 1fr;
-		padding-top: clamp(2rem, 4vw, 3.5rem);
+		gap: 4rem;
+		padding-top: 4rem;
 		border-top: 1px solid var(--border);
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 1024px) {
 		.site-footer__inner {
-			grid-template-columns: 1.4fr repeat(3, 1fr);
+			grid-template-columns: 1.5fr repeat(3, 1fr);
 		}
 	}
 
 	.site-footer__brand {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-		max-width: 28rem;
-	}
-	.site-footer__logo {
-		height: 4rem;
-		width: auto;
-		color: var(--text);
-	}
-	.site-footer__tagline {
-		display: flex;
-		align-items: baseline;
-		gap: 0.75rem;
-		font-family: var(--font-display);
-		font-size: 1.05rem;
-		font-style: italic;
-		color: var(--text-muted);
-	}
-	.site-footer__tagline .hash {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		font-style: normal;
-		letter-spacing: 0.1em;
-		color: var(--color-sienne);
+		gap: 1.5rem;
 	}
 	.site-footer__pitch {
-		font-size: 0.88rem;
-		color: var(--text-soft);
-		line-height: 1.6;
-	}
-	.site-footer__pitch em {
-		font-style: italic;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
 		color: var(--text-muted);
+		line-height: 1.6;
+		max-width: 24rem;
 	}
 
-	.site-footer__col h4 {
-		margin-bottom: 1.25rem;
+	.site-footer__col {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
+
 	address {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
 		font-style: normal;
-		font-size: 0.88rem;
-	}
-	address a {
 		display: flex;
 		flex-direction: column;
-		gap: 0.1rem;
-		padding: 0.25rem 0;
-		color: var(--text);
-		transition: color 0.2s;
-		margin-bottom: 0.75rem;
+		gap: 1.5rem;
 	}
-	address a:hover {
-		color: var(--color-sienne);
+	.addr-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 	.addr-label {
-		font-size: 0.7rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--text-soft);
-		margin-top: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		opacity: 0.6;
+	}
+	address a {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: #fff;
+		line-height: 1.4;
 	}
 
 	.links {
 		list-style: none;
 		padding: 0;
-		margin: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
-		font-size: 0.88rem;
+		gap: 0.75rem;
 	}
 	.links a {
-		color: var(--text);
-		transition: color 0.2s;
-		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: #fff;
+		transition: color 0.3s var(--ease-soft);
 	}
-	.links a:hover {
-		color: var(--color-sienne);
-	}
+	.links a:hover { color: var(--tech); }
 
-	/* --- Bottom strip ---------------------------------------------- */
 	.site-footer__bottom {
-		margin-top: 3.5rem;
-		padding-top: 1.5rem;
+		margin-top: 6rem;
+		padding-block: 2rem;
 		border-top: 1px solid var(--border);
 	}
 	.site-footer__bottom-inner {
 		width: var(--container);
 		margin-inline: auto;
 		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		align-items: flex-start;
-	}
-	@media (min-width: 768px) {
-		.site-footer__bottom-inner {
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
-		}
-	}
-	.legal-id {
-		font-size: 0.72rem;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		gap: 2rem;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
 		color: var(--text-soft);
-		font-variant-numeric: tabular-nums;
 	}
+
 	.legal-links {
 		list-style: none;
 		padding: 0;
-		margin: 0;
 		display: flex;
-		gap: 1.5rem;
+		gap: 2rem;
 	}
-	.legal-links a {
-		font-size: 0.72rem;
-		color: var(--text-muted);
-	}
-	.legal-links a:hover {
-		color: var(--color-sienne);
-	}
-	.microdidact {
-		font-size: 0.7rem;
-		letter-spacing: 0.06em;
-		color: var(--text-soft);
-		font-family: var(--font-mono);
-	}
-	.microdidact a {
-		color: var(--color-sienne);
-	}
-	.microdidact a:hover {
-		color: var(--text);
-	}
+	.legal-links a { color: inherit; }
+	.legal-links a:hover { color: #fff; }
+
+	.microdidact a { color: var(--tech); }
 </style>

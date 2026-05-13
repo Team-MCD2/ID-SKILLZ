@@ -34,7 +34,6 @@ const googleUrl = site.socials.google;
 			que nous.
 		</h2>
 		<p class="reviews__lead reveal" style="--delay:.2s">
-			Une moyenne de <strong>{avg.toFixed(1)} / 5</strong> sur Google.
 			Les retours bruts, sans filtre&nbsp;:
 		</p>
 
@@ -69,212 +68,152 @@ const googleUrl = site.socials.google;
 <style>
 	.reviews {
 		position: relative;
+		background: #080808;
 	}
 	.reviews__header {
-		width: var(--container-narrow);
-		margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+		width: var(--container);
+		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
-		max-width: 56rem;
+		padding-bottom: 4rem;
 	}
 	.reviews__lead {
-		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.15rem);
-		color: #4A453E;
-		max-width: 42rem;
-		line-height: 1.65;
+		max-width: 32rem;
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		line-height: 1.6;
 	}
-	.reviews__lead strong {
-		color: var(--color-sienne-deep);
-		font-weight: 600;
-	}
-	.reviews__link {
-		color: #0A0908;
-		border-bottom: 1px solid currentColor;
-		transition: color 0.2s;
-	}
-	.reviews__link:hover {
-		color: var(--color-sienne);
-	}
-
-	/* Google Reviews CTA — discrete pill with the real Google G logo,
-	 * slots under the lead copy, doesn't scream for attention but is
-	 * clearly clickable and branded. */
 	.reviews__google {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.55rem;
-		padding: 0.55rem 0.95rem 0.55rem 0.55rem;
-		margin-top: 0.25rem;
-		border: 1px solid color-mix(in oklab, #0A0908 14%, transparent);
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.65);
-		backdrop-filter: blur(6px);
-		-webkit-backdrop-filter: blur(6px);
-		font-family: var(--font-sans);
-		font-size: 0.85rem;
-		font-weight: 500;
-		color: #0A0908;
-		width: fit-content;
-		transition:
-			background 0.3s var(--ease-soft),
-			border-color 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
+		gap: 0.75rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--tech);
+		opacity: 0.6;
+		transition: opacity 0.3s var(--ease-soft);
 	}
 	.reviews__google:hover {
-		background: #ffffff;
-		border-color: #0A0908;
-		transform: translateY(-1px);
-	}
-	.reviews__google-icon {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.6rem;
-		height: 1.6rem;
-		background: #ffffff;
-		border-radius: 999px;
-		border: 1px solid color-mix(in oklab, #0A0908 10%, transparent);
-	}
-	.reviews__google svg:last-child {
-		color: color-mix(in oklab, #0A0908 55%, transparent);
-		transition: transform 0.3s var(--ease-emphatic);
-	}
-	.reviews__google:hover svg:last-child {
-		transform: translate(2px, -2px);
+		opacity: 1;
 	}
 	.reviews__container {
-		width: var(--container);
-		margin-inline: auto;
+		width: 100%;
+		overflow: hidden;
 	}
 
-	/* Embla carousel — cream paper style */
 	:global(.rev-carousel) {
+		width: var(--container);
+		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
+		gap: 4rem;
 	}
 	:global(.rev-carousel__viewport) {
 		overflow: hidden;
-		padding: 0.75rem 0.5rem;
 	}
 	:global(.rev-carousel__container) {
 		display: flex;
-		gap: 1.25rem;
+		gap: 1.5rem;
 	}
 	:global(.rev-carousel__slide) {
 		flex: 0 0 100%;
 		min-width: 0;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid var(--border);
+		padding: 2rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1.1rem;
-		padding: 1.75rem;
-		border-radius: 1rem;
-		background: #FFFFFF;
-		border: 1px solid color-mix(in oklab, #0A0908 8%, transparent);
-		box-shadow: 0 16px 36px -28px rgba(60, 40, 20, 0.25);
-		max-width: 32rem;
-		transition:
-			transform 0.4s var(--ease-emphatic),
-			box-shadow 0.4s var(--ease-emphatic);
+		gap: 2rem;
+		transition: all 0.4s var(--ease-soft);
 	}
 	:global(.rev-carousel__slide:hover) {
-		transform: translateY(-3px);
-		box-shadow: 0 22px 44px -22px rgba(60, 40, 20, 0.32);
+		background: rgba(255, 255, 255, 0.05);
+		border-color: var(--tech);
 	}
 	@media (min-width: 768px) {
-		:global(.rev-carousel__slide) {
-			flex-basis: calc(50% - 0.625rem);
-		}
+		:global(.rev-carousel__slide) { flex-basis: calc(50% - 0.75rem); }
 	}
 	@media (min-width: 1024px) {
-		:global(.rev-carousel__slide) {
-			flex-basis: calc(33.333% - 0.83rem);
-		}
+		:global(.rev-carousel__slide) { flex-basis: calc(33.33% - 1rem); }
 	}
 
-	:global(.rev-carousel__stars) {
-		display: inline-flex;
-		gap: 2px;
-		color: var(--color-ocre);
+	:global(.rev-carousel__meta) {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		opacity: 0.6;
 	}
-	:global(.rev-carousel__stars svg[data-active="false"]) {
-		opacity: 0.2;
-	}
+
 	:global(.rev-carousel__quote) {
-		font-family: var(--font-display);
-		font-size: clamp(1.05rem, 0.6vw + 0.8rem, 1.18rem);
-		line-height: 1.55;
-		color: #0A0908;
-		font-style: italic;
-		font-variation-settings: "opsz" 144, "SOFT" 50;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		line-height: 1.6;
+		color: var(--text-muted);
 		flex: 1;
-		font-weight: 400;
 	}
+
 	:global(.rev-carousel__cite) {
 		display: flex;
 		flex-direction: column;
-		gap: 0.1rem;
-		font-size: 0.85rem;
+		gap: 0.25rem;
+		border-top: 1px solid var(--border);
+		padding-top: 1.5rem;
 	}
-	:global(.rev-carousel__cite strong) {
-		color: #0A0908;
-		font-weight: 500;
-	}
-	:global(.rev-carousel__cite span) {
-		color: #6B6258;
+	:global(.cite-author) {
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
+		font-weight: 700;
+		color: #fff;
+	}
+	:global(.cite-handle) {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
+		opacity: 0.6;
 	}
 
 	:global(.rev-carousel__controls) {
 		display: flex;
-		align-items: center;
 		justify-content: space-between;
-		gap: 1rem;
-		padding-inline: 0.5rem;
+		align-items: center;
 	}
 	:global(.rev-carousel__dots) {
 		display: flex;
-		gap: 0.4rem;
+		gap: 0.75rem;
 	}
 	:global(.rev-carousel__dot) {
-		width: 8px;
-		height: 8px;
-		border-radius: 999px;
-		background: #B8AE9E;
-		border: 0;
-		padding: 0;
-		cursor: pointer;
-		transition: all 0.3s var(--ease-emphatic);
+		width: 4px;
+		height: 4px;
+		background: var(--border-strong);
+		transition: all 0.3s var(--ease-soft);
 	}
 	:global(.rev-carousel__dot.is-active) {
-		background: #0A0908;
-		width: 24px;
+		background: var(--tech);
+		box-shadow: 0 0 8px var(--tech);
+		width: 1.5rem;
 	}
+
 	:global(.rev-carousel__buttons) {
 		display: flex;
 		gap: 0.5rem;
 	}
 	:global(.rev-carousel__btn) {
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: 999px;
-		border: 1px solid color-mix(in oklab, #0A0908 18%, transparent);
-		background: transparent;
-		display: inline-flex;
+		width: 3rem;
+		height: 3rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--border);
+		color: var(--tech);
+		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #0A0908;
-		cursor: pointer;
-		transition: all 0.3s var(--ease-emphatic);
+		transition: all 0.3s var(--ease-soft);
 	}
 	:global(.rev-carousel__btn:hover) {
-		background: #0A0908;
-		color: #F2EEE5;
-		border-color: #0A0908;
-	}
-
-	.reveal {
-		transition-delay: var(--delay, 0s);
+		background: rgba(255, 255, 255, 0.1);
+		border-color: var(--tech);
+		box-shadow: 0 0 10px var(--tech);
 	}
 </style>

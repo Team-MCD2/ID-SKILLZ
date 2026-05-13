@@ -52,361 +52,182 @@ import { projects } from "../../lib/site";
 <style>
 	.reals {
 		position: relative;
-		isolation: isolate;
+		background: #080808;
 	}
 	.reals__header {
-		width: var(--container-narrow);
-		margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+		width: var(--container);
+		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
-		max-width: 56rem;
-		color: #0A0908;
+		padding-bottom: 3rem;
 	}
 	.reals__lead {
-		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.15rem);
-		color: #4A453E;
-		max-width: 42rem;
-		line-height: 1.65;
+		max-width: 32rem;
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		line-height: 1.6;
 	}
 	.reals__carousel-wrap {
-		width: var(--container);
-		margin-inline: auto;
+		width: 100%;
+		overflow: hidden;
 	}
 	.reals__footer {
 		display: flex;
 		justify-content: center;
-		margin-top: clamp(2.5rem, 5vw, 3.5rem);
-	}
-	.reals__more {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.95rem 1.6rem;
-		border-radius: 999px;
-		background: #0A0908;
-		color: #F2EEE5;
-		font-family: var(--font-sans);
-		font-size: 0.9rem;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		transition:
-			background 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
-	}
-	.reals__more:hover {
-		background: var(--color-sienne);
-		transform: translateY(-2px);
+		padding-top: 4rem;
 	}
 
-	/* ----- Splide carousel surface customisation -----------------------
-	 * The island ships unstyled <div className="splide">; we paint it via
-	 * scoped :global selectors here so the styles live next to the section
-	 * that owns them and don't leak into other Splide instances. */
 	:global(.rcarousel) {
 		position: relative;
-		--card-w: clamp(16rem, 28vw, 24rem);
-	}
-	:global(.rcarousel .splide) {
-		padding-inline: clamp(0.5rem, 3vw, 2rem);
-	}
-	:global(.rcarousel .splide__list) {
-		align-items: center;
 	}
 	:global(.rcarousel__slide) {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		transition:
-			opacity 0.55s var(--ease-emphatic),
-			transform 0.55s var(--ease-emphatic),
-			filter 0.55s var(--ease-emphatic);
+		transition: all 0.6s var(--ease-emphatic);
 	}
 	:global(.rcarousel__slide:not(.is-active)) {
-		opacity: 0.42;
-		transform: scale(0.86);
-		filter: saturate(0.7) blur(0.5px);
+		opacity: 0.3;
+		transform: scale(0.85);
+		filter: grayscale(1) blur(2px);
 	}
-	:global(.rcarousel__slide.is-active) {
-		opacity: 1;
-		transform: scale(1);
-		filter: none;
-		z-index: 2;
-	}
-
 	:global(.rcarousel__card) {
 		position: relative;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		gap: 0.85rem;
-		cursor: pointer;
-		outline: none;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid var(--border);
+		transition: all 0.4s var(--ease-soft);
+	}
+	:global(.rcarousel__slide.is-active .rcarousel__card) {
+		border-color: var(--tech);
+		background: rgba(255, 255, 255, 0.05);
 	}
 	:global(.rcarousel__media) {
 		position: relative;
-		width: 100%;
-		aspect-ratio: 4 / 5;
+		aspect-ratio: 4/5;
 		overflow: hidden;
-		border-radius: 1rem;
-		background: #E8E0D2;
-		box-shadow: 0 18px 40px -28px rgba(60, 40, 20, 0.35);
 	}
 	:global(.rcarousel__poster),
 	:global(.rcarousel__video) {
-		position: absolute;
-		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		filter: contrast(1.04);
-		/* Websenso hover signature (00:06): poster gently scales 1→1.05 on
-		 * hover of the active card. Smooth cubic-bezier, transform-origin
-		 * center so the zoom feels like a slow camera push. */
-		transform: scale(1);
-		transition:
-			transform 0.6s var(--ease-emphatic),
-			filter 0.4s var(--ease-soft),
-			opacity 0.5s var(--ease-emphatic);
-		transform-origin: center;
+		opacity: 0.8;
+		transition: all 0.6s var(--ease-soft);
 	}
-	:global(.rcarousel__slide.is-active .rcarousel__card:hover .rcarousel__poster),
-	:global(.rcarousel__slide.is-active .rcarousel__card:focus-within .rcarousel__poster) {
+	:global(.rcarousel__slide.is-active .rcarousel__card:hover .rcarousel__poster) {
 		transform: scale(1.05);
-		filter: contrast(1.08) saturate(1.04);
-	}
-	:global(.rcarousel__video) {
-		opacity: 0;
-	}
-	:global(.rcarousel__slide.is-active .rcarousel__card:hover .rcarousel__video),
-	:global(.rcarousel__slide.is-active .rcarousel__card:focus .rcarousel__video) {
 		opacity: 1;
-		transform: scale(1.05);
 	}
-	/* Fallback poster (no image/video): editorial dark card with the
-	 * client name in large italic serif, a category chip up-top and a
-	 * decorative compass glyph behind. Used for the "design" slides
-	 * whose source PNGs were corrupt on delivery. */
-	:global(.rcarousel__placeholder) {
+
+	:global(.rcarousel__hud-overlay) {
 		position: absolute;
 		inset: 0;
+		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		align-items: flex-start;
-		padding: 1.25rem 1.1rem;
-		background:
-			radial-gradient(
-				circle at 85% 15%,
-				color-mix(in oklab, var(--accent-cool) 20%, transparent) 0%,
-				transparent 60%
-			),
-			linear-gradient(
-				135deg,
-				#14110F 0%,
-				#2A2520 60%,
-				#3F3932 100%
-			);
-		color: #F2EEE5;
-		overflow: hidden;
-	}
-	:global(.rcarousel__placeholder-chip) {
-		position: relative;
-		z-index: 2;
-		padding: 0.28rem 0.7rem;
-		background: color-mix(in oklab, #F2EEE5 10%, transparent);
-		border: 1px solid color-mix(in oklab, #F2EEE5 25%, transparent);
-		border-radius: 999px;
-		font-family: var(--font-sans);
-		font-size: 0.62rem;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-		color: color-mix(in oklab, #F2EEE5 85%, transparent);
-	}
-	:global(.rcarousel__placeholder-name) {
-		position: relative;
-		z-index: 2;
-		font-family: var(--font-display);
-		font-style: italic;
-		font-size: clamp(1.45rem, 2vw + 0.5rem, 2rem);
-		line-height: 1.1;
-		font-variation-settings: "opsz" 144, "SOFT" 80;
-		color: #F2EEE5;
-		max-width: 90%;
-	}
-	:global(.rcarousel__placeholder-glyph) {
-		position: absolute;
-		right: -1rem;
-		bottom: -1rem;
-		width: 9rem;
-		height: 9rem;
-		color: color-mix(in oklab, var(--accent-cool) 55%, transparent);
-		opacity: 0.6;
 		pointer-events: none;
+		z-index: 2;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		opacity: 0;
+		transition: opacity 0.4s var(--ease-soft);
 	}
-	:global(.rcarousel__badge) {
-		position: absolute;
-		top: 0.85rem;
-		left: 0.85rem;
-		padding: 0.3rem 0.7rem;
-		background: rgba(255, 255, 255, 0.92);
-		backdrop-filter: blur(8px);
-		color: var(--color-sienne-deep);
-		font-family: var(--font-sans);
-		font-size: 0.65rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		border-radius: 999px;
-		font-weight: 500;
+	:global(.rcarousel__slide.is-active .rcarousel__hud-overlay) {
+		opacity: 1;
 	}
-	:global(.rcarousel__meta) {
+	:global(.rcarousel__hud-overlay .top) {
 		display: flex;
-		flex-direction: column;
-		gap: 0.15rem;
-		padding-inline: 0.25rem;
+		justify-content: space-between;
+	}
+	:global(.rcarousel__hud-overlay .bottom) {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	:global(.rcarousel__info) {
+		padding: 1.5rem;
+		border-top: 1px solid var(--border);
 	}
 	:global(.rcarousel__cardtitle) {
-		font-family: var(--font-display);
-		font-size: 1rem;
-		font-weight: 500;
-		line-height: 1.25;
-		color: #0A0908;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
-	}
-	:global(.rcarousel__client) {
-		font-size: 0.78rem;
-		color: #6B6258;
-		letter-spacing: 0.02em;
-	}
-
-	/* Caption below the strip — updates on slide change via aria-live */
-	:global(.rcarousel__caption) {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem 0.9rem;
-		align-items: baseline;
-		justify-content: center;
-		max-width: 50rem;
-		margin: 2rem auto 0;
-		padding-inline: 1rem;
-		text-align: center;
-		font-family: var(--font-sans);
-		font-size: 0.78rem;
-		letter-spacing: 0.08em;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		color: #fff;
 		text-transform: uppercase;
-		color: #6B6258;
-	}
-	:global(.rcarousel__caption .rcarousel__cat) {
-		color: var(--color-sienne-deep);
-		font-weight: 600;
-	}
-	:global(.rcarousel__caption .rcarousel__title) {
-		flex-basis: 100%;
-		font-family: var(--font-display);
-		font-size: clamp(1.4rem, 1.6vw + 0.5rem, 1.85rem);
-		font-weight: 400;
-		font-style: italic;
-		font-variation-settings: "opsz" 144, "SOFT" 50;
-		text-transform: none;
-		letter-spacing: -0.01em;
-		color: #0A0908;
-		line-height: 1.18;
-		margin-top: 0.25rem;
-	}
-	:global(.rcarousel__caption .rcarousel__summary) {
-		flex-basis: 100%;
-		font-family: var(--font-sans);
-		font-size: 0.92rem;
-		text-transform: none;
-		letter-spacing: 0;
-		color: #4A453E;
-		line-height: 1.55;
-		max-width: 36rem;
-		margin: 0.4rem auto 0;
+		letter-spacing: 0.05em;
 	}
 
-	/* Splide arrows — minimal pill on either side, hidden on mobile */
-	:global(.rcarousel__arrows) {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
+	:global(.rcarousel__caption) {
+		width: var(--container);
+		margin: 4rem auto 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
+	:global(.rcarousel__metadata) {
+		display: flex;
+		gap: 2rem;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
+		opacity: 0.6;
+	}
+	:global(.rcarousel__title) {
+		font-size: 2rem;
+		font-weight: 700;
+		color: #fff;
+		max-width: 20ch;
+	}
+	:global(.rcarousel__summary) {
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
+		line-height: 1.6;
+		color: var(--text-muted);
+		max-width: 36rem;
+	}
+
 	:global(.rcarousel__arrow) {
 		position: absolute;
-		top: calc(50% - 4rem);
+		top: 50%;
 		transform: translateY(-50%);
-		width: 3rem;
-		height: 3rem;
-		display: inline-flex;
+		width: 3.5rem;
+		height: 3.5rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--border);
+		color: var(--tech);
+		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 999px;
-		background: rgba(10, 9, 8, 0.92);
-		color: #F2EEE5;
-		border: 0;
-		cursor: pointer;
-		pointer-events: auto;
-		transition:
-			background 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
-		z-index: 4;
-	}
-	:global(.rcarousel__arrow svg) {
-		width: 1rem;
-		height: 1rem;
-	}
-	:global(.rcarousel__arrow--prev) {
-		left: 0.75rem;
-	}
-	:global(.rcarousel__arrow--next) {
-		right: 0.75rem;
+		transition: all 0.3s var(--ease-soft);
+		z-index: 10;
 	}
 	:global(.rcarousel__arrow:hover) {
-		background: var(--color-sienne);
-		transform: translateY(-50%) scale(1.06);
+		background: rgba(255, 255, 255, 0.1);
+		border-color: var(--tech);
+		box-shadow: 0 0 15px var(--tech);
 	}
-	:global(.rcarousel__arrow:disabled) {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
+	:global(.rcarousel__arrow--prev) { left: 2rem; }
+	:global(.rcarousel__arrow--next) { right: 2rem; }
 
-	/* Splide pagination dots */
 	:global(.rcarousel__pagination) {
 		display: flex;
 		justify-content: center;
-		gap: 0.4rem;
-		margin-top: 1.5rem;
+		gap: 1rem;
+		margin-top: 3rem;
 	}
 	:global(.rcarousel__page) {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 999px;
-		background: #B8AE9E;
-		border: 0;
-		padding: 0;
-		cursor: pointer;
-		transition:
-			background 0.3s var(--ease-soft),
-			width 0.3s var(--ease-emphatic);
+		width: 6px;
+		height: 6px;
+		background: var(--border-strong);
+		transform: rotate(45deg);
+		transition: all 0.3s var(--ease-soft);
 	}
 	:global(.rcarousel__page.is-active) {
-		background: #0A0908;
-		width: 1.4rem;
+		background: var(--tech);
+		box-shadow: 0 0 8px var(--tech);
 	}
 
-	@media (max-width: 640px) {
-		:global(.rcarousel__arrow) {
-			display: none;
-		}
-		:global(.rcarousel__caption) {
-			margin-top: 1.25rem;
-		}
-	}
-
-	.reveal {
-		transition-delay: var(--delay, 0s);
+	@media (max-width: 1023px) {
+		:global(.rcarousel__arrow) { display: none; }
+		:global(.rcarousel__slide:not(.is-active)) { opacity: 0; }
 	}
 </style>

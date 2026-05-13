@@ -8,26 +8,13 @@ interface Slide {
 
 interface Props {
 	slides: Slide[];
-	headings: string[]; // one heading per slide step
+	headings: string[];
 }
 
-/**
- * TeamScroll — sticky scrolljack with 3 hard-cut images on scroll breakpoints.
- *
- * Layout:
- *   - Outer wrapper: 300vh tall (3 viewport-heights of scroll travel)
- *   - Inner viewport: position:sticky top:0 height:100vh
- *   - Three slides absolutely-positioned, opacity driven by scroll progress
- *   - Slides scale up step by step: 0.6 -> 0.78 -> 1.0 (full bleed on last)
- *
- * Why not GSAP ScrollTrigger? Lenis smooth-scroll plays badly with pinned
- * triggers unless you wire ScrollerProxy carefully. A sticky container +
- * a single scroll listener is dead-simple and survives reduced-motion.
- */
 export default function TeamScroll({ slides, headings }: Props) {
 	const wrapRef = useRef<HTMLDivElement>(null);
 	const [active, setActive] = useState(0);
-	const [progress, setProgress] = useState(0); // 0..1 within the scrolljack
+	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
 		const wrap = wrapRef.current;
@@ -39,7 +26,6 @@ export default function TeamScroll({ slides, headings }: Props) {
 			if (total <= 0) return;
 			const raw = Math.max(0, Math.min(1, -rect.top / total));
 			setProgress(raw);
-			// Snap to discrete index based on thirds with mid-point thresholds
 			const idx = raw < 0.33 ? 0 : raw < 0.66 ? 1 : 2;
 			setActive(idx);
 		};
@@ -53,8 +39,7 @@ export default function TeamScroll({ slides, headings }: Props) {
 		};
 	}, []);
 
-	// Per-slide scale: 0 -> 0.62, 1 -> 0.82, 2 -> 1.0 (fullbleed)
-	const scaleFor = (i: number) => [0.62, 0.82, 1.0][i] ?? 0.62;
+	const scaleFor = (i: number) => [0.75, 0.85, 1.0][i] ?? 0.75;
 
 	return (
 		<div
@@ -64,16 +49,20 @@ export default function TeamScroll({ slides, headings }: Props) {
 		>
 			<div className="teamscroll__inner">
 				<div className="teamscroll__text" aria-live="polite">
-					<p className="eyebrow">Le studio</p>
-					<h2 className="h-1 balance teamscroll__heading">{headings[active]}</h2>
+					<div className="teamscroll__meta">
+						<span className="eyebrow"><span className="eyebrow-prefix">///</span> FACET_ID_0{active + 1}</span>
+						<span className="teamscroll__uid">UID: 0x{active}A{active}F</span>
+					</div>
+					
+					<h2 className="h-1 teamscroll__heading">{headings[active]}</h2>
 					<p className="teamscroll__caption">{slides[active]?.caption}</p>
-					<div className="teamscroll__steps" role="tablist" aria-label="Étapes du studio">
+					
+					<div className="teamscroll__steps" role="tablist" aria-label="Exploration Studio">
 						{slides.map((_, i) => (
 							<button
 								key={i}
 								role="tab"
 								aria-selected={active === i}
-								aria-label={`Étape ${i + 1}`}
 								className={`teamscroll__step${active === i ? " is-active" : ""}`}
 								onClick={() => {
 									const wrap = wrapRef.current;
@@ -84,7 +73,7 @@ export default function TeamScroll({ slides, headings }: Props) {
 									window.scrollTo({ top: target, behavior: "smooth" });
 								}}
 							>
-								<span aria-hidden="true">0{i + 1}</span>
+								<span aria-hidden="true">[ 0{i + 1} ]</span>
 							</button>
 						))}
 					</div>
@@ -98,12 +87,17 @@ export default function TeamScroll({ slides, headings }: Props) {
 							style={{ "--scale": scaleFor(i) } as React.CSSProperties}
 							aria-hidden={active !== i}
 						>
-							<img
-								src={s.src}
-								alt={s.alt}
-								loading={i === 0 ? "eager" : "lazy"}
-								decoding="async"
-							/>
+							<div className="teamscroll__frame corner-brackets">
+								<img
+									src={s.src}
+									alt={s.alt}
+									loading={i === 0 ? "eager" : "lazy"}
+								/>
+								<div className="teamscroll__overlay">
+									<span className="tag">LIVE_FEED</span>
+									<span className="tag">CAM_0{i + 1}</span>
+								</div>
+							</div>
 						</figure>
 					))}
 				</div>

@@ -41,11 +41,9 @@ import { site } from "../../lib/site";
 		</div>
 
 		<form
-			class="contact__form reveal"
+			class="contact__form reveal corner-brackets"
 			style="--delay:.2s"
-			method="POST"
-			action={`mailto:${site.email}?subject=${encodeURIComponent("Projet ID Skillz")}`}
-			enctype="text/plain"
+			id="contact-form"
 		>
 			<div class="field">
 				<label for="name">Votre nom</label>
@@ -75,15 +73,24 @@ import { site } from "../../lib/site";
 					name="message"
 					rows="5"
 					required
-					placeholder="Le contexte, les enjeux, les délais, le budget si vous l’avez déjà…"
+					placeholder="Le contexte, les enjeux, les délais, le budget si vous l'avez déjà…"
 				></textarea>
 			</div>
-			<button type="submit" class="contact__submit">
-				<span>Envoyer la demande</span>
-				<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+			<button type="submit" class="contact__submit" id="contact-submit">
+				<span class="contact__submit-text">Envoyer la demande</span>
+				<svg class="contact__submit-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
 					<path d="M2 8h12M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 				</svg>
+				<span class="contact__submit-spinner" aria-hidden="true" style="display:none;">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="10" opacity="0.25" />
+						<path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round">
+							<animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite" />
+						</path>
+					</svg>
+				</span>
 			</button>
+			<p class="contact__feedback" id="contact-feedback" role="status" aria-live="polite"></p>
 			<p class="contact__rgpd">
 				En envoyant ce formulaire, vous acceptez que vos informations soient utilisées
 				pour vous recontacter dans le cadre de ce projet uniquement.
@@ -92,6 +99,64 @@ import { site } from "../../lib/site";
 		</form>
 	</div>
 </section>
+
+<script>
+	const form = document.getElementById("contact-form") as HTMLFormElement | null;
+	const submitBtn = document.getElementById("contact-submit") as HTMLButtonElement | null;
+	const feedback = document.getElementById("contact-feedback") as HTMLParagraphElement | null;
+
+	form?.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		if (!submitBtn || !feedback) return;
+
+		// Gather form data
+		const fd = new FormData(form);
+		const services = fd.getAll("services").join(", ");
+		const payload = {
+			name: fd.get("name") as string,
+			email: fd.get("email") as string,
+			company: fd.get("company") as string,
+			services,
+			message: fd.get("message") as string,
+		};
+
+		// UI: loading state
+		submitBtn.disabled = true;
+		const textEl = submitBtn.querySelector(".contact__submit-text") as HTMLElement;
+		const iconEl = submitBtn.querySelector(".contact__submit-icon") as HTMLElement;
+		const spinnerEl = submitBtn.querySelector(".contact__submit-spinner") as HTMLElement;
+		if (textEl) textEl.textContent = "Envoi en cours…";
+		if (iconEl) iconEl.style.display = "none";
+		if (spinnerEl) spinnerEl.style.display = "inline-flex";
+		feedback.textContent = "";
+		feedback.className = "contact__feedback";
+
+		try {
+			const res = await fetch("/api/contact", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
+			const data = await res.json();
+
+			if (data.ok) {
+				feedback.textContent = "✓ Message envoyé ! On vous répond sous 24 h.";
+				feedback.classList.add("contact__feedback--success");
+				form.reset();
+			} else {
+				throw new Error(data.error || "Erreur serveur");
+			}
+		} catch (err) {
+			feedback.textContent = `⚠ ${(err as Error).message || "Erreur lors de l'envoi. Réessayez ou écrivez-nous directement."}`;
+			feedback.classList.add("contact__feedback--error");
+		} finally {
+			submitBtn.disabled = false;
+			if (textEl) textEl.textContent = "Envoyer la demande";
+			if (iconEl) iconEl.style.display = "";
+			if (spinnerEl) spinnerEl.style.display = "none";
+		}
+	});
+</script>
 
 <style>
 	.contact {
@@ -107,7 +172,7 @@ import { site } from "../../lib/site";
 		 * to the borders" on mobile). */
 		width: var(--container);
 		margin-inline: auto;
-		padding-inline: clamp(0.5rem, 2vw, 0rem);
+		padding-inline: clamp(0.75rem, 3vw, 2rem);
 		display: grid;
 		gap: 3rem;
 		grid-template-columns: 1fr;
@@ -116,7 +181,7 @@ import { site } from "../../lib/site";
 		.contact__inner {
 			grid-template-columns: 1fr 1fr;
 			gap: 5rem;
-			padding-inline: 0;
+			padding-inline: 1.5rem;
 		}
 	}
 

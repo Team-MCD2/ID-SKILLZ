@@ -27,31 +27,27 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 
 <section
 	id="methode"
-	class="proc section-warm-dark section-pad"
+	class="proc section-warm-dark"
 	data-section-mood="warm-dark"
 	aria-labelledby="proc-title"
 >
 	<div class="proc__inner">
 		<aside class="proc__sticky">
-			<p class="eyebrow reveal">Notre méthode</p>
+			<p class="eyebrow reveal"><span class="eyebrow-prefix">///</span> EXECUTION_PROTOCOL</p>
 			<h2 id="proc-title" class="h-1 reveal balance" style="--delay:.1s">
 				Six étapes,
 				<span class="mark-gradient">aucun mystère</span>.
 			</h2>
 			<p class="proc__lead reveal" style="--delay:.2s">
-				Le même process pour tous nos métiers — une trame éprouvée,
-				adaptée à chaque projet. Vous savez où en est votre dossier à
-				tout moment, vous gardez la main à chaque livrable.
+				Une trame éprouvée, pilotée par des spécialistes. Transparence totale,
+				maîtrise absolue du flux de production.
 			</p>
 			<div class="proc__cta reveal" style="--delay:.3s">
-				<a class="proc__btn proc__btn--primary" href="#contact">
-					<span>Démarrer le brief</span>
-					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-						<path d="M5 12h14M13 5l7 7-7 7" />
-					</svg>
+				<a class="btn-hud" href="#contact">
+					INITIATE_BRIEF
 				</a>
-				<a class="proc__btn proc__btn--ghost" href="#faq">
-					<span>Voir la FAQ</span>
+				<a class="btn-hud secondary" href="#faq">
+					READ_FAQ
 				</a>
 			</div>
 		</aside>
@@ -60,67 +56,21 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 			{process.map((step, i) => {
 				const meta = stepMeta[i];
 				return (
-					<li class="proc-step reveal" style={`--delay:${0.05 * i}s`}>
-						<span class="proc-step__num watermark-number" aria-hidden="true">{step.index}</span>
-						<div class="proc-step__head">
-							<span class="tag-pill proc-step__pill">
-								<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-									<circle cx="12" cy="12" r="9" />
-									<path d="M12 7v5l3 2" />
-								</svg>
-								<span>{meta.duration}</span>
-							</span>
-							<svg
-								class="proc-step__glyph"
-								viewBox="0 0 48 48"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.4"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								aria-hidden="true"
-							>
-								{meta.icon === "brief" && (
-									<>
-										<rect x="9" y="11" width="30" height="26" rx="2" />
-										<path d="M14 19h20M14 26h14M14 33h10" />
-									</>
-								)}
-								{meta.icon === "doc" && (
-									<>
-										<path d="M12 8h18l6 6v26H12z" />
-										<path d="M30 8v6h6M16 22h16M16 28h16M16 34h10" />
-									</>
-								)}
-								{meta.icon === "compass" && (
-									<>
-										<circle cx="24" cy="24" r="14" />
-										<path d="M30 18l-4 8-8 4 4-8 8-4z" fill="currentColor" stroke="none" />
-									</>
-								)}
-								{meta.icon === "wrench" && (
-									<>
-										<path d="M14 34l14-14M28 14a6 6 0 0 1 6 6 6 6 0 0 1-1.6 4l4 4-3 3-4-4a6 6 0 0 1-4 1.6 6 6 0 0 1-6-6 6 6 0 0 1 1.6-4l-4-4 3-3 4 4A6 6 0 0 1 28 14z" />
-									</>
-								)}
-								{meta.icon === "ship" && (
-									<>
-										<path d="M8 30h32l-4 8H12z" />
-										<path d="M12 30V14l12-4 12 4v16" />
-										<path d="M24 10v20" />
-									</>
-								)}
-								{meta.icon === "loop" && (
-									<>
-										<path d="M14 24a10 10 0 0 1 18-6" />
-										<path d="M34 24a10 10 0 0 1-18 6" />
-										<path d="M28 12l4 6h-6M20 36l-4-6h6" />
-									</>
-								)}
-							</svg>
+					<li class="proc-step reveal corner-brackets" style={`--delay:${0.05 * i}s`}>
+						<div class="proc-step__meta">
+							<span class="step-id">[ PROTOCOL_0{step.index} ]</span>
+							<span class="step-uid">0x{step.index}F2{i}</span>
 						</div>
-						<h3 class="proc-step__title">{step.title}</h3>
-						<p class="proc-step__text">{step.body}</p>
+						
+						<div class="proc-step__content">
+							<div class="proc-step__head">
+								<h3 class="proc-step__title">{step.title}</h3>
+								<div class="proc-step__tag">
+									<span>EST_DURATION: {meta.duration.toUpperCase()}</span>
+								</div>
+							</div>
+							<p class="proc-step__text">{step.body}</p>
+						</div>
 					</li>
 				);
 			})}
@@ -131,250 +81,117 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 <style>
 	.proc {
 		position: relative;
-		isolation: isolate;
-		overflow: hidden;
+		background: #080808;
+		padding-block: 8rem;
 	}
 	.proc__inner {
 		width: var(--container);
 		margin-inline: auto;
 		display: grid;
-		gap: clamp(2.5rem, 5vw, 5rem);
+		gap: 5rem;
 		grid-template-columns: 1fr;
 	}
 	@media (min-width: 1024px) {
 		.proc__inner {
-			grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
-			gap: clamp(3rem, 6vw, 6rem);
+			grid-template-columns: 1fr 1.5fr;
 			align-items: start;
 		}
 	}
 
 	.proc__sticky {
+		position: sticky;
+		top: 8rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
-	}
-	@media (min-width: 1024px) {
-		.proc__sticky {
-			position: sticky;
-			top: clamp(5rem, 12vh, 8rem);
-			align-self: start;
-		}
+		gap: 1.5rem;
 	}
 
 	.proc__lead {
-		font-size: clamp(1rem, 0.9vw + 0.6rem, 1.1rem);
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
 		color: var(--text-muted);
-		line-height: 1.65;
-		max-width: 22rem;
-	}
-
-	/* Eyebrow gets the cool accent for chromatic contrast against the
-	 * warm-dark backdrop. The eyebrow utility from globals.css uses
-	 * --local-accent which is sienne; we override locally here. */
-	.proc__sticky .eyebrow {
-		color: var(--accent-cool-soft);
-	}
-	.proc__sticky .eyebrow::before {
-		background: var(--accent-cool-soft);
+		line-height: 1.6;
+		max-width: 28rem;
 	}
 
 	.proc__cta {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		margin-top: 0.5rem;
-	}
-	.proc__btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.85rem 1.4rem;
-		border-radius: 999px;
-		font-family: var(--font-sans);
-		font-size: 0.85rem;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		transition:
-			background 0.3s var(--ease-soft),
-			color 0.3s var(--ease-soft),
-			border-color 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
-	}
-	.proc__btn--primary {
-		background: var(--color-sienne);
-		color: #0A0908;
-	}
-	.proc__btn--primary:hover {
-		background: var(--color-sienne-deep);
-		transform: translateY(-2px);
-	}
-	.proc__btn--ghost {
-		border: 1px solid color-mix(in oklab, var(--accent-cool) 50%, transparent);
-		color: var(--text);
-	}
-	.proc__btn--ghost:hover {
-		border-color: var(--accent-cool);
-		background: var(--accent-cool);
-		color: var(--text);
-		transform: translateY(-2px);
+		gap: 1rem;
+		margin-top: 1rem;
 	}
 
-	/* ----- Right column: stacked steps ---------------------------- */
 	.proc__steps {
 		list-style: none;
 		padding: 0;
-		margin: 0;
 		display: flex;
 		flex-direction: column;
-		gap: clamp(2rem, 4vw, 3.5rem);
+		gap: 2rem;
 	}
 
 	.proc-step {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(3.5rem, auto) minmax(0, 1fr);
-		gap: 0.75rem 1.5rem;
-		padding-block: clamp(1.25rem, 2vw, 1.75rem);
-		border-top: 1px solid var(--border);
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid var(--border);
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		transition: all 0.4s var(--ease-soft);
 	}
-	.proc-step:last-child {
-		border-bottom: 1px solid var(--border);
+	.proc-step:hover {
+		background: rgba(255, 255, 255, 0.05);
+		border-color: var(--tech);
 	}
-	.proc-step__num {
-		grid-row: 1 / span 3;
-		align-self: start;
-		padding-top: 0.1rem;
-		color: var(--text);
-		/* Watermark number slides in from the left as the step enters view.
-		 * Combined with the existing .reveal opacity fade-in, this gives each
-		 * step its own little "materialize" beat that draws the eye through
-		 * the six-step list as the user scrolls. */
-		transform: translateX(-24px);
-		opacity: 0;
-		transition:
-			transform 0.8s var(--ease-emphatic),
-			opacity 0.6s var(--ease-soft);
+
+	.proc-step__meta {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		opacity: 0.8;
 	}
-	.proc-step.is-visible .proc-step__num {
-		transform: translateX(0);
-		opacity: 1;
+
+	.proc-step__content {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
-	.proc-step__num::after {
-		/* Cool-accent underline that draws in beneath the number once visible,
-		 * mirroring the editorial "section marker" feel of Websenso. */
-		content: "";
-		display: block;
-		width: 0;
-		height: 2px;
-		background: var(--accent-cool);
-		margin-top: 0.6rem;
-		transition: width 0.9s var(--ease-emphatic) 0.5s;
-	}
-	.proc-step.is-visible .proc-step__num::after {
-		width: 2.5rem;
-	}
+
 	.proc-step__head {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
-		gap: 1rem;
+		align-items: baseline;
+		gap: 2rem;
 		flex-wrap: wrap;
 	}
-	.proc-step__pill {
-		--local-accent: var(--accent-cool-soft);
-		background: color-mix(in oklab, var(--accent-cool) 18%, transparent);
-		color: color-mix(in oklab, var(--accent-cool-soft) 90%, white);
-		border: 1px solid color-mix(in oklab, var(--accent-cool) 35%, transparent);
-		transition:
-			background 0.4s var(--ease-soft),
-			border-color 0.4s var(--ease-soft);
-	}
-	.proc-step.is-visible .proc-step__pill {
-		background: color-mix(in oklab, var(--accent-cool) 28%, transparent);
-		border-color: color-mix(in oklab, var(--accent-cool) 55%, transparent);
-	}
-	.proc-step__pill svg {
-		flex-shrink: 0;
-	}
-	.proc-step__glyph {
-		width: 2.25rem;
-		height: 2.25rem;
-		color: var(--accent-cool-soft);
-		flex-shrink: 0;
-		/* Stroke-draw animation: each glyph's path lengths are normalized via
-		 * pathLength=1 in JS would be cleaner, but we approximate with a long
-		 * dasharray that traces the stroke from 0 to full length when the
-		 * step enters view. */
-		stroke-dasharray: 220;
-		stroke-dashoffset: 220;
-		transition: stroke-dashoffset 1.2s var(--ease-emphatic) 0.35s,
-			color 0.4s var(--ease-soft);
-	}
-	.proc-step.is-visible .proc-step__glyph {
-		stroke-dashoffset: 0;
-	}
-	.proc-step:hover .proc-step__glyph {
-		color: var(--accent-cool);
-	}
+
 	.proc-step__title {
-		font-family: var(--font-display);
-		font-size: clamp(1.4rem, 1.8vw + 0.4rem, 2rem);
-		font-weight: 400;
-		line-height: 1.1;
-		color: var(--text);
-		font-variation-settings: "opsz" 144, "SOFT" 30;
-		letter-spacing: -0.01em;
-		/* Subtle title slide-in from the right that lags the number by a
-		 * fraction of a second so the eye lands on the watermark first. */
-		transform: translateX(12px);
-		opacity: 0;
-		transition:
-			transform 0.7s var(--ease-emphatic) 0.15s,
-			opacity 0.55s var(--ease-soft) 0.15s;
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #fff;
 	}
-	.proc-step.is-visible .proc-step__title {
-		transform: translateX(0);
-		opacity: 1;
+
+	.proc-step__tag {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		padding: 0.25rem 0.6rem;
+		border: 1px solid var(--tech);
+		background: rgba(0, 0, 0, 0.4);
 	}
+
 	.proc-step__text {
-		font-size: clamp(0.95rem, 0.7vw + 0.5rem, 1.05rem);
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
 		color: var(--text-muted);
-		line-height: 1.65;
-		max-width: 38rem;
-		opacity: 0;
-		transform: translateY(8px);
-		transition:
-			transform 0.6s var(--ease-emphatic) 0.3s,
-			opacity 0.5s var(--ease-soft) 0.3s;
-	}
-	.proc-step.is-visible .proc-step__text {
-		opacity: 1;
-		transform: translateY(0);
+		line-height: 1.6;
+		max-width: 36rem;
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.proc-step__num,
-		.proc-step__title,
-		.proc-step__text,
-		.proc-step__glyph,
-		.proc-step__num::after {
-			transition: none !important;
-			transform: none !important;
-			opacity: 1 !important;
-			stroke-dashoffset: 0 !important;
-			width: 2.5rem !important;
+	@media (max-width: 640px) {
+		.proc-step__head {
+			flex-direction: column;
+			gap: 0.75rem;
 		}
-	}
-
-	@media (min-width: 1024px) {
-		.proc-step {
-			grid-template-columns: 5rem minmax(0, 1fr);
-			gap: 1rem 2rem;
-		}
-	}
-
-	.reveal {
-		transition-delay: var(--delay, 0s);
 	}
 </style>

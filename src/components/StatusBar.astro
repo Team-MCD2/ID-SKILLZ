@@ -1,0 +1,80 @@
+---
+/**
+ * StatusBar — Fixed dashboard micro-strip at the bottom of the screen.
+ * 
+ * Part of the "Tech Cinématographique" direction.
+ * Displays subtle technical markers and branding identifiers.
+ */
+---
+
+<div class="status-bar font-mono" aria-hidden="true">
+	<div class="status-bar__inner">
+		<div class="status-bar__group">
+			<span class="status-bar__label">LOC:</span>
+			<span class="status-bar__value">43.6104° N, 1.3364° E // TOULOUSE_COLOMIERS_HQ</span>
+		</div>
+		
+		<div class="status-bar__group status-bar__group--center hide-mobile">
+			<span class="status-bar__value">IDSK_SYSTEM_v6.0_STABLE // OSYI_UNIT_01</span>
+		</div>
+		
+		<div class="status-bar__group">
+			<span class="status-bar__label">STATUS:</span>
+			<span class="status-bar__value">UPLINK_ACTIVE // VLAN_IDSK_770</span>
+		</div>
+	</div>
+</div>
+
+<style>
+	.status-bar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 20px;
+		background: rgba(10, 9, 8, 0.6);
+		backdrop-filter: blur(4px);
+		border-top: 1px solid rgba(242, 238, 229, 0.05);
+		z-index: 70; /* Just below FAB (80) */
+		pointer-events: none;
+		color: var(--text-soft, #8C857A);
+		font-size: 9px;
+		display: flex;
+		align-items: center;
+		padding: 0 var(--gutter, 1.5rem);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	.status-bar__inner {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.status-bar__group {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.status-bar__label {
+		color: var(--accent, #B85B3D);
+		opacity: 0.8;
+	}
+
+	.status-bar__value {
+		opacity: 0.6;
+	}
+
+	@media (max-width: 768px) {
+		.hide-mobile {
+			display: none;
+		}
+		.status-bar {
+			height: 18px;
+			font-size: 8px;
+			padding: 0 0.75rem;
+		}
+	}
+</style>

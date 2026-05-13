@@ -32,61 +32,61 @@ const slides = partnerSlides.map((s) => ({
 
 <section
 	id="partners"
-	class="partners section-warm-dark"
+	class="partners"
 	data-section-mood="warm-dark"
 	aria-labelledby="partners-title"
 	data-scroll-tied
 >
 	<h2 id="partners-title" class="visually-hidden">
-		Ils nous ont fait confiance
+		Partenaires & Clients
 	</h2>
 
 	<div class="partners__wrap">
 		<div class="partners__stage">
 			<div class="partners__inner">
-				<!-- LEFT: the 2×2 logo grid, one absolute slide per set -->
+				<!-- LEFT: the logo grid -->
 				<div class="partners__stack" aria-live="polite">
 					{slides.map((s, i) => (
 						<div class="partners__slide" data-index={i} aria-hidden={i !== 0}>
 							<div class="partners__grid">
 								{s.logos.map((c, j) => (
-									<div class="partners__tile" style={`--j:${j}`}>
+									<div class="partners__tile corner-brackets" style={`--j:${j}`}>
 										<ClientBadge name={c.name} label={c.label} />
 									</div>
 								))}
 							</div>
-							<p class="partners__phrase">{s.phrase}</p>
+							<div class="partners__metadata">
+								<span class="nav-num">// LOG_SESSION_ACTIVE</span>
+								<p class="partners__phrase">{s.phrase}</p>
+							</div>
 						</div>
 					))}
 				</div>
 
-				<!-- RIGHT: sticky editorial panel -->
+				<!-- RIGHT: editorial panel -->
 				<aside class="partners__panel">
-					<p class="eyebrow">Ils nous font confiance</p>
-					<h3 class="h-2 balance">
-						<span>Restauration, sport, industrie, lifestyle — on prend</span>
-						<span class="mark-gradient">&nbsp;le même virage&nbsp;</span>
-						<span>avec chacun de nos clients.</span>
+					<p class="eyebrow"><span class="eyebrow-prefix">///</span> ÉCOSYSTÈME_CLIENTS</p>
+					<h3 class="h-2">
+						Restauration, sport, industrie, lifestyle — on prend
+						<span class="mark-gradient">le même virage</span>
+						avec chacun.
 					</h3>
-					<a class="partners__cta" href="#realisations">
-						<span>Voir les projets</span>
-						<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<path d="M2 8h12M9 3l5 5-5 5" />
-						</svg>
-					</a>
-
-					<!-- Progress dots: one per slide. Keyboard-accessible as tabs. -->
-					<div class="partners__dots" role="tablist" aria-label="Secteur de partenaires">
-						{slides.map((_, i) => (
-							<button
-								type="button"
-								role="tab"
-								class="partners__dot"
-								data-dot={i}
-								aria-label={`Aller au set ${i + 1} sur ${slides.length}`}
-								aria-selected={i === 0}
-							/>
-						))}
+					
+					<div class="partners__actions">
+						<a class="btn-hud" href="#realisations">
+							Voir_Projets
+						</a>
+						
+						<div class="partners__counter" aria-label="Index des partenaires">
+							{slides.map((_, i) => (
+								<div 
+									class="partners__tick" 
+									data-dot={i}
+									aria-selected={i === 0}
+								></div>
+							))}
+							<span class="partners__idx">01 / {slides.length}</span>
+						</div>
 					</div>
 				</aside>
 			</div>
@@ -95,26 +95,14 @@ const slides = partnerSlides.map((s) => ({
 </section>
 
 <script>
-	/**
-	 * Scroll-tied cross-fade controller.
-	 *
-	 * - Outer wrapper is `partners__wrap` at 150vh (1.5 viewport-heights).
-	 * - Inner `partners__stage` is sticky at top:var(--header-h).
-	 * - We compute progress from 0 to 1 based on wrap's rect.top relative
-	 *   to its total travel distance, then assign the active slide index.
-	 *
-	 * Accessibility: if reduced-motion is set, we render all slides with
-	 * opacity 0 except the first, and disable the scroll handler. Dots
-	 * remain clickable and jump-scroll the wrap to the matching offset.
-	 */
 	(() => {
 		const section = document.querySelector<HTMLElement>(".partners[data-scroll-tied]");
 		if (!section) return;
 		const wrap = section.querySelector<HTMLElement>(".partners__wrap");
 		const slides = Array.from(section.querySelectorAll<HTMLElement>(".partners__slide"));
-		const dots = Array.from(section.querySelectorAll<HTMLButtonElement>(".partners__dot"));
+		const ticks = Array.from(section.querySelectorAll<HTMLElement>(".partners__tick"));
+		const idxLabel = section.querySelector<HTMLElement>(".partners__idx");
 		if (!wrap || slides.length === 0) return;
-		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		const setActive = (idx: number) => {
 			slides.forEach((s, i) => {
@@ -122,128 +110,91 @@ const slides = partnerSlides.map((s) => ({
 				s.setAttribute("aria-hidden", String(!on));
 				s.dataset.active = on ? "true" : "false";
 			});
-			dots.forEach((d, i) => {
-				d.setAttribute("aria-selected", String(i === idx));
-				d.dataset.active = i === idx ? "true" : "false";
+			ticks.forEach((t, i) => {
+				t.setAttribute("aria-selected", String(i === idx));
 			});
+			if (idxLabel) {
+				idxLabel.textContent = `0${idx + 1} / ${slides.length}`;
+			}
 		};
 		setActive(0);
 
-		if (!reduced) {
-			let ticking = false;
-			const onScroll = () => {
-				if (ticking) return;
-				ticking = true;
-				requestAnimationFrame(() => {
-					const rect = wrap.getBoundingClientRect();
-					const total = rect.height - window.innerHeight;
-					if (total <= 0) { ticking = false; return; }
-					const raw = Math.max(0, Math.min(1, -rect.top / total));
-					const idx = Math.min(slides.length - 1, Math.floor(raw * slides.length));
-					setActive(idx);
-					// Expose progress to CSS so each slide can interpolate
-					// its own opacity / translate against --p (0..1).
-					section.style.setProperty("--p", raw.toFixed(3));
-					ticking = false;
-				});
-			};
-			onScroll();
-			window.addEventListener("scroll", onScroll, { passive: true });
-			window.addEventListener("resize", onScroll);
-		}
-
-		// Dot click → jump-scroll to the matching third.
-		dots.forEach((dot, i) => {
-			dot.addEventListener("click", () => {
-				const total = wrap.offsetHeight - window.innerHeight;
-				const target = wrap.offsetTop + (total * (i / (slides.length - 1 || 1)));
-				window.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				const rect = wrap.getBoundingClientRect();
+				const total = rect.height - window.innerHeight;
+				if (total <= 0) { ticking = false; return; }
+				const raw = Math.max(0, Math.min(1, -rect.top / total));
+				const idx = Math.min(slides.length - 1, Math.floor(raw * slides.length));
+				setActive(idx);
+				ticking = false;
 			});
-		});
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
 	})();
 </script>
 
 <style>
 	.partners {
 		position: relative;
-		background: var(--bg);
-		color: var(--text);
+		background: #080808;
 	}
 
-	/* Outer wrapper: 1.5 viewport-heights of scroll travel so the user
-	 * sees ~1.5vh of content pass while the inner stays pinned. */
 	.partners__wrap {
 		position: relative;
 		height: 250vh;
 	}
-	@media (max-width: 768px) {
-		.partners__wrap {
-			/* On mobile, reduce travel so the user isn't scrolling for
-			 * minutes; slides still progress but less stretch per set. */
-			height: 220vh;
-		}
-	}
 
-	/* Inner sticky stage: pinned to the top of the viewport during the
-	 * wrap's travel range. */
 	.partners__stage {
 		position: sticky;
-		top: var(--header-height, 4rem);
-		height: calc(100vh - var(--header-height, 4rem));
+		top: 0;
+		height: 100vh;
 		display: flex;
 		align-items: center;
-		padding-block: clamp(2rem, 6vw, 5rem);
-		padding-inline: var(--gutter, 1.5rem);
+		padding-inline: var(--gutter);
+		overflow: hidden;
 	}
 
 	.partners__inner {
 		width: 100%;
-		max-width: 72rem;
+		max-width: 80rem;
 		margin-inline: auto;
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: clamp(1.5rem, 3vw, 3rem);
+		gap: 3rem;
 		align-items: center;
 	}
-	@media (min-width: 960px) {
+	@media (min-width: 1024px) {
 		.partners__inner {
-			grid-template-columns: 1.15fr 1fr;
-			gap: clamp(2rem, 5vw, 4rem);
+			grid-template-columns: 1.2fr 1fr;
+			gap: 6rem;
 		}
 	}
 
-	/* Logo stack: slides are absolutely-positioned on top of each other
-	 * and cross-fade via opacity + subtle scale. */
 	.partners__stack {
 		position: relative;
 		width: 100%;
 		aspect-ratio: 4 / 3;
-		max-height: 32rem;
-	}
-	@media (max-width: 960px) {
-		.partners__stack {
-			aspect-ratio: 5 / 4;
-			max-height: 28rem;
-		}
+		max-height: 35rem;
 	}
 
 	.partners__slide {
 		position: absolute;
 		inset: 0;
 		opacity: 0;
-		transform: scale(0.96) translateY(12px);
-		transition:
-			opacity 0.7s var(--ease-emphatic),
-			transform 0.9s var(--ease-emphatic);
-		pointer-events: none;
+		transform: translateY(20px);
+		transition: all 0.6s var(--ease-emphatic);
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
+		gap: 2rem;
 	}
 	.partners__slide[data-active="true"] {
 		opacity: 1;
-		transform: scale(1) translateY(0);
-		pointer-events: auto;
+		transform: translateY(0);
 	}
 
 	.partners__grid {
@@ -251,139 +202,93 @@ const slides = partnerSlides.map((s) => ({
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		grid-template-rows: repeat(2, 1fr);
-		gap: clamp(0.75rem, 1.5vw, 1.25rem);
-		min-height: 0;
+		gap: 1rem;
 	}
 
 	.partners__tile {
-		position: relative;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--border);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: clamp(0.75rem, 2vw, 1.5rem);
-		border-radius: 18px;
-		background: color-mix(in oklab, var(--bg-elevated, #1a1714) 80%, var(--color-sable) 20%);
-		border: 1px solid var(--border);
-		color: var(--text);
-		overflow: hidden;
-		transition:
-			background 0.5s var(--ease-soft),
-			border-color 0.3s var(--ease-soft),
-			transform 0.5s var(--ease-emphatic);
-		/* Per-tile stagger on active slide */
-		opacity: 0;
-		transform: translateY(18px);
-		transition-delay: calc(var(--j, 0) * 90ms);
-	}
-	.partners__slide[data-active="true"] .partners__tile {
-		opacity: 1;
-		transform: translateY(0);
+		padding: 2rem;
+		transition: all 0.4s var(--ease-soft);
 	}
 	.partners__tile:hover {
-		background: color-mix(in oklab, var(--accent-cool) 14%, var(--bg-elevated));
-		border-color: var(--accent-cool);
-		transform: translateY(-4px);
+		background: rgba(255, 255, 255, 0.08);
+		border-color: var(--tech);
 	}
 
-	/* Editorial phrase under the grid — sits below the 2×2 tiles without
-	 * overlapping. On mobile we reduce the max-width so it doesn't push
-	 * the grid too narrow. */
+	.partners__metadata {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.nav-num {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--tech);
+		opacity: 0.6;
+	}
 	.partners__phrase {
-		font-family: var(--font-display);
-		font-size: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
-		font-style: italic;
-		color: var(--text-muted);
-		line-height: 1.5;
-		max-width: 36rem;
-		padding-inline: 0.5rem;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		color: var(--text-soft);
+		letter-spacing: 0.02em;
 	}
 
 	.partners__panel {
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
-		align-items: flex-start;
-		border-left: 2px solid var(--accent-cool);
-		padding-left: clamp(1rem, 2vw, 1.75rem);
-	}
-	@media (max-width: 960px) {
-		.partners__panel {
-			border-left: none;
-			padding-left: 0;
-			border-top: 2px solid var(--accent-cool);
-			padding-top: 1.25rem;
-		}
-	}
-	.partners__panel h3 {
-		font-weight: 400;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
-		color: var(--text);
-		font-size: clamp(1.35rem, 1.6vw + 0.5rem, 2rem);
-		line-height: 1.25;
-	}
-	.partners__panel h3 span {
-		display: inline;
+		gap: 2rem;
 	}
 
-	.partners__cta {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.85rem 1.5rem;
-		border-radius: 999px;
-		background: var(--accent-cool);
-		color: var(--text);
-		font-family: var(--font-sans);
-		font-size: 0.85rem;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		width: fit-content;
-		transition:
-			background 0.3s var(--ease-soft),
-			color 0.3s var(--ease-soft),
-			transform 0.3s var(--ease-emphatic);
-	}
-	.partners__cta:hover {
-		background: var(--text);
-		color: var(--bg);
-		transform: translateY(-2px);
-	}
-	.partners__cta svg {
-		transition: transform 0.3s var(--ease-emphatic);
-	}
-	.partners__cta:hover svg {
-		transform: translateX(2px);
-	}
-
-	/* Progress dots: visible under the CTA on desktop, pinned under the
-	 * editorial text on mobile. Active dot paints in accent-cool. */
-	.partners__dots {
+	.partners__actions {
 		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.5rem;
-	}
-	.partners__dot {
-		width: 2rem;
-		height: 3px;
-		border-radius: 2px;
-		border: none;
-		background: color-mix(in oklab, var(--text) 25%, transparent);
-		cursor: pointer;
-		transition: background 0.3s var(--ease-soft), width 0.3s var(--ease-emphatic);
-	}
-	.partners__dot[aria-selected="true"] {
-		background: var(--accent-cool);
-		width: 2.5rem;
+		align-items: center;
+		gap: 2rem;
+		margin-top: 1rem;
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.partners__slide,
-		.partners__tile {
-			transition: none !important;
+	.partners__counter {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--tech);
+	}
+
+	.partners__tick {
+		width: 4px;
+		height: 4px;
+		background: var(--border-strong);
+		transform: rotate(45deg);
+	}
+	.partners__tick[aria-selected="true"] {
+		background: var(--tech);
+		box-shadow: 0 0 8px var(--tech);
+	}
+
+	@media (max-width: 1023px) {
+		.partners__wrap { height: auto; }
+		.partners__stage { 
+			position: relative; 
+			height: auto; 
+			padding-block: 6rem;
 		}
-		.partners__slide[data-active="true"] .partners__tile {
-			transition-delay: 0ms;
+		.partners__stack { 
+			aspect-ratio: auto; 
+			height: auto;
+			max-height: none;
 		}
+		.partners__slide { 
+			position: relative; 
+			opacity: 1; 
+			transform: none;
+			margin-bottom: 4rem;
+		}
+		.partners__slide:not(:first-child) { display: none; }
+		.partners__counter { display: none; }
 	}
 </style>

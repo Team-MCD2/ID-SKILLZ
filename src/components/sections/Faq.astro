@@ -2,9 +2,14 @@
 import { faqs } from "../../lib/site";
 ---
 
-<section id="faq" class="faq section-cream section-pad" data-section-mood="cream" aria-labelledby="faq-title">
-	<header class="faq__header">
-		<p class="eyebrow reveal">Questions fréquentes</p>
+<section
+	id="faq"
+	class="faq section-warm-dark"
+	data-section-mood="warm-dark"
+	aria-labelledby="faq-title"
+>
+	<header class="faq__header section-pad-top">
+		<p class="eyebrow reveal"><span class="eyebrow-prefix">///</span> INFO_TERMINAL</p>
 		<h2 id="faq-title" class="h-2 reveal balance" style="--delay:.1s">
 			Ce que les clients
 			<span class="mark-gradient">nous demandent</span>
@@ -14,8 +19,9 @@ import { faqs } from "../../lib/site";
 
 	<div class="faq__list">
 		{faqs.map((f, i) => (
-			<details class="faq-item reveal" style={`--delay:${0.05 * i + 0.15}s`}>
+			<details class="faq-item reveal corner-brackets" style={`--delay:${0.05 * i + 0.15}s`}>
 				<summary>
+					<span class="faq-item__meta">[ Q_0{i + 1} ]</span>
 					<span class="faq-item__q">{f.q}</span>
 					<span class="faq-item__icon" aria-hidden="true">
 						<svg viewBox="0 0 16 16" width="14" height="14">
@@ -23,7 +29,9 @@ import { faqs } from "../../lib/site";
 						</svg>
 					</span>
 				</summary>
-				<p>{f.a}</p>
+				<div class="faq-item__a">
+					<p>{f.a}</p>
+				</div>
 			</details>
 		))}
 	</div>
@@ -32,132 +40,73 @@ import { faqs } from "../../lib/site";
 <style>
 	.faq {
 		position: relative;
+		background: #080808;
+		padding-bottom: 8rem;
 	}
 	.faq__header {
-		width: var(--container-narrow);
-		margin: 0 auto clamp(2rem, 4vw, 3rem);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		max-width: 50rem;
-	}
-	.faq__list {
-		width: var(--container-narrow);
+		width: var(--container);
 		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
+		gap: 1.25rem;
+		padding-bottom: 4rem;
+	}
+	.faq__list {
+		width: var(--container);
+		margin-inline: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
 	}
 	.faq-item {
-		position: relative;
-		border-top: 1px solid color-mix(in oklab, #0A0908 12%, transparent);
-		padding: 1.5rem 0;
-		transition: background 0.5s var(--ease-soft);
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid var(--border);
+		transition: all 0.4s var(--ease-soft);
 	}
-	.faq-item:last-child {
-		border-bottom: 1px solid color-mix(in oklab, #0A0908 12%, transparent);
-	}
-	/* Hover bleed: a soft aubergine tint slides in from the left while the
-	 * row title shifts a few pixels right, mirroring the Websenso editorial
-	 * row-hover signature (00:13 button hover, 00:24 process row hover). */
-	.faq-item::before {
-		content: "";
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: 0;
-		background: color-mix(in oklab, var(--accent-cool) 8%, transparent);
-		transition: width 0.5s var(--ease-emphatic);
-		z-index: 0;
-		pointer-events: none;
-	}
-	.faq-item:hover::before,
-	.faq-item[open]::before {
-		width: 100%;
+	.faq-item:hover,
+	.faq-item[open] {
+		background: rgba(255, 255, 255, 0.05);
+		border-color: var(--tech);
 	}
 	.faq-item summary {
-		position: relative;
-		z-index: 1;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
+		gap: 1.5rem;
+		padding: 1.5rem;
 		cursor: pointer;
-		font-family: var(--font-display);
-		font-size: clamp(1.05rem, 0.8vw + 0.5rem, 1.35rem);
-		font-variation-settings: "opsz" 144, "SOFT" 30;
-		line-height: 1.3;
-		color: #0A0908;
 		list-style: none;
-		font-weight: 400;
-		transition: padding-left 0.4s var(--ease-emphatic);
 	}
-	.faq-item:hover summary,
-	.faq-item[open] summary {
-		padding-left: 0.75rem;
-	}
-	.faq-item summary::-webkit-details-marker {
-		display: none;
+	.faq-item summary::-webkit-details-marker { display: none; }
+	
+	.faq-item__meta {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: var(--tech);
+		opacity: 0.6;
 	}
 	.faq-item__q {
 		flex: 1;
+		font-family: var(--font-mono);
+		font-size: 0.95rem;
+		color: #fff;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
 	}
-	/* Circular aubergine pill houses the + icon. Rotates 45° to become ×
-	 * when the details element opens. Scales 1.08 on row hover for affordance. */
 	.faq-item__icon {
-		width: 2rem;
-		height: 2rem;
-		border-radius: 999px;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background: color-mix(in oklab, var(--accent-cool) 12%, transparent);
-		color: var(--accent-cool);
-		flex-shrink: 0;
-		transition:
-			background 0.4s var(--ease-soft),
-			color 0.4s var(--ease-soft),
-			transform 0.4s var(--ease-emphatic);
-	}
-	.faq-item:hover .faq-item__icon {
-		background: color-mix(in oklab, var(--accent-cool) 22%, transparent);
-		transform: scale(1.08);
-	}
-	.faq-item__icon svg {
+		color: var(--tech);
 		transition: transform 0.4s var(--ease-emphatic);
 	}
 	.faq-item[open] .faq-item__icon {
-		background: var(--accent-cool);
-		color: var(--text);
-	}
-	.faq-item[open] .faq-item__icon svg {
 		transform: rotate(45deg);
 	}
-	.faq-item p {
-		position: relative;
-		z-index: 1;
-		padding-top: 0.75rem;
-		padding-left: 0;
-		color: #4A453E;
-		font-size: 0.95rem;
-		line-height: 1.7;
-		max-width: 50rem;
-		transition: padding-left 0.4s var(--ease-emphatic);
+	.faq-item__a {
+		padding: 0 1.5rem 1.5rem 4rem;
 	}
-	.faq-item[open] p {
-		padding-left: 0.75rem;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.faq-item::before,
-		.faq-item summary,
-		.faq-item__icon,
-		.faq-item__icon svg,
-		.faq-item p {
-			transition: none !important;
-		}
-	}
-	.reveal {
-		transition-delay: var(--delay, 0s);
+	.faq-item__a p {
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		line-height: 1.6;
+		color: var(--text-muted);
+		max-width: 42rem;
 	}
 </style>

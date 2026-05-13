@@ -1,0 +1,146 @@
+---
+/**
+ * Preloader — Cinematic intro mask.
+ * 
+ * Logic:
+ * - Sits at the top of the body (Layout.astro).
+ * - Animates the ID SKILLZ wordmark with a "tracking" reveal (letters spreading).
+ * - Dissolves away after 1.5s - 2s.
+ * - Uses session storage to only show once per session (optional, but good for UX).
+ */
+---
+
+<div id="preloader" class="preloader" aria-hidden="true">
+	<div class="preloader__content">
+		<div class="preloader__logo">
+			<span class="preloader__letter" data-letter="I">I</span>
+			<span class="preloader__letter" data-letter="D">D</span>
+			<span class="preloader__space"></span>
+			<span class="preloader__letter" data-letter="S">S</span>
+			<span class="preloader__letter" data-letter="K">K</span>
+			<span class="preloader__letter" data-letter="I">I</span>
+			<span class="preloader__letter" data-letter="L">L</span>
+			<span class="preloader__letter" data-letter="L">L</span>
+			<span class="preloader__letter" data-letter="Z">Z</span>
+		</div>
+		<div class="preloader__line"></div>
+		<div class="preloader__status font-mono">INITIALIZING_SYSTEM...</div>
+	</div>
+</div>
+
+<script>
+	import { gsap } from "gsap";
+
+	const preloader = document.getElementById("preloader");
+	if (preloader) {
+		// Check session storage to avoid annoying users on every navigation
+		// However, for the "digital flagship" vibe, we might want it every time
+		// unless the user specifies otherwise. Let's keep it simple for now.
+		
+		const tl = gsap.timeline({
+			onComplete: () => {
+				preloader.style.pointerEvents = "none";
+				gsap.to(preloader, {
+					opacity: 0,
+					duration: 0.8,
+					ease: "power2.inOut",
+					onComplete: () => {
+						preloader.remove();
+					}
+				});
+			}
+		});
+
+		// 1. Initial state
+		tl.set(".preloader__letter", { opacity: 0, y: 10 });
+		tl.set(".preloader__line", { scaleX: 0 });
+		tl.set(".preloader__status", { opacity: 0 });
+
+		// 2. Animate line
+		tl.to(".preloader__line", { scaleX: 1, duration: 0.8, ease: "power4.inOut" });
+
+		// 3. Reveal letters with tracking (staggered)
+		tl.to(".preloader__letter", {
+			opacity: 1,
+			y: 0,
+			duration: 1,
+			stagger: 0.05,
+			ease: "power3.out"
+		}, "-=0.4");
+
+		// 4. Tracking expansion
+		tl.to(".preloader__logo", {
+			letterSpacing: "0.5em",
+			duration: 1.5,
+			ease: "power2.out"
+		}, "-=0.8");
+
+		// 5. Status text
+		tl.to(".preloader__status", {
+			opacity: 0.6,
+			duration: 0.4
+		}, "-=1.2");
+
+		// 6. Hold and fade content
+		tl.to(".preloader__content", {
+			opacity: 0,
+			y: -20,
+			duration: 0.6,
+			ease: "power2.in"
+		}, "+=0.2");
+	}
+</script>
+
+<style>
+	.preloader {
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		background: #0A0908;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #F2EEE5;
+	}
+
+	.preloader__content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.5rem;
+		width: 100%;
+		max-width: 400px;
+		padding: 2rem;
+	}
+
+	.preloader__logo {
+		font-family: var(--font-display, "Space Grotesk"), sans-serif;
+		font-size: 1.5rem;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		display: flex;
+		align-items: center;
+	}
+
+	.preloader__letter {
+		display: inline-block;
+	}
+
+	.preloader__space {
+		width: 0.6em;
+	}
+
+	.preloader__line {
+		width: 120px;
+		height: 1px;
+		background: var(--accent, #B85B3D);
+		transform-origin: center;
+	}
+
+	.preloader__status {
+		font-size: 0.65rem;
+		letter-spacing: 0.2em;
+		opacity: 0.6;
+		text-transform: uppercase;
+	}
+</style>
