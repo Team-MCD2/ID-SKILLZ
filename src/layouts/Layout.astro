@@ -89,7 +89,7 @@ const orgSchema = {
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,30..100;1,9..144,300..900,30..100&family=Inter:wght@300..700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
 		/>
 
 		<script is:inline>
@@ -114,6 +114,17 @@ const orgSchema = {
 		</main>
 		<Footer />
 		<Fab />
+
+		<!-- HUD Status Bar — fixed bottom strip, desktop only -->
+		<div class="hud-statusbar" aria-hidden="true">
+			<span>SYS.STATUS: ONLINE</span>
+			<span class="hud-statusbar__sep">·</span>
+			<span>VLAN_10/30: SECURE</span>
+			<span class="hud-statusbar__sep">·</span>
+			<span>LOC: 43.6047°N, 1.4442°E</span>
+			<span class="hud-statusbar__sep">·</span>
+			<span>ENG_ID_SKILLS_V2.0</span>
+		</div>
 	</body>
 </html>
 
@@ -133,5 +144,37 @@ const orgSchema = {
 	}
 	.skip-link:focus {
 		top: 1rem;
+	}
+
+	/* HUD Status Bar */
+	.hud-statusbar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 40;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		padding: 0.4rem 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: color-mix(in oklab, var(--text) 30%, transparent);
+		background: color-mix(in oklab, var(--bg) 85%, transparent);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		border-top: 1px solid color-mix(in oklab, var(--text) 8%, transparent);
+		pointer-events: none;
+	}
+	.hud-statusbar__sep {
+		opacity: 0.3;
+	}
+	@media (max-width: 1024px) {
+		.hud-statusbar {
+			display: none;
+		}
 	}
 </style>

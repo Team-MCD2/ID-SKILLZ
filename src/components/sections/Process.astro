@@ -33,7 +33,7 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 >
 	<div class="proc__inner">
 		<aside class="proc__sticky">
-			<p class="eyebrow reveal">Notre méthode</p>
+			<p class="eyebrow reveal"><span class="eyebrow-prefix" aria-hidden="true">[ 03 ]</span> Notre méthode</p>
 			<h2 id="proc-title" class="h-1 reveal balance" style="--delay:.1s">
 				Six étapes,
 				<span class="mark-gradient">aucun mystère</span>.
@@ -323,7 +323,6 @@ const stepMeta: Array<{ duration: string; icon: "brief" | "doc" | "compass" | "w
 		font-weight: 400;
 		line-height: 1.1;
 		color: var(--text);
-		font-variation-settings: "opsz" 144, "SOFT" 30;
 		letter-spacing: -0.01em;
 		/* Subtle title slide-in from the right that lags the number by a
 		 * fraction of a second so the eye lands on the watermark first. */

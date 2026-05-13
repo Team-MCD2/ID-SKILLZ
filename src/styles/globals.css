@@ -22,7 +22,7 @@
 	--color-sable-deep: #B89F7E;
 
 	/* Typographie */
-	--font-display: "Fraunces", "PP Editorial", "Times New Roman", serif;
+	--font-display: "Space Grotesk", system-ui, sans-serif;
 	--font-sans: "Inter", "Söhne", "Helvetica Neue", system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -233,10 +233,10 @@
 	h4,
 	h5 {
 		font-family: var(--font-display);
-		font-weight: 400;
+		font-weight: 600;
 		line-height: 1.04;
-		letter-spacing: -0.02em;
-		font-variation-settings: "opsz" 144, "SOFT" 50;
+		letter-spacing: -0.03em;
+		text-transform: uppercase;
 	}
 
 	/* `text-wrap: balance` is opt-in only — applied via .balance utility on a
@@ -312,8 +312,6 @@
 	background-clip: text;
 	color: transparent;
 	-webkit-text-fill-color: transparent;
-	font-style: italic;
-	font-variation-settings: "opsz" 144, "SOFT" 100;
 }
 
 /* Headline display sizes (responsive clamp) — éditorial, contenu, lisible */
@@ -342,12 +340,23 @@
 }
 
 @utility eyebrow {
-	font-family: var(--font-sans);
-	font-size: 0.75rem;
-	font-weight: 500;
-	letter-spacing: 0.18em;
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	font-weight: 400;
+	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	color: var(--color-ocre);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+/* HUD section prefix — [ 0X ] monospaced identifier before section eyebrows */
+@utility eyebrow-prefix {
+	font-family: var(--font-mono);
+	font-weight: 700;
+	color: var(--accent-cool);
+	letter-spacing: 0.06em;
 }
 
 /* Visually hidden — accessible-only text. Used for screen-reader labels
@@ -552,12 +561,11 @@
  * reads as a layer-below decoration. */
 @utility watermark-number {
 	font-family: var(--font-display);
-	font-weight: 400;
+	font-weight: 600;
 	font-size: clamp(2.25rem, 5vw, 3.5rem);
 	line-height: 1;
 	letter-spacing: -0.04em;
 	color: color-mix(in oklab, currentColor 30%, transparent);
-	font-variation-settings: "opsz" 144, "SOFT" 0;
 }
 
 /* Small uppercase pill (used for project tags, step durations, expertise tags) */

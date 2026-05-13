@@ -194,6 +194,7 @@ const slides = partnerSlides.map((s) => ({
 		align-items: center;
 		padding-block: clamp(2rem, 6vw, 5rem);
 		padding-inline: var(--gutter, 1.5rem);
+		overflow-y: auto;
 	}
 
 	.partners__inner {
@@ -296,10 +297,11 @@ const slides = partnerSlides.map((s) => ({
 		line-height: 1.5;
 		max-width: 36rem;
 		padding-inline: 0.5rem;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
 	}
 
 	.partners__panel {
+		position: relative;
+		z-index: 10;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
@@ -317,7 +319,6 @@ const slides = partnerSlides.map((s) => ({
 	}
 	.partners__panel h3 {
 		font-weight: 400;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
 		color: var(--text);
 		font-size: clamp(1.35rem, 1.6vw + 0.5rem, 2rem);
 		line-height: 1.25;

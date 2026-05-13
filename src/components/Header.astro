@@ -35,7 +35,7 @@ import { nav, site } from "../lib/site";
 				</svg>
 			</button>
 
-			<a class="cta cta--ghost" href="#contact">Faire une demande</a>
+			<a class="cta cta--ghost" href="#contact">[ NOUS_CONTACTER ]</a>
 
 			<button
 				type="button"
@@ -58,7 +58,7 @@ import { nav, site } from "../lib/site";
 		aria-modal="true"
 		aria-label="Menu de navigation mobile"
 		data-mobile-menu
-		hidden
+		data-open="false"
 	>
 		<div class="mobile-menu__topbar">
 			<a class="mobile-menu__brand" href="/" aria-label={`${site.name} — Accueil`}>
@@ -91,7 +91,7 @@ import { nav, site } from "../lib/site";
 			</ul>
 		</nav>
 		<div class="mobile-menu__footer">
-			<a class="cta" href="#contact" data-nav-mobile>Faire une demande</a>
+			<a class="cta" href="#contact" data-nav-mobile>[ NOUS_CONTACTER ]</a>
 			<a class="mobile-menu__contact" href={`mailto:${site.email}`}>{site.email}</a>
 			<a class="mobile-menu__contact" href={`tel:${site.phone}`}>{site.phoneFormatted}</a>
 		</div>
@@ -165,8 +165,11 @@ import { nav, site } from "../lib/site";
 			margin: 0;
 		}
 		.site-header__nav a {
-			font-size: 0.875rem;
-			font-weight: 500;
+			font-family: var(--font-mono);
+			font-size: 0.72rem;
+			font-weight: 400;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
 			color: var(--text-muted);
 			padding: 0.5rem 0;
 			position: relative;
@@ -179,7 +182,7 @@ import { nav, site } from "../lib/site";
 			right: 0;
 			bottom: -2px;
 			height: 1px;
-			background: var(--accent);
+			background: var(--color-ocre);
 			transform: scaleX(0);
 			transform-origin: left;
 			transition: transform 0.4s var(--ease-emphatic);
@@ -229,29 +232,31 @@ import { nav, site } from "../lib/site";
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.625rem 1.125rem;
-		background: var(--accent);
-		color: var(--text-inverted);
-		border-radius: 999px;
-		font-size: 0.875rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
+		padding: 0.55rem 1rem;
+		background: var(--color-ocre);
+		color: #080808;
+		border-radius: 2px;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 		transition: transform 0.3s var(--ease-emphatic), background 0.2s;
 		white-space: nowrap;
 	}
 	.cta:hover {
 		transform: translateY(-1px);
-		background: var(--color-sienne-deep);
+		background: #D4A855;
 	}
 	.cta--ghost {
 		background: transparent;
 		color: var(--text);
-		border: 1px solid var(--border-strong);
+		border: 1px solid color-mix(in oklab, var(--color-ocre) 50%, transparent);
 	}
 	.cta--ghost:hover {
-		background: var(--accent);
-		color: var(--text-inverted);
-		border-color: var(--accent);
+		background: var(--color-ocre);
+		color: #080808;
+		border-color: var(--color-ocre);
 	}
 	@media (max-width: 640px) {
 		.cta--ghost {
@@ -396,8 +401,8 @@ import { nav, site } from "../lib/site";
 		gap: 1rem;
 		font-family: var(--font-display);
 		font-size: clamp(2.25rem, 9vw, 4rem);
-		font-weight: 400;
-		font-variation-settings: "opsz" 144, "SOFT" 30;
+		font-weight: 600;
+		text-transform: uppercase;
 		line-height: 1.05;
 		padding: 0.55rem 0;
 		color: #F2EEE5;
@@ -434,8 +439,7 @@ import { nav, site } from "../lib/site";
 	}
 	.mobile-menu__nav a:hover,
 	.mobile-menu__nav a:focus-visible {
-		color: var(--accent-cool);
-		font-style: italic;
+		color: var(--color-ocre);
 	}
 	.mobile-menu__nav a:hover .mobile-menu__chev,
 	.mobile-menu__nav a:focus-visible .mobile-menu__chev {
@@ -526,7 +530,6 @@ import { nav, site } from "../lib/site";
 	const toggleMenu = (open: boolean) => {
 		if (!mobileMenu) return;
 		mobileMenu.dataset.open = String(open);
-		mobileMenu.hidden = !open;
 		document.body.style.overflow = open ? "hidden" : "";
 		burger?.setAttribute("aria-expanded", String(open));
 		const fabMenu = document.querySelector<HTMLButtonElement>(
