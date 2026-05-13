@@ -36,8 +36,19 @@ export default function ScrollReveal() {
 				.forEach((el) => obs.observe(el));
 		}, 800);
 
+		// Safety fallback: after 3s, force-show any remaining invisible
+		// .reveal elements. Catches edge cases where IntersectionObserver
+		// misses items (e.g., FAQ items at fold boundary, items already
+		// in view at page load).
+		const safetyFallback = window.setTimeout(() => {
+			document
+				.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)")
+				.forEach((el) => el.classList.add("is-visible"));
+		}, 3000);
+
 		return () => {
 			window.clearTimeout(lateScan);
+			window.clearTimeout(safetyFallback);
 			obs.disconnect();
 		};
 	}, []);

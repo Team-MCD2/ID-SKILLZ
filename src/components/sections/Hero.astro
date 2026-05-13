@@ -2,14 +2,15 @@
 /**
  * Hero — section ouverte du site, mood "warm-dark".
  *
- * Structure (Websenso-inspired, ID Skillz palette):
- *   - Background: showreel video, soft grayscale, sienne radial-gradient warmth
- *   - Top-left:   eyebrow + headline with mark-gradient + lead
- *   - Bottom:     CTA pair + horizontal stats divider
- *   - Bottom mask: hand-drawn mountain ridge SVG, fill = next section bg.
- *                  This is the signature transition into the cream "Solutions"
- *                  section that follows.
- *   - Top-right corner: small editorial sketch glyph (signature mark)
+ * Tech Cinématographique HUD treatment:
+ *   - Background: Vantablack (#080808) with aubergine radial gradient,
+ *     subtle grid overlay, and film grain texture.
+ *   - HUD metadata panel top-right (REC_ACTIVE, RES, FPS)
+ *   - Corner bracket visors (top-left, bottom-right)
+ *   - Title: "CRÉATEURS DE RÉALITÉS NUMÉRIQUES_" with gradient + blink cursor
+ *   - Eyebrow: "/// STUDIO DE CRÉATION 3D & LOGICIELLE _"
+ *   - Bottom: CTA pair + horizontal stats divider
+ *   - Bottom mask: mountain ridge SVG transition into cream Solutions
  *
  * The section declares `data-section-mood="warm-dark"` so the floating action
  * button (Fab.astro) automatically picks the right surface tokens.
@@ -31,52 +32,50 @@ const stats = [
 	data-section-mood="warm-dark"
 	aria-labelledby="hero-title"
 >
+	<!-- HUD Background Stack -->
 	<div class="hero__bg" aria-hidden="true">
-		<video
-			class="hero__video"
-			src="/media/videos/NA-DECOUVREZ_NOS_SERVICES_ID_SKILLZ_VOTRE_AGENCE_DE_COMMUNICATION.mp4"
-			autoplay
-			muted
-			loop
-			playsinline
-			preload="metadata"
-			poster="/media/renders/render-immeuble-terrasse-cafe.jpg"
-			disablePictureInPicture
-			disableRemotePlayback
-		></video>
-		<div class="hero__veil"></div>
+		<!-- Layer 0: Vantablack base -->
+		<div class="hero__base"></div>
+		<!-- Layer 1: Simulation de la vidéo ID Skills en fond -->
+		<div class="hero__image-sim"></div>
+		<!-- Layer 2: Dégradé noir très fort à gauche pour garantir la lisibilité du texte -->
+		<div class="hero__gradient"></div>
+		<!-- Layer 3: Halo lumineux d'accentuation dynamique -->
+		<div class="hero__glow"></div>
+		<!-- Layer 4: Subtle grid overlay -->
+		<div class="hero__grid"></div>
+		<!-- Layer 5: Film grain noise -->
+		<div class="hero__grain"></div>
 	</div>
 
-	<!-- Editorial sketch glyph, top-right -->
-	<svg
-		class="hero__sketch"
-		viewBox="0 0 120 120"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="1.25"
-		stroke-linecap="round"
-		stroke-linejoin="round"
-		aria-hidden="true"
-	>
-		<!-- Star/sparkle — abstract creativity mark -->
-		<path d="M60 18 L66 54 L102 60 L66 66 L60 102 L54 66 L18 60 L54 54 Z" />
-		<circle cx="60" cy="60" r="3" fill="currentColor" stroke="none" />
-		<!-- Hand-sketched bracket -->
-		<path d="M14 10 Q 10 10 10 14 L 10 22" />
-		<path d="M106 110 Q 110 110 110 106 L 110 98" />
-	</svg>
+	<!-- HUD Corner Brackets -->
+	<div class="hero__visor hero__visor--tl" aria-hidden="true"></div>
+	<div class="hero__visor hero__visor--br" aria-hidden="true"></div>
+
+	<!-- HUD Metadata Panel — top-right -->
+	<div class="hero__hud-meta" aria-hidden="true">
+		<span class="hero__hud-dot"></span>
+		<span>REC_ACTIVE</span>
+		<span class="hero__hud-sep">|</span>
+		<span>RES: 3840×2160</span>
+		<span class="hero__hud-sep">|</span>
+		<span>FPS: 59.94</span>
+	</div>
 
 	<div class="hero__inner">
-		<p class="eyebrow hero__eyebrow reveal">Studio créatif · Paris · Toulouse</p>
+		<p class="eyebrow hero__eyebrow reveal">
+			<span class="hero__eyebrow-prefix" aria-hidden="true">///</span>
+			Studio de création 3D & logicielle _
+		</p>
 
 		<h1
 			id="hero-title"
 			class="hero__title h-display reveal balance"
 			style="--delay:.15s"
 		>
-			On construit
-			<span class="mark-gradient">des marques</span>
-			qu&rsquo;on n&rsquo;oublie pas.
+			Créateurs<br />
+			<span class="mark-gradient">de réalités</span><br />
+			numériques<span class="hero__cursor" aria-hidden="true">_</span>
 		</h1>
 
 		<p class="hero__lead reveal" style="--delay:.3s">
@@ -86,13 +85,13 @@ const stats = [
 
 		<div class="hero__actions reveal" style="--delay:.45s">
 			<a class="btn btn--primary" href="#contact">
-				<span>Démarrer un projet</span>
+				<span>[ DÉMARRER_PROJET ]</span>
 				<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
 					<path d="M2 8h12M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 				</svg>
 			</a>
 			<a class="btn btn--ghost" href="#realisations">
-				<span>Voir le travail</span>
+				<span>VOIR_TRAVAIL</span>
 			</a>
 		</div>
 
@@ -106,9 +105,7 @@ const stats = [
 		</dl>
 	</div>
 
-	<!-- Mountain ridge transitioning to the cream Solutions section below.
-	     Fill explicitly set to the cream surface color so the SVG paints the
-	     "valley" we descend into. -->
+	<!-- Mountain ridge transitioning to the cream Solutions section below. -->
 	<MountainRidge fill="#F2EEE5" variant="ridge" />
 </section>
 
@@ -122,96 +119,137 @@ const stats = [
 		padding-block: calc(var(--header-height) + 3rem) clamp(8rem, 14vw, 14rem);
 		overflow: hidden;
 		isolation: isolate;
-		/* The hero veil is always dark regardless of theme (the video
-		 * is a color-rich showreel we darken with a grayscale filter +
-		 * black linear veil). So we force cream text tokens here so the
-		 * copy stays legible even when the user flips the site to light
-		 * mode. Without this the H1 and lead would render in dark colors
-		 * over the dark veil — unreadable. */
+		/* Hero is always dark; force light text regardless of theme */
 		--hero-text: #F2EEE5;
 		--hero-text-muted: color-mix(in oklab, #F2EEE5 78%, transparent);
 		--hero-text-soft: color-mix(in oklab, #F2EEE5 55%, transparent);
 	}
 	@media (max-width: 640px) {
 		.hero {
-			/* On narrow viewports the video background is heavy and the
-			 * 100dvh min-height can trap the user past the fold. Cap it to
-			 * a tighter ratio so the mountain ridge transition is visible
-			 * near the viewport bottom without a long scroll. */
 			min-height: 85dvh;
 			padding-block: calc(var(--header-height) + 2rem) clamp(5rem, 10vw, 9rem);
 		}
 	}
 
+	/* ── HUD Background Layers ──────────────────────────────────────── */
 	.hero__bg {
 		position: absolute;
 		inset: 0;
 		z-index: -2;
 	}
-	.hero__video {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		filter: grayscale(0.55) contrast(1.05) brightness(0.9);
-	}
-	.hero__veil {
+	.hero__base {
 		position: absolute;
 		inset: 0;
-		z-index: -1;
-		background:
-			radial-gradient(
-				ellipse at 18% 25%,
-				color-mix(in oklab, var(--color-sienne) 22%, transparent) 0%,
-				transparent 55%
-			),
-			linear-gradient(
-				180deg,
-				rgba(10, 9, 8, 0.55) 0%,
-				rgba(10, 9, 8, 0.65) 35%,
-				rgba(10, 9, 8, 0.88) 80%,
-				rgba(10, 9, 8, 0.96) 100%
-			);
+		background: #0A0A0A;
 	}
-	@media (max-width: 640px) {
-		/* Mobile: push the veil a touch darker since text sits closer to
-		 * the center of the frame where the showreel video tends to be
-		 * brighter. */
-		.hero__veil {
-			background:
-				radial-gradient(
-					ellipse at 50% 30%,
-					color-mix(in oklab, var(--color-sienne) 18%, transparent) 0%,
-					transparent 50%
-				),
-				linear-gradient(
-					180deg,
-					rgba(10, 9, 8, 0.7) 0%,
-					rgba(10, 9, 8, 0.78) 40%,
-					rgba(10, 9, 8, 0.92) 80%,
-					rgba(10, 9, 8, 0.98) 100%
-				);
+	.hero__image-sim {
+		position: absolute;
+		inset: 0;
+		background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+		background-size: cover;
+		background-position: center;
+		filter: grayscale(20%) contrast(120%);
+		opacity: 0.4;
+		animation: slowPan 20s ease-in-out infinite alternate;
+	}
+	@keyframes slowPan {
+		0% { transform: scale(1.05) translate(0, 0); }
+		100% { transform: scale(1.1) translate(-1%, -1%); }
+	}
+	.hero__gradient {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%);
+	}
+	.hero__glow {
+		position: absolute;
+		top: 25%;
+		right: 25%;
+		width: 600px;
+		height: 600px;
+		background: #3A1F3D;
+		opacity: 0.2;
+		filter: blur(120px);
+		border-radius: 50%;
+		mix-blend-mode: screen;
+		pointer-events: none;
+	}
+	.hero__grid {
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(255,255,255, 0.04) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255,255,255, 0.04) 1px, transparent 1px);
+		background-size: 60px 60px;
+		pointer-events: none;
+	}
+	.hero__grain {
+		position: absolute;
+		inset: 0;
+		opacity: 0.05;
+		pointer-events: none;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	/* ── HUD Corner Visors ───────────────────────────────────────────── */
+	.hero__visor {
+		position: absolute;
+		width: clamp(2rem, 5vw, 4rem);
+		height: clamp(2rem, 5vw, 4rem);
+		pointer-events: none;
+		z-index: 5;
+	}
+	.hero__visor--tl {
+		top: calc(var(--header-height) + 1rem);
+		left: clamp(1rem, 3vw, 2.5rem);
+		border-top: 1px solid var(--color-ocre);
+		border-left: 1px solid var(--color-ocre);
+		opacity: 0.6;
+	}
+	.hero__visor--br {
+		bottom: clamp(6rem, 12vw, 10rem);
+		right: clamp(1rem, 3vw, 2.5rem);
+		border-bottom: 1px solid var(--color-ocre);
+		border-right: 1px solid var(--color-ocre);
+		opacity: 0.6;
+	}
+
+	/* ── HUD Metadata Panel ──────────────────────────────────────────── */
+	.hero__hud-meta {
+		position: absolute;
+		top: calc(var(--header-height) + 1.5rem);
+		right: clamp(1.5rem, 4vw, 3.5rem);
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.1em;
+		color: color-mix(in oklab, var(--color-ocre) 70%, transparent);
+		text-transform: uppercase;
+		z-index: 5;
+	}
+	.hero__hud-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #E74C3C;
+		animation: hudDotPulse 2s ease-in-out infinite;
+	}
+	@keyframes hudDotPulse {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.3; }
+	}
+	.hero__hud-sep {
+		opacity: 0.35;
+	}
+	@media (max-width: 768px) {
+		.hero__hud-meta {
+			display: none;
 		}
 	}
 
-	.hero__sketch {
-		position: absolute;
-		top: clamp(5.5rem, 8vw, 7.5rem);
-		right: clamp(1rem, 4vw, 3rem);
-		width: clamp(5rem, 8vw, 7rem);
-		height: auto;
-		color: color-mix(in oklab, var(--color-ocre) 60%, transparent);
-		pointer-events: none;
-		opacity: 0.7;
-		animation: heroSketchFloat 6s var(--ease-emphatic) infinite alternate;
-	}
-	@keyframes heroSketchFloat {
-		from { transform: translate3d(0, 0, 0) rotate(-2deg); }
-		to   { transform: translate3d(-6px, 8px, 0) rotate(3deg); }
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.hero__sketch { animation: none; }
-	}
-
+	/* ── Hero Content ────────────────────────────────────────────────── */
 	.hero__inner {
 		position: relative;
 		width: var(--container);
@@ -220,26 +258,42 @@ const stats = [
 		flex-direction: column;
 		gap: 1.4rem;
 		max-width: 64rem;
+		z-index: 4;
 	}
 
 	.hero__eyebrow {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
+		color: var(--hero-text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.hero__eyebrow-prefix {
+		color: var(--color-ocre);
+		font-weight: 700;
 	}
 	.hero__eyebrow::before {
-		content: "";
-		width: 1.75rem;
-		height: 1px;
-		background: var(--color-ocre);
+		display: none;
 	}
 
 	.hero__title {
 		max-width: 18ch;
 		color: var(--hero-text);
+		font-weight: 700;
 	}
 	.hero__title .mark-gradient {
 		display: inline-block;
+	}
+	.hero__cursor {
+		color: var(--color-ocre);
+		animation: heroCursorBlink 1.2s step-end infinite;
+	}
+	@keyframes heroCursorBlink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
 	}
 
 	.hero__lead {
@@ -250,9 +304,10 @@ const stats = [
 		font-weight: 300;
 	}
 	.hero__lead em {
-		font-family: var(--font-display);
-		font-style: italic;
-		color: var(--hero-text);
+		font-family: var(--font-mono);
+		font-style: normal;
+		color: var(--color-ocre);
+		font-size: 0.9em;
 	}
 	.hero__eyebrow {
 		color: var(--hero-text-muted);
@@ -269,11 +324,13 @@ const stats = [
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.95rem 1.6rem;
-		border-radius: 999px;
-		font-size: 0.95rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
+		padding: 0.85rem 1.4rem;
+		border-radius: 2px;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 		transition:
 			transform 0.3s var(--ease-emphatic),
 			background 0.2s,
@@ -281,12 +338,12 @@ const stats = [
 			border-color 0.2s;
 	}
 	.btn--primary {
-		background: var(--color-sienne);
-		color: var(--bg);
+		background: var(--color-ocre);
+		color: #080808;
 	}
 	.btn--primary:hover {
 		transform: translateY(-2px);
-		background: var(--color-sienne-deep);
+		background: #D4A855;
 	}
 	.btn--ghost {
 		background: transparent;
@@ -295,11 +352,11 @@ const stats = [
 	}
 	.btn--ghost:hover {
 		background: var(--hero-text);
-		color: #0A0908;
+		color: #080808;
 		border-color: var(--hero-text);
 	}
 
-	/* ----- Stats divider ------------------------------------------------ */
+	/* ── Stats divider ──────────────────────────────────────────────── */
 	.hero__stats {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -307,14 +364,9 @@ const stats = [
 		margin-top: 2.25rem;
 		padding-top: 1.75rem;
 		position: relative;
-		/* Hairline border kept neutral; the chromatic accent is the
-		 * animated underline below. */
-		border-top: 1px solid var(--border);
+		border-top: 1px solid color-mix(in oklab, var(--color-ocre) 25%, transparent);
 	}
 	.hero__stats::before {
-		/* Cool-accent line that draws across the top border when the hero
-		 * reveals — anchors the eye in the aubergine palette before any
-		 * other section announces itself. */
 		content: "";
 		position: absolute;
 		top: -1px;
@@ -335,27 +387,22 @@ const stats = [
 	@media (prefers-reduced-motion: reduce) {
 		.hero__stats::before { width: 30%; transition: none; }
 	}
-	/* Stat dt values get a cool-accent dot before them on hover for that
-	 * Websenso "hovered link is alive" feel. */
-	.hero__stat dt {
-		position: relative;
-	}
 	.hero__stat:hover dt {
-		color: var(--accent-cool-soft);
+		color: var(--color-ocre);
 		transition: color 0.3s var(--ease-soft);
 	}
 	.hero__stat dt {
 		font-family: var(--font-display);
 		font-size: clamp(1.15rem, 1.5vw + 0.5rem, 1.65rem);
-		font-weight: 500;
-		font-variation-settings: "opsz" 144, "SOFT" 20;
+		font-weight: 600;
 		color: var(--hero-text);
 		line-height: 1;
 		letter-spacing: -0.02em;
 	}
 	.hero__stat dd {
 		margin: 0.4rem 0 0;
-		font-size: 0.78rem;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
 		font-weight: 400;
 		text-transform: uppercase;
 		letter-spacing: 0.14em;
@@ -369,19 +416,23 @@ const stats = [
 		}
 	}
 
-	/* ----- Mountain ridge palette swap when on light theme.
-	         The MountainRidge component ships with a hardcoded fill so we
-	         override via CSS targeting the inserted SVG when theme is light. */
-	:root[data-theme="light"] .hero .mountain-ridge svg path,
+	/* ── Mountain ridge palette swap on light theme ─────────────────── */
+	:root[data-theme="light"] .hero .mountain-ridge svg path {
+		fill: #F2EEE5;
+	}
 	@media (prefers-color-scheme: light) {
 		:root:not([data-theme]) .hero .mountain-ridge svg path {
-			/* Light theme: cream → cream, no visible ridge needed */
 			fill: #F2EEE5;
 		}
 	}
 
-	/* Reveal cascade */
+	/* ── Reveal cascade ─────────────────────────────────────────────── */
 	.reveal {
 		transition-delay: var(--delay, 0s);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__hud-dot { animation: none; opacity: 1; }
+		.hero__cursor { animation: none; opacity: 1; }
 	}
 </style>
